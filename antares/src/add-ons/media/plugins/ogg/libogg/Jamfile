@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src add-ons media plugins ogg libogg ;
+
+SubDirSysHdrs $(SUBDIR) ;
+
+StaticLibrary libogg.a :
+	bitwise.c
+	framing.c
+;

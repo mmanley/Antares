@@ -1,0 +1,24 @@
+# This file defines what ends up in the CD boot image and it executes the
+# rules building the image.
+
+#ANTARES_BOOT_FLOPPY = antares-boot-floppy.image ;
+#MakeLocate $(ANTARES_BOOT_FLOPPY) : $(ANTARES_OUTPUT_DIR) ;
+
+# CD image target
+ANTARES_CD_BOOT_IMAGE = antares-boot-cd.iso ;
+MakeLocate $(ANTARES_CD_BOOT_IMAGE) : $(ANTARES_OUTPUT_DIR) ;
+
+# the pseudo target all archive contents is attached to
+NotFile $(ANTARES_CD_BOOT_IMAGE_CONTAINER_NAME) ;
+
+# extra files to put on the boot iso
+local extras = README.html ;
+SEARCH on $(extras) = [ FDirName $(ANTARES_TOP) data boot_cd ] ;
+
+BuildCDBootImage $(ANTARES_CD_BOOT_IMAGE) : $(ANTARES_BOOT_FLOPPY) : $(extras) ;
+
+
+NotFile antares-boot-cd ;
+Depends antares-boot-cd : $(ANTARES_CD_BOOT_IMAGE) ;
+
+

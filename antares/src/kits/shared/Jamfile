@@ -1,0 +1,32 @@
+SubDir ANTARES_TOP src kits shared ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseLibraryHeaders agg ;
+UsePrivateHeaders shared ;
+
+# for RWLockManager only
+UsePrivateSystemHeaders ;
+UsePrivateHeaders kernel libroot ;
+
+StaticLibrary libshared.a :
+	AboutWindow.cpp
+	AffineTransform.cpp
+	CalendarView.cpp
+	ColorQuantizer.cpp
+	CommandPipe.cpp
+	DateTime.cpp
+	DragTrackingFilter.cpp
+	HashString.cpp
+	RWLockManager.cpp
+	ShakeTrackingFilter.cpp
+	Variant.cpp
+;
+
+
+UseLibraryHeaders mapm ;
+
+StaticLibrary libexpression_parser.a :
+	ExpressionParser.cpp
+;

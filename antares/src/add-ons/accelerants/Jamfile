@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons accelerants ;
+
+SubInclude ANTARES_TOP src add-ons accelerants ati ;
+SubInclude ANTARES_TOP src add-ons accelerants common ;
+SubInclude ANTARES_TOP src add-ons accelerants et6x00 ;
+SubInclude ANTARES_TOP src add-ons accelerants intel_extreme ;
+SubInclude ANTARES_TOP src add-ons accelerants matrox ;
+SubInclude ANTARES_TOP src add-ons accelerants neomagic ;
+SubInclude ANTARES_TOP src add-ons accelerants nvidia_gpgpu ;
+SubInclude ANTARES_TOP src add-ons accelerants nvidia ;
+SubInclude ANTARES_TOP src add-ons accelerants radeon ;
+SubInclude ANTARES_TOP src add-ons accelerants s3 ;
+SubInclude ANTARES_TOP src add-ons accelerants tdfx ;
+SubInclude ANTARES_TOP src add-ons accelerants vesa ;
+SubInclude ANTARES_TOP src add-ons accelerants via ;
+SubInclude ANTARES_TOP src add-ons accelerants vmware ;

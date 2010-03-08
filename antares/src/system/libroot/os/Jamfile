@@ -1,0 +1,48 @@
+SubDir ANTARES_TOP src system libroot os ;
+
+UsePrivateSystemHeaders ;
+UsePrivateHeaders kernel ;
+	# for util/KMessage.h
+UsePrivateHeaders libroot runtime_loader shared ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) locks ] ;
+
+MergeObject os_main.o :
+	area.c
+	atomic.c
+	debug.c
+	driver_settings.c
+	find_directory.c
+	fs_attr.cpp
+	fs_index.c
+	fs_info.c
+	fs_query.cpp
+	fs_volume.c
+	image.cpp
+	parsedate.cpp
+	port.c
+	scheduler.c
+	sem.c
+	system_info.c
+	team.c
+	thread.c
+	time.cpp
+	syscalls.S
+	wait_for_objects.cpp
+
+	# locks
+	init_once.cpp
+	mutex.cpp
+	recursive_lock.cpp
+	rw_lock.cpp
+
+	KMessage.cpp
+;
+
+SEARCH on [ FGristFiles KMessage.cpp ]
+	= [ FDirName $(ANTARES_TOP) src system kernel messaging ] ;
+
+# We need to specify the dependency on the generated syscalls file explicitly.
+Depends [ FGristFiles syscalls.o ] : <syscalls>syscalls.S.inc ;
+
+SubInclude ANTARES_TOP src system libroot os arch $(TARGET_ARCH) ;

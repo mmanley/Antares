@@ -1,0 +1,37 @@
+SubDir ANTARES_TOP src bin ppp_up ;
+
+SetSubDirSupportedPlatforms $(ANTARES_BONE_COMPATIBLE_PLATFORMS) ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UsePrivateHeaders net ;
+UseHeaders [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared libppp
+	headers ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared
+	libkernelppp headers ] : true ;
+
+AddResources ppp_up : ppp_up.rdef ;
+
+BinCommand ppp_up :
+	ConnectionView.cpp
+	ConnectionWindow.cpp
+	PPPDeskbarReplicant.cpp
+	PPPStatusView.cpp
+	PPPStatusWindow.cpp
+	PPPUpApplication.cpp
+	:
+	libppp.a be
+;
+
+# Installation
+AntaresInstall install-networking
+	: /boot/beos/bin
+	: ppp_up ;
+
+Package antares-networkingkit-cvs :
+	ppp_up :
+	boot beos bin ;

@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src tests servers app playground ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName os app ] ;
+UseHeaders [ FDirName os interface ] ;
+
+Application Playground :
+	main.cpp
+	ObjectView.cpp
+	ObjectWindow.cpp
+	States.cpp
+	: be $(TARGET_LIBSUPC++)
+	: Playground.rdef
+;
+
+if ( $(TARGET_PLATFORM) = libbe_test ) {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : Playground
+		: tests!apps ;
+}
+

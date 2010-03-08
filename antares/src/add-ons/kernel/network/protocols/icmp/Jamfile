@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons kernel network protocols icmp ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <support/Errors.h> and maybe other stuff.
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UsePrivateHeaders kernel net ;
+
+KernelAddon icmp :
+	icmp.cpp
+;
+
+# Installation
+AntaresInstall install-networking : /boot/home/config/add-ons/kernel/antares_network/protocols
+	: icmp ;
+
+Package antares-networkingkit-cvs :
+	antares :
+	boot home config add-ons kernel antares_network protocols ;

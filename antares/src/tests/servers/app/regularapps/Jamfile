@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src tests servers app regularapps ;
+
+local clockDir = [ FDirName $(ANTARES_TOP) src apps clock ] ;
+
+UseHeaders [ FDirName $(clockDir) ] ;
+
+SEARCH_SOURCE += $(clockDir) [ FDirName $(clockDir) ] ;
+
+# No need to define any of those targets, when building for antares
+if $(TARGET_PLATFORM) = libbe_test {
+
+SetSubDirSupportedPlatforms libbe_test ;
+
+SimpleTest TestApp_Clock :
+	cl_view.cpp
+	cl_wind.cpp
+	clock.cpp
+	: be $(TARGET_LIBSUPC++)
+	: Clock.rdef
+	;
+
+AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : TestApp_Clock
+	: tests!apps ;
+
+} # if $(TARGET_PLATFORM) = libbe_test

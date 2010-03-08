@@ -1,0 +1,41 @@
+SubDir ANTARES_TOP src system libroot posix string ;
+
+MergeObject posix_string.o :
+	bcmp.c
+	bcopy.c
+	bzero.c
+	ffs.cpp
+	memccpy.c
+	memchr.c
+	memcmp.c
+	memmove.c
+	stpcpy.c
+	strcasecmp.c
+	strcasestr.c
+	strcat.c
+	strchr.c
+	strchrnul.c
+	strcmp.c
+	strcoll.c
+	strcpy.c
+	strcspn.c
+	strdup.c
+	strerror.c
+	strlcat.c
+	strlcpy.c
+	strlwr.c
+	strncat.c
+	strncmp.c
+	strncpy.c
+	strndup.cpp
+	strnlen.c
+	strpbrk.c
+	strrchr.c
+	strspn.c
+	strstr.c
+	strtok.c
+	strupr.c
+	strxfrm.c
+;
+
+AntaresSubInclude arch $(TARGET_ARCH) ;

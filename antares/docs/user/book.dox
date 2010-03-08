@@ -1,0 +1,42 @@
+/*!
+  \mainpage The Antares Book
+
+  Welcome to the Antares Book, which is the API Documentation for Antares Melissa 5.0.
+  In this documentation, you can read about how to use the Antares API's and its "Kits"
+  which provide applications its services.
+
+  \section kits Kits and Servers
+
+  - \ref app | \link app_intro \em Introduction \endlink
+  - \ref drivers
+  - \ref midi1
+  - \ref midi2 | \link midi2_intro \em Introduction \endlink
+  - \ref support | \link support_intro \em Introduction \endlink
+  - \ref registry | \link registry_intro \em Introduction \endlink
+  \section notes General Notes and Information
+  - \ref compatibility
+  - \ref apidoc
+  - \ref credits
+*/
+
+///// Define main kits /////
+
+/*!
+  \defgroup app Application Kit
+  \defgroup registry Registry Kit
+  \defgroup drivers Drivers
+  \defgroup midi2 MIDI 2 Kit
+  \brief API for producing and consuming MIDI events.
+  \defgroup libmidi2 (libmidi2.so)
+  \defgroup support Support Kit
+  \brief Collection of utility classes that are used throughout the API.
+  \defgroup libbe (libbe.so)
+  \defgroup libroot (libroot.so)
+*/
+
+///// Subgroups /////
+
+/*!
+  \defgroup support_globals Global functions in the support kit
+  \ingroup support
+*/

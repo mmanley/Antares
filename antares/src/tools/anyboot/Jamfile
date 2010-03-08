@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src tools anyboot ;
+
+BuildPlatformMain <build>anyboot : anyboot.cpp : $(HOST_LIBSUPC++) ;

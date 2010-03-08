@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src add-ons media plugins ac3_decoder ;
+
+UsePrivateHeaders media ;
+
+Addon ac3_decoder :
+	ac3_decoder.cpp
+	: liba52.a be libmedia.so $(TARGET_LIBSUPC++)
+;
+
+SubIncludeGPL ANTARES_TOP src add-ons media plugins ac3_decoder liba52 ;

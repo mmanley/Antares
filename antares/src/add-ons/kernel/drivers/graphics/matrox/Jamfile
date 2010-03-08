@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics matrox ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics matrox ] ;
+
+KernelAddon matrox :
+	driver.c
+;
+
+Package antares-matrox-cvs :
+	README.html UPDATE.html ;
+Package antares-matrox-cvs :
+	matrox : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-matrox-cvs : graphics matrox ;
+Package antares-matrox-cvs :
+	matrox.settings :
+	boot home config settings kernel drivers ;

@@ -1,0 +1,43 @@
+SubDir ANTARES_TOP src tests system boot loader file_systems bfs ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders [ FDirName kernel ] ;
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders [ FDirName storage ] ;
+SubDirSysHdrs $(ANTARES_TOP) src tests system boot loader ;
+SubDirHdrs $(ANTARES_TOP) src system boot loader file_systems bfs ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel file_systems bfs ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders drivers ;	# disk_device_manager.h
+	UsePublicHeaders storage ;	# DiskDeviceDefs.h
+}
+
+ObjectDefines
+	bfs.cpp
+	Directory.cpp
+	File.cpp
+	Link.cpp
+	Stream.cpp
+	BPlusTree.cpp
+	:
+	read_pos=boot_read_pos fstat=boot_fstat open=boot_open close=boot_close
+	_BOOT_MODE #BFS_BIG_ENDIAN_ONLY
+	;
+
+KernelStaticLibrary boottest_bfs.a :
+	bfs.cpp
+	Directory.cpp
+	File.cpp
+	Link.cpp
+	Stream.cpp
+	BPlusTree.cpp
+	;
+
+# Tell Jam where to find the sources
+
+SEARCH on [ FGristFiles
+		bfs.cpp Directory.cpp File.cpp Link.cpp Stream.cpp BPlusTree.cpp
+	] = [ FDirName $(ANTARES_TOP) src system boot loader file_systems bfs ] ;
+

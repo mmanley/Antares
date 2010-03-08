@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src tools locale genprops ;
+
+UsePrivateHeaders locale ;
+UsePublicHeaders locale ;
+
+Application genprops 
+	: genprops.cpp store.cpp utf8.cpp PropertyFile.cpp 
+	: be 
+	;

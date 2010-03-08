@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src apps launchbox ;
+
+UsePrivateHeaders shared ;
+
+Application LaunchBox :
+	App.cpp
+	IconButton.cpp
+	LaunchButton.cpp
+	main.cpp
+	MainWindow.cpp
+	NamePanel.cpp
+	PadView.cpp
+	Panel.cpp
+	support.cpp
+	: be translation libshared.a $(TARGET_LIBSUPC++)
+	: LaunchBox.rdef
+;
+

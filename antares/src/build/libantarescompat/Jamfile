@@ -1,0 +1,75 @@
+SubDir ANTARES_TOP src build libantarescompat ;
+
+SetSubDirSupportedPlatforms libbe_test r5 dano bone ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private kernel ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private system arch
+		$(HOST_ARCH) ] : true ;
+	# for <asm_defs.h>
+
+
+local libbeTestSources ;
+if $(TARGET_PLATFORM) = libbe_test {
+	libbeTestSources = misc.cpp syscalls.cpp ;
+}
+
+# TODO: This is a temporary kludge. We should actually build libbe_build.so
+# and use it for the build tools even on BeOS compatible platforms. For the
+# time being we build the classes we need (BAppFileInfo and its dependencies)
+# into libantarescompat_build.a.
+local libbePatchSources ;
+if $(HOST_PLATFORM) in r5 bone dano {
+	libbePatchSources += AppFileInfo.cpp Bitmap.cpp GraphicsDefs.cpp ;
+	ObjectSysHdrs $(libbePatchSources)
+		: [ FDirName $(ANTARES_TOP) headers build os app ] ;
+	ObjectSysHdrs $(libbePatchSources)
+		: [ FDirName $(ANTARES_TOP) headers build os interface ] ;
+	ObjectSysHdrs $(libbePatchSources)
+		: [ FDirName $(ANTARES_TOP) headers build os support ] ;
+	ObjectSysHdrs $(libbePatchSources)
+		: [ FDirName $(ANTARES_TOP) headers build os storage ] ;
+	if $(HOST_PLATFORM) = r5 {
+		ObjectDefines $(libbePatchSources) :
+			USING_ANTARES_TYPE_CONSTANTS_H= ;
+	}
+	if $(HOST_PLATFORM) = bone {
+		ObjectDefines $(libbePatchSources) :
+			USING_ANTARES_TYPE_CONSTANTS_H= ;
+	}
+	if $(HOST_PLATFORM) = dano {
+		ObjectDefines $(libbePatchSources) : _IMPEXP_BE=
+			USING_ANTARES_TYPE_CONSTANTS_H= ;
+	}
+	ObjectC++Flags $(libbePatchSources)
+		: -include [ FDirName $(ANTARES_TOP) headers build
+			AntaresBuildCompatibility.h ] ;
+}
+
+BuildPlatformStaticLibrary libantarescompat_build.a :
+	atomic.S
+	strcasestr.c
+	strlcat.c
+	strlcpy.c
+	strnlen.c
+
+	$(libbePatchSources)
+;
+
+StaticLibrary libantarescompat.a :
+	strcasestr.o
+	strlcat.o
+	strlcpy.o
+	strnlen.o
+
+	$(libbeTestSources)
+;
+
+SEARCH on [ FGristFiles strcasestr.c strlcat.c strlcpy.c strnlen.c ]
+	= [ FDirName $(ANTARES_TOP) src system libroot posix string ] ;
+SEARCH on [ FGristFiles atomic.S ]
+	= [ FDirName $(ANTARES_TOP) src system libroot os arch $(HOST_ARCH) ] ;
+SEARCH on [ FGristFiles Bitmap.cpp GraphicsDefs.cpp ]
+	= [ FDirName $(ANTARES_TOP) src build libbe interface ] ;
+SEARCH on [ FGristFiles AppFileInfo.cpp ]
+	= [ FDirName $(ANTARES_TOP) src build libbe storage ] ;

@@ -1,0 +1,43 @@
+#include <Application.h>
+#include <Window.h>
+#include <Alert.h>
+
+#include "NetworkSetupWindow.h"
+
+#define SOFTWARE_EDITOR			"Antares"
+#define NAME					"NetworkSettings"
+#define SOFTWARE_VERSION_LABEL	"0.1.0 alpha"
+
+#define APPLICATION_SIGNATURE	"application/x-vnd." SOFTWARE_EDITOR "-" NAME
+
+class Application : public BApplication 
+{
+	public:
+		Application();
+
+	public:
+		void			ReadyToRun(void);
+};
+
+
+int main()
+{
+	Application* app = new Application();
+	app->Run();
+	delete app;
+	return 0;
+}
+
+
+Application::Application()
+	: BApplication(APPLICATION_SIGNATURE)
+{
+}
+
+
+void
+Application::ReadyToRun(void)
+{
+	NetworkSetupWindow* window = new NetworkSetupWindow(NAME);
+	window->Show();
+}

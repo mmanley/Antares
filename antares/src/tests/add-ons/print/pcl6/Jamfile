@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tests add-ons print pcl6 ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons print drivers pcl6 ] ;
+
+SimpleTest pcl6disasm : disasm.cpp : be stdc++.r4 ;
+

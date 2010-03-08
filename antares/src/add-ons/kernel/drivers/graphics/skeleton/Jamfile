@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics skeleton ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics skeleton ] ;
+
+KernelAddon skel.driver :
+	driver.c
+;
+
+Package antares-skeleton-cvs :
+	README.html UPDATE.html ;
+Package antares-skeleton-cvs :
+	skel.driver : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-skeleton-cvs : graphics skel.driver ;
+Package antares-skeleton-cvs :
+	skel.settings :
+	boot home config settings kernel drivers ;
+

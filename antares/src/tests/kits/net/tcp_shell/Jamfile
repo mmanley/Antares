@@ -1,0 +1,60 @@
+SubDir ANTARES_TOP src tests kits net tcp_shell ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src tests add-ons kernel file_systems fs_shell ] ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons kernel network protocols tcp ] ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons kernel network stack ] ;
+UseHeaders $(ANTARES_PRIVATE_KERNEL_HEADERS) : true ;
+UsePrivateHeaders net shared ;
+
+SimpleTest tcp_shell :
+	tcp_shell.cpp
+
+	# stack
+	ancillary_data.cpp
+	net_buffer.cpp
+	utility.cpp
+
+	# tcp
+	tcp.cpp
+	TCPEndpoint.cpp
+	BufferQueue.cpp
+	EndpointManager.cpp
+
+	# misc
+	argv.c
+	ipv4_address.cpp
+
+	: be libkernelland_emu.so
+;
+
+SimpleTest BufferQueueTest :
+	BufferQueueTest.cpp
+
+	# stack
+	ancillary_data.cpp
+	net_buffer.cpp
+	utility.cpp
+
+	# tcp
+	BufferQueue.cpp
+
+	: be libkernelland_emu.so
+;
+
+SEARCH on [ FGristFiles 
+		tcp.cpp TCPEndpoint.cpp BufferQueue.cpp EndpointManager.cpp
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel network protocols tcp ] ;
+
+SEARCH on [ FGristFiles 
+		ipv4_address.cpp
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel network protocols ipv4 ] ;
+
+SEARCH on [ FGristFiles 
+		ancillary_data.cpp net_buffer.cpp utility.cpp
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel network stack ] ;
+
+SEARCH on [ FGristFiles 
+		argv.c
+	] = [ FDirName $(ANTARES_TOP) src tests add-ons kernel file_systems fs_shell ] ;

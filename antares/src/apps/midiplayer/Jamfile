@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src apps midiplayer ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Application MidiPlayer :
+	MidiPlayerApp.cpp 
+	MidiPlayerWindow.cpp 
+	ScopeView.cpp
+	SynthBridge.cpp
+	: be midi midi2 $(TARGET_LIBSUPC++) liblocale.so
+	: MidiPlayer.rdef
+;
+
+DoCatalogs MidiPlayer :
+	x-vnd.Antares-MidiPlayer
+	:
+	MidiPlayerApp.cpp 
+	MidiPlayerWindow.cpp 
+	ScopeView.cpp
+	: en.catalog
+	: eo.catkeys fr.catkeys hu.catkeys nl.catkeys pl.catkeys pt.catkeys
+	  ru.catkeys uk.catkeys
+	;

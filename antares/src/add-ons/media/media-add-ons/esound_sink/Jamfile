@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons esound_sink ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	SubDirC++Flags -fmultiple-symbol-spaces ;
+}
+
+Addon ESDSink.media_addon :
+	ESDEndpoint.cpp
+	ESDSinkAddOn.cpp
+	ESDSinkNode.cpp
+	: be media network $(TARGET_LIBSUPC++)
+;
+
+#Package antares-multi_audio-cvs
+#	: hmulti_audio.media_addon
+#	: boot home config add-ons media ;
+

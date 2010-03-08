@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src preferences fonts ;
+
+Preference Fonts :
+	FontSelectionView.cpp
+	FontsSettings.cpp
+	FontView.cpp
+	main.cpp
+	MainWindow.cpp
+	: be $(TARGET_LIBSUPC++) liblocale.so
+	: Fonts.rdef
+	;
+
+DoCatalogs Fonts :
+	x-vnd.Antares-Fonts
+	:
+	FontSelectionView.cpp
+	FontView.cpp
+	main.cpp
+	MainWindow.cpp
+	: en.catalog
+	: bg.catkeys eo.catkeys fi.catkeys fr.catkeys hu.catkeys it.catkeys
+	  ja.catkeys lt.catkeys pl.catkeys pt.catkeys pt_br.catkeys ru.catkeys sv.catkeys
+	  uk.catkeys
+	;
+

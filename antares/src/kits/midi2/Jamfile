@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src kits midi2 ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os midi2 ] : true ;
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+}
+
+UsePrivateHeaders midi ;
+
+SharedLibrary libmidi2.so :
+	MidiConsumer.cpp
+	MidiEndpoint.cpp
+	MidiLocalConsumer.cpp
+	MidiLocalProducer.cpp
+	MidiProducer.cpp
+	MidiRoster.cpp
+	MidiRosterLooper.cpp
+	:
+	be $(TARGET_LIBSUPC++)
+;
+

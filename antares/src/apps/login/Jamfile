@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src apps login ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders app ;
+#UsePrivateHeaders shared ;
+#UsePrivateHeaders tracker ;
+#SubDirHdrs $(ANTARES_TOP) src kits tracker ;
+local mu_libs ;
+if $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+        mu_libs = libmultiuser_utils.a ;
+}
+
+UseHeaders [ FDirName $(ANTARES_TOP) src bin multiuser ] ;
+
+Application Login :
+	DesktopWindow.cpp
+	LoginApp.cpp
+	LoginWindow.cpp
+	LoginView.cpp
+	main.cpp
+	: be tracker $(mu_libs)
+	: Login.rdef
+;
+

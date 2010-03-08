@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src tests add-ons kernel drivers ;
+
+SubInclude ANTARES_TOP src tests add-ons kernel drivers audio ;
+SubInclude ANTARES_TOP src tests add-ons kernel drivers random ;
+SubInclude ANTARES_TOP src tests add-ons kernel drivers tty ;

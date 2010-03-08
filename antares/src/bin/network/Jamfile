@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src bin network ;
+
+StdBinCommands
+	wakeonlan.cpp
+	: network : $(antares-utils_rsrc) ;
+
+SubInclude ANTARES_TOP src bin network arp ;
+SubInclude ANTARES_TOP src bin network atftpd ;
+SubInclude ANTARES_TOP src bin network ftp ;
+SubInclude ANTARES_TOP src bin network ftpd ;
+SubInclude ANTARES_TOP src bin network ifconfig ;
+SubInclude ANTARES_TOP src bin network mount_nfs ;
+SubInclude ANTARES_TOP src bin network netcat ;
+SubInclude ANTARES_TOP src bin network netstat ;
+#SubInclude ANTARES_TOP src bin network pppconfig ;
+#SubInclude ANTARES_TOP src bin network ppp_up ;
+SubInclude ANTARES_TOP src bin network ping ;
+SubInclude ANTARES_TOP src bin network route ;
+SubInclude ANTARES_TOP src bin network tcpdump ;
+SubInclude ANTARES_TOP src bin network telnet ;
+SubInclude ANTARES_TOP src bin network telnetd ;
+SubInclude ANTARES_TOP src bin network traceroute ;
+SubInclude ANTARES_TOP src bin network wget ;

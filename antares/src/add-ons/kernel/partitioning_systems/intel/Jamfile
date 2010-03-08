@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src add-ons kernel partitioning_systems intel ;
+
+UsePrivateHeaders kernel shared storage ;
+UsePrivateSystemHeaders ;
+
+KernelAddon intel :
+	intel.cpp
+	PartitionLocker.cpp
+	PartitionMap.cpp
+	PartitionMapParser.cpp
+	PartitionMapWriter.cpp
+	write_support.cpp
+;

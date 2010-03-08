@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network ipro100 dev fxp ;
+
+SubDirCcFlags -Wall ;
+
+UseHeaders [ FDirName $(SUBDIR) .. .. ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs compat freebsd_network compat ] : true ;
+
+UsePrivateHeaders net system ;
+UsePrivateKernelHeaders ;
+
+SubDirCcFlags [ FDefines _KERNEL=1 ] ;
+
+KernelAddon ipro100 :
+	if_fxp.c
+	glue.c
+	: libfreebsd_network.a
+	;
+

@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src add-ons kernel interrupt_controllers ;
+
+SubInclude ANTARES_TOP src add-ons kernel interrupt_controllers openpic ;

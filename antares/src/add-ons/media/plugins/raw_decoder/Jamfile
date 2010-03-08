@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons media plugins raw_decoder ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+Addon raw_decoder :
+	AudioConversion.cpp
+	RawDecoderPlugin.cpp
+	: be libmedia.so $(TARGET_LIBSUPC++)
+;
+

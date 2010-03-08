@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 
+ *
+ * Copyright 2009, Antares. All rights reserved.
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ *		Humdinger <humdingerb@gmail.com>
+ * Translators:
+ *		killa.fr0gg
+ *		miguel~1.mx
+ *		Oscar Carballal
+ *
+-->
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="robots" content="all" />
+	<title>DiskUsage</title>
+	<link rel="stylesheet" type="text/css" href="../../Antares-doc.css" />
+</head>
+<body>
+
+<div id="banner">
+<div><span>User guide</span></div>
+</div>
+
+<div class="nav">
+<div class="inner">
+<ul class="lang-menu">
+<li class="now"><img src="../../images/flags/es.png" alt="" /> Español</li>
+<li><a href="../../fr/applications/diskusage.html"><img src="../../images/flags/fr.png" alt="" />Français</a></li>
+<li><a href="../../de/applications/diskusage.html"><img src="../../images/flags/de.png" alt="" />Deutsch</a></li>
+<li><a href="../../it/applications/diskusage.html"><img src="../../images/flags/it.png" alt="" />Italiano</a></li>
+<li><a href="../../ru/applications/diskusage.html"><img src="../../images/flags/ru.png" alt="" />Русский</a></li>
+<li><a href="../../sv_SE/applications/diskusage.html"><img src="../../images/flags/sv_SE.png" alt="" />Svensk</a></li>
+<li><a href="../../jp/applications/diskusage.html"><img src="../../images/flags/jp.png" alt="" />日本語</a></li>
+<li><a href="../../en/applications/diskusage.html"><img src="../../images/flags/gb.png" alt="" />English</a></li>
+</ul>
+<span>
+ «  <a href="diskprobe.html">DiskProbe</a> 
+::  <a href="../applications.html#list-of-apps" class="uplink">Aplicaciones</a> 
+::  <a href="drivesetup.html">DriveSetup</a>  »
+</span></div>
+</div>
+
+<div id="content">
+<div>
+
+<h2><img src="../../images/apps-images/diskusage-icon_64.png" alt="diskusage-icon_64.png" width="64" height="64" />DiskUsage (Uso del disco)</h2>
+<table summary="layout" border="0" cellspacing="0" cellpadding="2">
+<tr><td>Deskbar:</td><td style="width:15px;"></td><td><span class="menu">Aplicaciones</span></td></tr>
+<tr><td>Ubicación:</td><td></td><td><span class="path">/boot/system/apps/DiskUsage</span></td></tr>
+<tr><td>Configuración:</td><td></td><td><span class="path">~/config/settings/DiskUsage</span></td></tr>
+</table>
+<p><br /></p>
+<p>DiskUsage exhibe gráficamente el uso del espacio de los volúmenes.<br />
+Es una herramienta muy útil para contestar la pregunta, "<i>¿Qué pasó con todo mi espacio?</i>"</p>
+<p><img id="diskusage" src="../images/apps-images/diskusage.png" alt="diskusage.png" /></p>
+<p>Los círculos concéntricos representan los diferentes niveles en la jerarquía del sistema de archivos. En la imagen superior, el círculo del centro representa el directorio <span class="path">/boot/home/</span>. Cada segmento del anillo que esté fuera de ese círculo es un archivo o una carpeta dentro de <span class="path">/boot/home/</span>. Cada segmento más alejado le llevará a un nivel más profundo de la jerarquía de archivos. Puede que haya que redimensionar la ventana para acomodar directorios muy profundos.</p>
+<p>El el gráfico superior hay un menú emergente que le permite cambiar entre todos los volúmenes montados. Antes de que se muestre el uso de disco de un volumen, éste debe ser escaneado. Ya que esto puede tardar bastante para los discos más grandes, puede examinar otro volumen mientras el escaneo se realiza de fondo.</p>
+<div class="box-info"><ul>
+<li>Si la representación gráfica de un archivo o un directorio ocupa menos de 2º (grados) del círculo, es excluido de la imagen.</li>
+<li>El número de archivos que se muestran para cada directorio incluye también los archivos dentro de los subdirectorios. Un directorio cuenta como un archivo. </li>
+<li>DiskUsage ignora los enlaces simbólicos.</li>
+</ul></div>
+<p>Mientras mueve el ratón sobre un segmento, la información acerca de ese archivo o directorio aparecerá en la barra de estado de la parte inferior.</p>
+<p>Haciendo clic derecho en un segmento aparecerá un menú contextual para <span class="menu">Get Info (Obtener información)</span>, <span class="menu">Open (Abrir)</span> (con Tracker), <span class="menu">Open With (Abrir con)</span> otra aplicación adecuada o <span class="menu">Rescan (Volver a escanear)</span> ese directorio en particular.<br />
+Haciendo clic izquierdo en el segmento hará que la carpeta seleccionada se coloque en el centro del círculo.<br />
+El clic izquierdo en el centro del círculo le llevará un nivel hacia arriba de la jerarquía.</p>
+<p>Se pueden arrastrar archivos y directorios desde DiskUsage a otras aplicaciones, al Escritorio o a otras ventanas de Tracker para copiar. De la misma forma, arrastrar volúmenes y directorios dentro de DiskUsage provocará que el programa haga zoom directamente en ellos, haciendo que sean el centro del círculo.</p>
+
+</div>
+</div>
+
+<div class="nav">
+<div class="inner"><span>
+ «  <a href="diskprobe.html">DiskProbe</a> 
+::  <a href="../applications.html#list-of-apps" class="uplink">Aplicaciones</a> 
+::  <a href="drivesetup.html">DriveSetup</a>  »
+</span></div>
+</div>
+
+</body>
+</html>

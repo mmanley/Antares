@@ -1,0 +1,33 @@
+SubDir ANTARES_TOP src kits translation ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders translation ;
+}
+
+UsePrivateHeaders translation textencoding ;
+UsePrivateSystemHeaders ;
+
+SharedLibrary libtranslation.so :
+	BitmapStream.cpp
+	FuncTranslator.cpp
+	TranslationUtils.cpp
+	Translator.cpp
+	TranslatorRoster.cpp
+
+	: be libtextencoding.so $(TARGET_LIBSTDC++)
+;
+
+Package antares-translationkit-cvs :
+	README.html ;
+
+Package antares-translationkit-cvs :
+	libtranslation.so :
+	boot home config lib ;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_LIB_DIR) : libtranslation.so
+		: tests!apps ;
+}

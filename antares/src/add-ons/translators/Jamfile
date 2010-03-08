@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src add-ons translators ;
+
+SubInclude ANTARES_TOP src add-ons translators bmp ;
+SubInclude ANTARES_TOP src add-ons translators exr ;
+SubInclude ANTARES_TOP src add-ons translators gif ;
+SubInclude ANTARES_TOP src add-ons translators hpgs ;
+SubInclude ANTARES_TOP src add-ons translators hvif ;
+SubInclude ANTARES_TOP src add-ons translators ico ;
+SubInclude ANTARES_TOP src add-ons translators jpeg ;
+SubInclude ANTARES_TOP src add-ons translators jpeg2000 ;
+SubInclude ANTARES_TOP src add-ons translators pcx ;
+SubInclude ANTARES_TOP src add-ons translators png ;
+SubInclude ANTARES_TOP src add-ons translators ppm ;
+SubInclude ANTARES_TOP src add-ons translators raw ;
+SubInclude ANTARES_TOP src add-ons translators rtf ;
+SubInclude ANTARES_TOP src add-ons translators sgi ;
+SubInclude ANTARES_TOP src add-ons translators shared ;
+SubInclude ANTARES_TOP src add-ons translators stxt ;
+SubInclude ANTARES_TOP src add-ons translators tga ;
+SubInclude ANTARES_TOP src add-ons translators tiff ;
+SubInclude ANTARES_TOP src add-ons translators wonderbrush ;

@@ -1,0 +1,33 @@
+SubDir ANTARES_TOP src add-ons kernel drivers ports usb_serial ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UsePrivateKernelHeaders ;
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os drivers tty ] : true ;
+}
+
+SubDirC++Flags -fno-rtti ;
+
+KernelAddon usb_serial :
+	Driver.cpp
+	SerialDevice.cpp
+	Tracing.cpp
+
+	ACM.cpp
+	FTDI.cpp
+	KLSI.cpp
+	Prolific.cpp
+;
+
+AddResources usb_serial : usb_serial.rdef ;
+
+
+Package antares-usb_serial-cvs
+	:
+	usb_serial
+	:
+	boot home config add-ons kernel drivers bin ;
+
+Package antares-usb_serial-cvs : <usb_serial!driver>usb_serial.settings.sample
+        : boot home config settings kernel drivers sample ;

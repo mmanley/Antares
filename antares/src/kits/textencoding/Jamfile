@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src kits textencoding ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UsePrivateHeaders textencoding ;
+UseLibraryHeaders iconv ;
+
+SharedLibrary libtextencoding.so :
+	CharacterSet.cpp
+	CharacterSetRoster.cpp
+	character_sets.cpp
+	utf8_conversions.cpp
+	: be libiconv.a $(TARGET_LIBSUPC++) ;
+
+Package antares-maildaemon-cvs :
+	libtextencoding.so :
+	boot beos system lib ;

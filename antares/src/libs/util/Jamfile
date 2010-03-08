@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src libs util ;
+
+SetSubDirSupportedPlatforms $(ANTARES_BONE_COMPATIBLE_PLATFORMS) ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers compatibility bsd ] : true ;
+
+local defines = [ FDefines SCCSID=0 ] ;
+SubDirCcFlags $(defines) ;
+
+StaticLibrary libutil.a :
+	fparseln.c
+	pidfile.c
+	realhostname.c
+	trimdomain.c
+;
+

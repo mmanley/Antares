@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src tests apps ;
+
+SubInclude ANTARES_TOP src tests apps delay_shutdown ;
+SubInclude ANTARES_TOP src tests apps fake_app_server ;
+SubInclude ANTARES_TOP src tests apps installer ;
+SubInclude ANTARES_TOP src tests apps miniterminal ;
+SubInclude ANTARES_TOP src tests apps partitioner ;
+SubInclude ANTARES_TOP src tests apps terminal_replicant ;
+

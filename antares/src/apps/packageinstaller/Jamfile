@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src apps packageinstaller ;
+
+UsePrivateHeaders shared interface ;
+SubDirHdrs $(ANTARES_TOP) headers libs zlib ;
+
+#SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src kits interface ] ;
+
+Application PackageInstaller :
+	main.cpp
+	PackageWindow.cpp
+	PackageView.cpp
+	PackageInfo.cpp
+	PackageItem.cpp
+	PackageStatus.cpp
+	PackageTextViewer.cpp
+	PackageImageViewer.cpp
+	InstalledPackageInfo.cpp
+	: be tracker translation z $(TARGET_LIBSUPC++)
+	: PackageInstaller.rdef
+;
+

@@ -1,0 +1,26 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ac97 ichaudio ;
+
+# UsePrivateHeaders media ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons media media-add-ons lala ] ;
+
+KernelMergeObject ichaudio_driver.o : 
+	ichaudio.c
+	io.c
+	:
+	-fno-pic -Wno-unused -D_KERNEL_MODE
+	;
+
+KernelLd ichaudio :
+	ichaudio_driver.o
+	lala.o
+	/boot/beos/system/kernel_intel
+	:
+	$(ANTARES_TOP)/src/kernel/ldscripts/$(TARGET_ARCH)/add-on.ld
+	:
+	-Bdynamic -shared
+	:
+	:
+	;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 ichaudio lala ;

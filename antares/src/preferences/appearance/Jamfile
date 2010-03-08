@@ -1,0 +1,44 @@
+SubDir ANTARES_TOP src preferences appearance ;
+
+UsePrivateHeaders app [ FDirName servers app ] ;
+UseFreeTypeHeaders ;
+
+Preference Appearance :
+	APRMain.cpp
+	AntialiasingSettingsView.cpp
+	APRView.cpp
+	APRWindow.cpp
+	ColorSet.cpp
+	ColorWell.cpp
+	ColorWhichItem.cpp
+	
+	# These are currently disabled while everything else is being worked on
+	#CurView.cpp
+	#CursorWhichItem.cpp
+	#DecView.cpp
+	#SysCursorAPI.cpp
+	
+	# These exist for post-R1, so they are disabled for now
+	#FontMenu.cpp
+	#MenuView.cpp
+	
+	: be $(TARGET_LIBSTDC++) liblocale.so
+	: Appearance.rdef
+	;
+
+DoCatalogs Appearance :
+	x-vnd.Antares-Appearance
+	:
+	AntialiasingSettingsView.cpp
+	APRView.cpp
+	APRWindow.cpp
+	ColorSet.cpp
+	ColorWell.cpp
+	ColorWhichItem.cpp
+	: en.catalog
+	:
+	bg.catkeys de.catkeys eo.catkeys fi.catkeys fr.catkeys hu.catkeys
+	ja.catkeys lt.catkeys pl.catkeys pt.catkeys ru.catkeys sv.catkeys
+	uk.catkeys
+	;
+

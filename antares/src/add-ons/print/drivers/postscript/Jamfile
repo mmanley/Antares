@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons print drivers postscript ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers libs print libprint ] ;
+
+AddResources PS\ Compatible : PS.rsrc ;
+
+Addon PS\ Compatible :
+	PSEntry.cpp
+	PS.cpp
+	PSCap.cpp
+	: be libprint.a $(TARGET_LIBSTDC++)
+;
+
+Package antares-printingkit-cvs :
+	PS\ Compatible :
+	boot home config add-ons Print ;

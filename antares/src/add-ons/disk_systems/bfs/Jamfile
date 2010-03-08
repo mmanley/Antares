@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src add-ons disk_systems bfs ;
+
+UsePrivateKernelHeaders ;
+UsePrivateHeaders shared storage ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src add-ons kernel file_systems bfs ] ;
+
+Addon <disk_system>bfs :
+	BFSAddOn.cpp
+	InitializeParameterEditor.cpp
+
+	bfs_disk_system.cpp
+
+	: be $(TARGET_LIBSUPC++)
+;

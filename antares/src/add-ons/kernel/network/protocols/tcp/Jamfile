@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src add-ons kernel network protocols tcp ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <support/Errors.h> and maybe other stuff.
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UsePrivateKernelHeaders ;
+UsePrivateHeaders net ;
+
+KernelAddon tcp :
+	tcp.cpp
+	TCPEndpoint.cpp
+	BufferQueue.cpp
+	EndpointManager.cpp
+;
+
+# Installation
+AntaresInstall install-networking : /boot/home/config/add-ons/kernel/antares_network/protocols
+	: tcp ;
+
+Package antares-networkingkit-cvs :
+	antares :
+	boot home config add-ons kernel antares_network protocols ;

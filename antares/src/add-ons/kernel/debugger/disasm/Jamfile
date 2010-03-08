@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src add-ons kernel debugger disasm ;
+
+UsePrivateKernelHeaders ;
+
+KernelAddon <kdebug>disasm :
+	disasm.cpp
+	: disasm_arch.a
+	;
+
+SubInclude ANTARES_TOP src add-ons kernel debugger disasm $(TARGET_ARCH) ;

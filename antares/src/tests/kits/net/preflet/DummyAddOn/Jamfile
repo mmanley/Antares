@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src tests kits net preflet DummyAddOn ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src tests kits net preflet ] ;
+
+Addon Dummy : 
+	DummyAddOn.cpp
+	: be <nogrist>NetworkSetup  $(TARGET_LIBSTDC++) # $(ANTARES_NETWORK_LIBS)
+;
+

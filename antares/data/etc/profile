@@ -1,0 +1,98 @@
+#
+# Administrative startup for /bin/sh
+# Place user customizations in /.profile
+#
+
+echo -e "\nWelcome to the Antares shell.\n"
+
+export PS1="\w> "
+export HISTFILESIZE=50
+export HISTCONTROL=ignoredups
+
+alias ls="ls --color"
+alias ll="ls -lA"
+alias la="ls -A"
+alias m="more"
+
+shopt -s checkwinsize
+
+#
+# and now we include a few useful things...
+#
+
+#
+# An almost-ksh compatible `whence' command.  This is as hairy as it is
+# because of the desire to exactly mimic ksh.
+#
+# This depends somewhat on knowing the format of the output of the bash
+# `builtin type' command.
+#
+# Chet Ramey
+# chet@ins.CWRU.Edu
+#
+whence()
+{
+	local vflag= path=
+
+	if [ "$#" = "0" ] ; then
+		echo "whence: argument expected"
+		return 1
+	fi
+	case "$1" in
+		-v) vflag=1
+		    shift 1
+		    ;;
+		-*) echo "whence: bad option: $1"
+		    return 1
+		    ;;
+		 *) ;;
+	esac
+
+	if [ "$#" = "0" ] ; then
+		echo "whence: bad argument count"
+		return 1
+	fi
+
+	returnValue=0
+
+	for cmd
+	do
+		if [ "$vflag" ]	 ; then
+			echo $(builtin type $cmd | sed 1q)
+		else
+			path=$(builtin type -path $cmd)
+			if [ "$path" ] ; then
+				echo $path
+			else
+				case "$cmd" in
+					*/*) if [ -x "$cmd" ]; then
+							echo "$cmd"
+						else
+							returnValue=1
+					    fi
+					    ;;
+					 *) case "$(builtin type -type $cmd)" in
+						"") returnValue=1
+							;;
+						 *) echo "$cmd"
+						    ;;
+					    esac
+					    ;;
+				esac
+			fi
+		fi
+	done
+	return $returnValue
+}
+
+alias which='whence'
+
+function dir {
+	ls -lF "$@";
+}
+
+# enable programmable completion
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+

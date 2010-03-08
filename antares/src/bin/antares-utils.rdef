@@ -1,0 +1,9 @@
+resource app_version {
+	major = 1,
+	middle = 0,
+	minor = 0,
+	variety = B_APPV_ALPHA,
+	internal = 0,
+	short_info = "Antares Utilities", 
+    long_info  = "Antares Utilities ©2007 Antares, Inc."
+};

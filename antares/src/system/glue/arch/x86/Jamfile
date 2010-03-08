@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src system glue arch x86 ;
+
+KernelObjects
+	crti.S
+	crtn.S
+	;
+

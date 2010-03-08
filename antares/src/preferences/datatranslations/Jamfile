@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src preferences datatranslations ;
+
+UseLibraryHeaders lp_solve linprog alm ;
+
+Preference DataTranslations :
+	DataTranslations.cpp
+	DataTranslationsWindow.cpp
+	DataTranslationsSettings.cpp
+	IconView.cpp 
+	TranslatorListView.cpp
+
+	: be translation $(TARGET_LIBSUPC++) liblpsolve55.so liblinprog.so libalm.so
+	: DataTranslations.rdef
+	;

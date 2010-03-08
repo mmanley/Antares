@@ -1,0 +1,826 @@
+# This file defines what ends up on the Antares image (respectively in the Antares
+# installation directory) and it executes the rules building the image
+# (respectively installing the files in the installation directory).
+
+local X86_ONLY = ;
+local PPC_ONLY = ;
+local M68K_ONLY = ;
+if $(TARGET_ARCH) = x86 {
+	X86_ONLY = "" ;
+} else if $(TARGET_ARCH) = ppc {
+	PPC_ONLY = "" ;
+} else if $(TARGET_ARCH) = m68k {
+	M68K_ONLY = "" ;
+}
+
+local GPL_ONLY = ;
+if $(ANTARES_INCLUDE_GPL_ADDONS) = 1 {
+	GPL_ONLY = "" ;
+}
+
+#HACK: remove when old ide code is removed!
+local ATA_ONLY = ;
+local IDE_ONLY = ;
+if $(ANTARES_ATA_STACK) = 1 {
+	ATA_ONLY = "" ;
+} else {
+	IDE_ONLY = "" ;
+}
+
+# Make sure that OpenSSL is added to the image.
+if $(ANTARES_OPENSSL_ENABLED) {
+	AddOptionalAntaresImagePackages OpenSSL ;
+}
+
+SYSTEM_BIN = "[" addattr alert arp base64 basename bash bc beep bootman bzip2
+	cal cat catattr checkfs checkitout chgrp chmod chop chown chroot cksum clear
+	clockconfig cmp collectcatkeys comm compress copyattr CortexAddOnHost cp
+	csplit ctags cut date dc dd desklink df diff diff3 dircolors dirname
+	draggers driveinfo dstcheck du dumpcatalog
+	echo eject env error expand expr
+	factor false fdinfo ffm filepanel find finddir fmt fold fortune frcode
+	ftp ftpd funzip fwcontrol
+	gawk $(X86_ONLY)gdb getlimits grep groups gzip gzexe
+	hd head hey hostname
+	id ident ifconfig <bin>install installsound iroster isvolume
+	$(IDE_ONLY)ideinfo $(IDE_ONLY)idestatus
+	join keymap kill
+	less lessecho lesskey link linkcatkeys listarea listattr listimage listdev
+	listport listres listsem listusb ln locate logger login logname ls lsindex
+	mail2mbox makebootable mbox2mail md5sum merge message mimeset mkdos mkdir
+	mkfifo mkfs mkindex modifiers mount mount_nfs mountvolume mv
+	netcat netstat nl nohup
+	od open
+	passwd paste patch pathchk pc ping play playfile playsound playwav pr prio
+	printenv printf profile ps ptx pwd
+	query quit
+	rc readlink ReadOnlyBootPrompt reindex release renice rlog rm rmattr
+	rmindex rmdir roster route
+	safemode screen_blanker screenmode sdiff setdecor settype setversion
+	setvolume seq sha1sum shar shred shuf shutdown sleep sort spamdbm split
+	stat strace stty su sum sync sysinfo
+	tac tail tar tcpdump tcptester tee telnet telnetd test timeout top touch
+	tput tr traceroute translate trash true truncate tsort tty
+	uname unchop unexpand unmount uniq unlink unrar unshar unzip unzipsfx
+	<bin>updatedb uptime urlwrapper useradd uudecode uuencode
+	vdir version vim vmstat waitfor watch wc wget whoami xargs xres yes
+	zdiff zforce zgrep zip zipcloak <bin>zipgrep zipnote zipsplit zmore znew
+;
+
+SYSTEM_APPS = AboutSystem ActivityMonitor CharacterMap CodyCam DeskCalc Devices
+	DiskProbe DiskUsage DriveSetup CDPlayer Expander Icon-O-Matic Installer
+	LaunchBox Magnify Mail MediaConverter MediaPlayer MidiPlayer NetworkStatus
+	PackageInstaller People PoorMan PowerStatus ProcessController Screenshot
+	ShowImage SoundRecorder StyledEdit Terminal TextSearch TV Workspaces
+;
+SYSTEM_PREFERENCES = Appearance Backgrounds CPUFrequency DataTranslations
+	<preference>Deskbar E-mail FileTypes Fonts Keyboard Keymap Locale Media
+	Mouse Network OpenGL Printers Screen ScreenSaver Shortcuts Sounds Time
+	Touchpad <preference>Tracker VirtualMemory
+;
+SYSTEM_DEMOS = BSnow Chart Clock Cortex FontDemo
+	GLTeapot Antares3d Mandelbrot Pairs Playground Pulse Sudoku Gradients
+;
+ICU_LIBS = libicu-common.so libicu-data.so libicu-i18n.so
+;
+SYSTEM_LIBS =
+	libbe.so libbsd.so libbnetapi.so
+	libdebug.so libdevice.so
+	libfreetype.so
+	libgame.so libGL.so libgnu.so
+	libjpeg.so
+	liblocale.so
+	libmail.so libmedia.so libmidi.so libmidi2.so
+	libnetwork.so
+	libpng.so
+	<revisioned>libroot.so
+	libscreensaver.so
+	libtextencoding.so libtracker.so libtranslation.so
+	libz.so
+	$(ANTARES_SHARED_LIBSTDC++) $(ANTARES_SHARED_LIBSUPC++)
+;
+PRIVATE_SYSTEM_LIBS =
+	libalm.so
+	libfluidsynth.so
+	libilmimf.so
+	liblinprog.so liblpsolve55.so
+	$(ICU_LIBS)
+;
+SYSTEM_SERVERS = app_server cddb_daemon debug_server input_server mail_daemon
+	media_addon_server media_server midi_server mount_server net_server
+	print_server registrar syslog_daemon
+;
+
+SYSTEM_NETWORK_DEVICES = ethernet loopback ;
+SYSTEM_NETWORK_DATALINK_PROTOCOLS = ethernet_frame <module>arp loopback_frame
+	ipv4_datagram ;
+#SYSTEM_NETWORK_PPP = ipcp modem pap pppoe ;
+SYSTEM_NETWORK_PROTOCOLS = ipv4 tcp udp icmp unix ;
+
+SYSTEM_ADD_ONS_ACCELERANTS = $(X86_ONLY)radeon.accelerant
+	$(X86_ONLY)nvidia.accelerant $(X86_ONLY)matrox.accelerant
+	$(X86_ONLY)neomagic.accelerant $(X86_ONLY)intel_extreme.accelerant
+	$(X86_ONLY)s3.accelerant $(X86_ONLY)vesa.accelerant
+	$(X86_ONLY)ati.accelerant
+	#$(X86_ONLY)via.accelerant
+	#$(X86_ONLY)vmware.accelerant
+;
+SYSTEM_ADD_ONS_TRANSLATORS = BMPTranslator EXRTranslator GIFTranslator
+	ICOTranslator JPEGTranslator JPEG2000Translator
+	PCXTranslator PNGTranslator PPMTranslator
+	RAWTranslator RTF-Translator SGITranslator STXTTranslator TGATranslator
+	TIFFTranslator WonderBrushTranslator
+;
+SYSTEM_ADD_ONS_LOCALE_CATALOGS = <catalog-addon>zeta <catalog-addon>plaintext ;
+SYSTEM_ADD_ONS_MEDIA = cortex_audioadapter.media_addon
+	cortex_flanger.media_addon
+	dvb.media_addon
+	hmulti_audio.media_addon
+	mixer.media_addon
+	opensound.media_addon
+	tone_producer_demo.media_addon
+	usb_webcam.media_addon
+	video_producer_demo.media_addon
+	video_window_demo.media_addon
+	firewire_dv.media_addon
+	#legacy.media_addon
+;
+SYSTEM_ADD_ONS_MEDIA_PLUGINS = $(GPL_ONLY)ac3_decoder
+	aiff_reader asf_reader au_reader avi_reader $(X86_ONLY)ffmpeg
+	matroska mov_reader
+	mp3_decoder mp3_reader
+	mp4_reader musepack
+	ogg raw_decoder speex
+	$(X86_ONLY)ape_reader
+	# theora
+	vorbis wav_reader
+;
+SYSTEM_ADD_ONS_PRINT = Canon\ LIPS3\ Compatible Canon\ LIPS4\ Compatible
+	PCL5\ Compatible PCL6\ Compatible PDF\ Writer PS\ Compatible Preview
+;
+SYSTEM_ADD_ONS_PRINT_TRANSPORT = HP\ JetDirect IPP LPR Parallel\ Port
+	Print\ To\ File Serial\ Port USB\ Port
+;
+SYSTEM_ADD_ONS_SCREENSAVERS = DebugNow Flurry Antares Icons IFS Spider Message ;
+SYSTEM_ADD_ONS_DRIVERS_AUDIO = auich auvia echo3g emuxki hda ;
+SYSTEM_ADD_ONS_DRIVERS_AUDIO_OLD = ; #cmedia sis7018 usb_audio ;
+SYSTEM_ADD_ONS_DRIVERS_GRAPHICS = $(X86_ONLY)radeon $(X86_ONLY)nvidia
+	$(X86_ONLY)neomagic $(X86_ONLY)matrox $(X86_ONLY)intel_extreme
+	$(X86_ONLY)s3 $(X86_ONLY)vesa #$(X86_ONLY)via #$(X86_ONLY)vmware
+	$(X86_ONLY)ati
+;
+SYSTEM_ADD_ONS_DRIVERS_MIDI = emuxki usb_midi ;
+SYSTEM_ADD_ONS_DRIVERS_NET = $(X86_ONLY)3com $(X86_ONLY)atheros813x
+	$(X86_ONLY)broadcom440x $(X86_ONLY)broadcom570x etherpci $(X86_ONLY)ipro1000
+	pegasus $(X86_ONLY)rtl8139 rtl8169 $(X86_ONLY)rtl81xx sis900
+	$(X86_ONLY)via_rhine wb840 $(X86_ONLY)ipro100 $(X86_ONLY)nforce
+	#vlance
+	$(X86_ONLY)marvell_yukon $(X86_ONLY)syskonnect $(X86_ONLY)vt612x
+	$(X86_ONLY)attansic_l1 $(X86_ONLY)attansic_l2 $(X86_ONLY)ar81xx
+	usb_ecm usb_asix
+
+	# WLAN drivers
+	$(X86_ONLY)aironetwifi $(X86_ONLY)atheroswifi $(X86_ONLY)broadcom43xx
+	$(X86_ONLY)ipw2100 $(X86_ONLY)iprowifi2200 $(X86_ONLY)iprowifi3945
+	$(X86_ONLY)iprowifi4965 $(X86_ONLY)marvell88w8363 $(X86_ONLY)marvell88w8335
+	$(X86_ONLY)ralinkwifi $(X86_ONLY)wavelanwifi
+;
+#SYSTEM_ADD_ONS_DRIVERS_POWER = $(X86_ONLY)acpi_button ;
+SYSTEM_ADD_ONS_BUS_MANAGERS =  $(ATA_ONLY)ata pci $(X86_ONLY)ps2 $(X86_ONLY)isa
+	$(IDE_ONLY)ide scsi config_manager agp_gart usb firewire $(X86_ONLY)acpi
+;
+SYSTEM_ADD_ONS_FILE_SYSTEMS = bfs cdda ext2 fat iso9660 nfs attribute_overlay
+	write_overlay ntfs reiserfs udf ; #googlefs
+
+# wifi firmware
+for driver in $(SYSTEM_ADD_ONS_DRIVERS_NET) {
+	local package = [ on $(driver) return $(ANTARES_WIFI_FIRMWARE_PACKAGE) ] ;
+	local archive = [ on $(driver) return $(ANTARES_WIFI_FIRMWARE_ARCHIVE) ] ;
+	local extract = [ on $(driver) return $(ANTARES_WIFI_FIRMWARE_DO_EXTRACT) ] ;
+	if $(archive) {
+		AddWifiFirmwareToAntaresImage $(driver) : $(package) : $(archive) 
+			: $(extract) ;
+	}
+}
+
+
+# modules
+AddFilesToAntaresImage system add-ons kernel bus_managers
+	: $(SYSTEM_ADD_ONS_BUS_MANAGERS) ;
+AddFilesToAntaresImage system add-ons kernel busses agp_gart
+	: $(X86_ONLY)<agp_gart>intel ;
+
+if $(ANTARES_ATA_STACK) = 1 {
+	AddFilesToAntaresImage system add-ons kernel busses ata
+		: generic_ide_pci it8211 legacy_sata silicon_image_3112
+			$(X86_ONLY)ide_isa ;
+} else {
+	AddFilesToAntaresImage system add-ons kernel busses ide
+		: generic_ide_pci it8211 legacy_sata silicon_image_3112
+			$(X86_ONLY)ide_isa ;
+}
+
+AddFilesToAntaresImage system add-ons kernel busses scsi
+	: ahci ;
+AddFilesToAntaresImage system add-ons kernel busses usb
+	: <usb>uhci <usb>ohci <usb>ehci ;
+AddFilesToAntaresImage system add-ons kernel console : vga_text ;
+AddFilesToAntaresImage system add-ons kernel debugger
+	: <kdebug>demangle $(X86_ONLY)<kdebug>disasm <kdebug>hangman
+	  <kdebug>invalidate_on_exit <kdebug>usb_keyboard <kdebug>run_on_exit ;
+AddFilesToAntaresImage system add-ons kernel file_systems
+	: $(SYSTEM_ADD_ONS_FILE_SYSTEMS) ;
+AddFilesToAntaresImage system add-ons kernel generic
+	: $(ATA_ONLY)ata_adapter dpc $(IDE_ONLY)ide_adapter locked_pool mpu401
+		scsi_periph ;
+AddFilesToAntaresImage system add-ons kernel partitioning_systems
+	: amiga_rdb apple efi_gpt intel session ;
+AddFilesToAntaresImage system add-ons kernel interrupt_controllers
+	: $(PPC_ONLY)openpic ;
+
+if $(TARGET_ARCH) = x86 {
+	AddFilesToAntaresImage system add-ons kernel cpu : generic_x86 ;
+}
+
+# drivers
+AddNewDriversToAntaresImage disk scsi	: scsi_cd scsi_disk ;
+AddNewDriversToAntaresImage power : $(X86_ONLY)enhanced_speedstep ;
+AddNewDriversToAntaresImage power : $(X86_ONLY)acpi_battery ;
+AddNewDriversToAntaresImage power : $(X86_ONLY)acpi_embedded_controller ;
+
+# legacy drivers
+AddDriversToAntaresImage				: console dprintf $(X86_ONLY)keyboard null
+									  random <driver>tty zero ;
+AddDriversToAntaresImage audio hmulti	: $(SYSTEM_ADD_ONS_DRIVERS_AUDIO) ;
+AddDriversToAntaresImage audio old	: $(SYSTEM_ADD_ONS_DRIVERS_AUDIO_OLD) ;
+AddDriversToAntaresImage midi			: $(SYSTEM_ADD_ONS_DRIVERS_MIDI) ;
+AddDriversToAntaresImage bus			: usb_raw fw_raw ;
+AddDriversToAntaresImage disk floppy	: $(X86_ONLY)pc_floppy ;
+AddDriversToAntaresImage disk usb		: usb_disk ;
+AddDriversToAntaresImage printer usb	: usb_printer ;
+AddDriversToAntaresImage disk virtual	: nbd ;
+AddDriversToAntaresImage dvb			: cx23882 ;
+AddDriversToAntaresImage graphics		: $(SYSTEM_ADD_ONS_DRIVERS_GRAPHICS) ;
+AddDriversToAntaresImage input		: ps2_hid usb_hid wacom ;
+AddDriversToAntaresImage misc			: <driver>poke <driver>mem ;
+AddDriversToAntaresImage net			: $(SYSTEM_ADD_ONS_DRIVERS_NET) ;
+#AddDriversToAntaresImage power		: $(SYSTEM_ADD_ONS_DRIVERS_POWER) ;
+
+# kernel
+AddFilesToAntaresImage system : <revisioned>kernel_$(TARGET_ARCH) ;
+
+# libs
+AddLibrariesToAntaresHybridImage system lib
+	: $(SYSTEM_LIBS) $(PRIVATE_SYSTEM_LIBS) ;
+
+# libnetwork.so replaces quite a few libraries
+SYSTEM_LIBS_LIBNETWORK_ALIASES
+	= libsocket.so libbind.so libnet.so ;
+
+if $(ANTARES_GCC_VERSION[1]) = 2 {
+	local lib ;
+	for lib in $(SYSTEM_LIBS_LIBNETWORK_ALIASES) {
+		AddSymlinkToAntaresHybridImage system lib : libnetwork.so : $(lib)
+			: : true ;
+	}
+
+	AddSymlinkToAntaresHybridImage system lib : libbnetapi.so : libnetapi.so
+		: : true ;
+}
+
+
+# libGL.so has GLU (like BeOS) *and* GLUT API built-in
+SYSTEM_LIBS_LIBGL_ALIASES
+	= libGLU.so libglut.so ;
+
+if $(TARGET_ARCH) = x86 {
+	local lib ;
+	for lib in $(SYSTEM_LIBS_LIBGL_ALIASES) {
+		AddSymlinkToAntaresHybridImage system lib : libGL.so : $(lib) : : true ;
+	}
+}
+
+SYSTEM_LIBS_ALIASES =
+	$(SYSTEM_LIBS_LIBNETWORK_ALIASES)
+	libnetapi.so
+	$(SYSTEM_LIBS_LIBGL_ALIASES)
+;
+
+# servers
+AddFilesToAntaresImage system servers : $(SYSTEM_SERVERS) ;
+
+# apps
+AddFilesToAntaresImage system				: runtime_loader Deskbar Tracker ;
+AddFilesToAntaresImage system bin			: $(SYSTEM_BIN) consoled ;
+AddFilesToAntaresImage system apps		: $(SYSTEM_APPS) ;
+AddFilesToAntaresImage system preferences	: $(SYSTEM_PREFERENCES) ;
+AddFilesToAntaresImage system demos		: $(SYSTEM_DEMOS) ;
+
+SEARCH on which = [ FDirName $(ANTARES_TOP) data bin ] ;
+AddFilesToAntaresImage system bin			: which ;
+SEARCH on installoptionalpackage = [ FDirName $(ANTARES_TOP) data bin ] ;
+AddFilesToAntaresImage system bin			: installoptionalpackage ;
+SEARCH on install-wifi-firmwares.sh = [ FDirName $(ANTARES_TOP) data bin ] ;
+AddFilesToAntaresImage system bin			: install-wifi-firmwares.sh ;
+
+AddSymlinkToAntaresImage system bin : bash : sh ;
+AddSymlinkToAntaresImage system bin : trash : untrash ;
+
+AddSymlinkToAntaresImage home Desktop : /boot/home : Home ;
+
+# Mailbox folders and symlink
+AddDirectoryToAntaresImage home mail drafts ;
+AddDirectoryToAntaresImage home mail in ;
+AddDirectoryToAntaresImage home mail out ;
+AddSymlinkToAntaresImage home config settings Mail : ../../../mail/in : mailbox ;
+
+# Deskbar Application links
+AddDirectoryToAntaresImage home config be Applications ;
+DESKBAR_APPLICATIONS = ActivityMonitor CharacterMap CodyCam CDPlayer DeskCalc
+	Devices DiskProbe DriveSetup DiskUsage Expander Icon-O-Matic Installer
+	Magnify	Mail MediaConverter MediaPlayer MidiPlayer People PoorMan Screenshot
+	SoundRecorder StyledEdit Terminal TV
+;
+local linkTarget ;
+for linkTarget in $(DESKBAR_APPLICATIONS) {
+	AddSymlinkToAntaresImage home config be Applications
+		: /boot/system/apps/$(linkTarget) : $(linkTarget) ;
+}
+
+# Deskbar Desktop applets links
+AddDirectoryToAntaresImage home config be Desktop\ applets ;
+DESKBAR_DESKTOP_APPLETS = LaunchBox NetworkStatus PowerStatus ProcessController
+	Workspaces
+;
+for linkTarget in $(DESKBAR_DESKTOP_APPLETS) {
+	AddSymlinkToAntaresImage home config be Desktop\ applets
+		: /boot/system/apps/$(linkTarget) : $(linkTarget) ;
+}
+
+# Deskbar Preferences links
+AddDirectoryToAntaresImage home config be Preferences ;
+DESKBAR_PREFERENCES = $(SYSTEM_PREFERENCES:B) ;
+for linkTarget in $(DESKBAR_PREFERENCES) {
+	AddSymlinkToAntaresImage home config be Preferences
+		: /boot/system/preferences/$(linkTarget) : $(linkTarget) ;
+}
+
+# Deskbar Demo links
+AddDirectoryToAntaresImage home config be Demos ;
+for linkTarget in $(SYSTEM_DEMOS) {
+	AddSymlinkToAntaresImage home config be Demos
+		: /boot/system/demos/$(linkTarget) : $(linkTarget) ;
+}
+
+AddSymlinkToAntaresImage system bin : bzip2 : bunzip2 ;
+AddSymlinkToAntaresImage system bin : less : more ;
+AddSymlinkToAntaresImage system bin : gzip : gunzip ;
+AddSymlinkToAntaresImage system bin : gzip : zcat ;
+AddSymlinkToAntaresImage system bin : zdiff : zcmp ;
+AddSymlinkToAntaresImage system bin : unzip : zipinfo ;
+AddSymlinkToAntaresImage system bin : gawk : awk ;
+AddSymlinkToAntaresImage system bin : grep : egrep ;
+AddSymlinkToAntaresImage system bin : grep : fgrep ;
+AddSymlinkToAntaresImage system bin : vim : vi ;
+AddSymlinkToAntaresImage system bin : vim : view ;
+
+
+# scripts and data files
+local bootScripts = Bootscript Bootscript.cd SetupEnvironment Netscript
+	InstallerInitScript InstallerFinishScript ;
+SEARCH on $(bootScripts) = [ FDirName $(ANTARES_TOP) data system boot ] ;
+AddFilesToAntaresImage system boot : $(bootScripts) ;
+
+local userBootScripts = UserBootscript UserSetupEnvironment.sample ;
+SEARCH on $(userBootScripts) = [ FDirName $(ANTARES_TOP) data config boot ] ;
+AddFilesToAntaresImage home config boot : $(userBootScripts) ;
+
+# Add boot launch directory
+AddDirectoryToAntaresImage home config boot launch ;
+
+local logoArtwork = "ANTARES logo - white on blue - big.png"
+	"ANTARES logo - white on blue - normal.png" ;
+SEARCH on $(logoArtwork) = [ FDirName $(ANTARES_TOP) data artwork ] ;
+AddFilesToAntaresImage system data artwork : $(logoArtwork) ;
+
+AddDirectoryToAntaresImage system data sounds ;
+
+# Add mail provider infos.
+AddFilesToAntaresImage home config settings Mail ProviderInfo :
+	$(ANTARES_PROVIDER_INFOS) ;
+
+# Mail spell check dictionaries
+local spellFiles = words geekspeak ;
+spellFiles = $(spellFiles:G=spell) ;
+SEARCH on $(spellFiles)
+	= [ FDirName $(ANTARES_TOP) src apps mail ] ;
+AddFilesToAntaresImage system data spell_check word_dictionary : $(spellFiles) ;
+
+# Locale kit language files
+local languageDir = [ FDirName $(ANTARES_TOP) src data locale languages ] ;
+local languages = [ Glob $(languageDir) : *.language ] ;
+AddFilesToAntaresImage system data locale languages : $(languages) ;
+
+local etcFiles = bash_completion inputrc profile ;
+etcFiles = $(etcFiles:G=etc) ;
+SEARCH on $(etcFiles) = [ FDirName $(ANTARES_TOP) data etc ] ;
+etcFiles += <etc>termcap <etc>sysless <etc>sysless.in ;
+AddFilesToAntaresImage common etc : $(etcFiles) ;
+
+SEARCH on <bash_completion>subversion =
+	[ FDirName $(ANTARES_TOP) data etc bash_completion.d ] ;
+AddFilesToAntaresImage common etc bash_completion.d :
+	<bash_completion>subversion ;
+
+SEARCH on <etc>vimrc = [ FDirName $(ANTARES_TOP) data etc vim ] ;
+AddFilesToAntaresImage common etc vim : <etc>vimrc ;
+
+local dataFiles = teapot.data ;
+dataFiles = $(dataFiles:G=data) ;
+SEARCH on $(dataFiles) = [ FDirName $(ANTARES_TOP) data system data ] ;
+AddFilesToAntaresImage system data : $(dataFiles) ;
+
+local fortuneFiles = [ Glob $(ANTARES_TOP)/data/system/data/fortunes
+	: [a-zA-Z0-9]* ] ;
+fortuneFiles = $(fortuneFiles:G=data!fortunes) ;
+AddFilesToAntaresImage system data fortunes : $(fortuneFiles) ;
+
+local fontDir = [ FDirName $(ANTARES_TOP) data system data fonts ] ;
+local psFonts = [ Glob $(fontDir)/psfonts : *.afm *.pfb ] ;
+local ttFonts = [ Glob $(fontDir)/ttfonts : *.ttf ] ;
+AddFilesToAntaresImage system data fonts psfonts : $(psFonts) ;
+AddFilesToAntaresImage system data fonts ttfonts : $(ttFonts) ;
+
+local cannaDir = [ FDirName $(ANTARES_TOP) data system data Canna ] ;
+local cannaDefault = [ Glob $(cannaDir)/default : *.canna *.gz ] ;
+local cannaDic = [ Glob $(cannaDir)/dic : *.cbp ] ;
+local cannaDicCanna = [ Glob $(cannaDir)/dic/canna
+	: *.cld *.ctd *.cbd *.dir ] ;
+AddFilesToAntaresImage system data Canna default : $(cannaDefault) ;
+AddFilesToAntaresImage system data Canna dic : $(cannaDic) ;
+AddFilesToAntaresImage system data Canna dic canna : $(cannaDicCanna) ;
+AddDirectoryToAntaresImage system data Canna dic group ;
+AddDirectoryToAntaresImage system data Canna dic user ;
+
+local keymapFiles = [ Glob [ FDirName $(ANTARES_TOP) src data keymaps ]
+	: *.keymap ] ;
+keymapFiles = $(keymapFiles:BG=keymap) ;
+AddFilesToAntaresImage system data Keymaps : $(keymapFiles) ;
+AddSymlinkToAntaresImage system data Keymaps : Swedish : Finnish ;
+AddSymlinkToAntaresImage system data Keymaps : Slovene : Croatian ;
+AddSymlinkToAntaresImage system data Keymaps : US-International : Brazilian ;
+
+local keyboardLayoutsDir
+	= [ FDirName $(ANTARES_TOP) data system data KeyboardLayouts ] ;
+local keyboardLayouts = [ Glob $(keyboardLayoutsDir) : [^.]* ] ;
+AddFilesToAntaresImage system data KeyboardLayouts : $(keyboardLayouts) ;
+
+local timezones = [ FTimeZoneBinaries $(ANTARES_TIME_ZONE_SOURCES) : : true ] ;
+for timezone in $(timezones) {
+	local dir = [ on $(timezone) return $(RELATIVE_TIMEZONE_DIR) ] ;
+	AddFilesToAntaresImage system data timezones $(dir) : $(timezone) ;
+}
+
+local driverSettingsFiles = <driver-settings>kernel ;
+SEARCH on $(driverSettingsFiles)
+	= [ FDirName $(ANTARES_TOP) data settings kernel drivers ] ;
+AddFilesToAntaresImage home config settings kernel drivers
+	: $(driverSettingsFiles) ;
+
+local networkSettingsFiles = <network-settings>services ;
+SEARCH on $(networkSettingsFiles)
+	= [ FDirName $(ANTARES_TOP) data settings network ] ;
+AddFilesToAntaresImage common settings network : $(networkSettingsFiles) ;
+
+# post install scripts and fresh install indicator file
+local postInstallFiles = mime_update.sh ;
+postInstallFiles = $(postInstallFiles:G=post-install) ;
+SEARCH on $(postInstallFiles)
+	= [ FDirName $(ANTARES_TOP) data common boot post_install ] ;
+SEARCH on <post-install>fresh_install
+	= [ FDirName $(ANTARES_TOP) data common settings ] ;
+AddFilesToAntaresImage common boot post_install : $(postInstallFiles) ;
+AddFilesToAntaresImage common settings : <post-install>fresh_install ;
+
+# boot loader
+AddFilesToAntaresImage system : antares_loader ;
+
+# boot module links
+AddBootModuleSymlinksToAntaresImage
+	$(X86_ONLY)acpi $(ATA_ONLY)ata pci $(X86_ONLY)isa config_manager dpc
+	$(IDE_ONLY)ide scsi usb
+	$(PPC_ONLY)openpic
+	$(ATA_ONLY)ata_adapter $(IDE_ONLY)ide_adapter locked_pool scsi_periph
+	ahci generic_ide_pci it8211 legacy_sata silicon_image_3112
+	$(X86_ONLY)ide_isa
+	<usb>uhci <usb>ohci <usb>ehci
+	scsi_cd scsi_disk usb_disk
+	intel
+	bfs
+;
+
+# add-ons
+AddFilesToAntaresImage system add-ons accelerants
+	: $(SYSTEM_ADD_ONS_ACCELERANTS) ;
+AddFilesToAntaresImage system add-ons opengl
+	: Mesa\ Software\ Renderer ;
+AddFilesToAntaresHybridImage system add-ons Translators
+	: $(SYSTEM_ADD_ONS_TRANSLATORS) : : true ;
+AddFilesToAntaresImage system add-ons locale catalogs
+	: $(SYSTEM_ADD_ONS_LOCALE_CATALOGS) ;
+AddFilesToAntaresImage system add-ons mail_daemon inbound_protocols : POP3 IMAP ;
+AddFilesToAntaresImage system add-ons mail_daemon outbound_protocols : SMTP ;
+AddFilesToAntaresImage system add-ons mail_daemon inbound_filters
+	: Match\ Header Spam\ Filter R5\ Daemon\ Filter ;
+AddFilesToAntaresImage system add-ons mail_daemon outbound_filters : Fortune ;
+AddFilesToAntaresImage system add-ons mail_daemon system_filters
+	: Inbox New\ mail\ notification Outbox Message\ Parser ;
+AddFilesToAntaresImage system add-ons media : $(SYSTEM_ADD_ONS_MEDIA) ;
+AddFilesToAntaresImage system add-ons media plugins
+	: $(SYSTEM_ADD_ONS_MEDIA_PLUGINS) ;
+AddFilesToAntaresImage system add-ons Tracker
+	: FileType-F Mark\ as… Mark\ as\ Read-R Open\ Target\ Folder-O
+	Open\ Terminal-T ZipOMatic-Z ;
+AddSymlinkToAntaresImage system add-ons Tracker
+	: /boot/system/preferences/Backgrounds : Background-B ;
+AddSymlinkToAntaresImage system add-ons Tracker
+	: /boot/system/apps/TextSearch : TextSearch-G ;
+AddSymlinkToAntaresImage system add-ons Tracker
+	: /boot/system/apps/DiskUsage : DiskUsage-I ;
+AddFilesToAntaresImage system add-ons input_server devices
+	: <input>keyboard <input>mouse <input>wacom ;
+AddFilesToAntaresImage system add-ons input_server filters
+	: screen_saver shortcut_catcher ;
+AddFilesToAntaresImage system add-ons kernel network
+	: <net>notifications stack ;
+AddFilesToAntaresImage system add-ons kernel network devices
+	: $(SYSTEM_NETWORK_DEVICES) ;
+AddFilesToAntaresImage system add-ons kernel network datalink_protocols
+	: $(SYSTEM_NETWORK_DATALINK_PROTOCOLS) ;
+AddFilesToAntaresImage system add-ons kernel network ppp
+	: $(SYSTEM_NETWORK_PPP) ;
+AddFilesToAntaresImage system add-ons kernel network protocols
+	: $(SYSTEM_NETWORK_PROTOCOLS) ;
+AddFilesToAntaresImage system add-ons Print : $(SYSTEM_ADD_ONS_PRINT) ;
+AddFilesToAntaresImage system add-ons Print transport
+	: $(SYSTEM_ADD_ONS_PRINT_TRANSPORT) ;
+AddFilesToAntaresImage system add-ons Screen\ Savers
+	: $(SYSTEM_ADD_ONS_SCREENSAVERS) ;
+
+AddFilesToAntaresImage system add-ons disk_systems
+	: <disk_system>intel <disk_system>bfs ;
+
+# create directories that will remain empty
+AddDirectoryToAntaresImage common bin ;
+AddDirectoryToAntaresImage common include ;
+AddDirectoryToAntaresImage common lib ;
+AddDirectoryToAntaresImage home Desktop ;
+AddDirectoryToAntaresImage home config bin ;
+AddDirectoryToAntaresImage home config lib ;
+AddDirectoryToAntaresImage home mail ;
+AddDirectoryToAntaresImage common var empty ;
+AddDirectoryToAntaresImage common var log ;
+AddDirectoryToAntaresImage common cache tmp ;
+
+AddDirectoryToAntaresImage home config add-ons kernel drivers bin ;
+AddDirectoryToAntaresImage home config add-ons kernel drivers dev ;
+AddDirectoryToAntaresImage home config add-ons input_server devices ;
+AddDirectoryToAntaresImage home config add-ons input_server filters ;
+AddDirectoryToAntaresImage home config add-ons input_server methods ;
+AddDirectoryToAntaresImage home config add-ons Tracker ;
+AddDirectoryToAntaresImage home config add-ons Print ;
+AddDirectoryToAntaresImage home config add-ons Screen\ Savers ;
+AddDirectoryToAntaresImage home config add-ons Translators ;
+AddDirectoryToAntaresImage system data synth ;
+AddDirectoryToAntaresImage system add-ons input_server methods ;
+
+# optional
+AddFilesToAntaresImage optional system add-ons input_server methods : canna ;
+
+# printers
+AddDirectoryToAntaresImage home config settings printers Preview
+	: home-config-settings-printers-preview.rdef ;
+AddDirectoryToAntaresImage home config settings printers "Save as PDF"
+	: home-config-settings-printers-save-as-pdf.rdef ;
+
+# licenses
+CopyDirectoryToAntaresImage system data
+	: [ FDirName $(ANTARES_TOP) data system data licenses ]
+	: licenses : -x .svn ;
+
+
+#pragma mark - Optional Packages
+
+
+ANTARES_IMAGE_OPTIONAL_PACKAGE_DESCRIPTIONS = ;
+
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) OptionalPackages ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) OptionalTestPackages ] ;
+
+local optionalPackageDescriptions ;
+if $(ANTARES_IMAGE_OPTIONAL_PACKAGE_DESCRIPTIONS) {
+	optionalPackageDescriptions = <antares-image>optional_package_descriptions ;
+	MakeLocate $(optionalPackageDescriptions)
+		: $(ANTARES_COMMON_PLATFORM_OBJECT_DIR) ;
+
+	Depends $(optionalPackageDescriptions)
+		: $(ANTARES_IMAGE_OPTIONAL_PACKAGE_DESCRIPTIONS) ;
+
+	actions together BuildOptionalPackageDescriptions
+	{
+		cat $(2) > $(1)
+	}
+
+	BuildOptionalPackageDescriptions $(optionalPackageDescriptions)
+		: $(ANTARES_IMAGE_OPTIONAL_PACKAGE_DESCRIPTIONS) ;
+}
+
+
+#pragma mark - Alternative GCC Libraries
+
+
+# We build a zip archive containing the libraries built with the alternative
+# GCC and unzip onto our image. Building the archive is done by a sub-jam.
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) AlternativeGCCArchive ] ;
+
+if $(ANTARES_ADD_ALTERNATIVE_GCC_LIBS) && $(ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR) {
+	# let another jam build a zip with the system libraries
+	rule InvokeSubJam target : directory : jamLine
+	{
+		DIRECTORY on $(target) = $(directory) ;
+		COMMAND_LINE on $(target) = $(jamLine) ;
+		local optionalPackages = $(ANTARES_ADDED_OPTIONAL_PACKAGES:J=/) ;
+		OPTIONAL_PACKAGES on $(target) = $(optionalPackages:E="") ;
+		Always $(target) ;
+		InvokeSubJam1 $(target) ;
+	}
+
+	actions InvokeSubJam1
+	{
+		cd $(DIRECTORY)
+		export ANTARES_IGNORE_USER_BUILD_CONFIG=1
+		export ANTARES_ADD_OPTIONAL_PACKAGES=$(OPTIONAL_PACKAGES)
+		$(JAM:E=jam) -q $(COMMAND_LINE) ;
+	}
+
+	local otherAlternativeSystemLibsZip
+		= <other-image>alternative_system_libs.zip ;
+	MakeLocate $(otherAlternativeSystemLibsZip)
+		: $(ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR) ;
+
+	InvokeSubJam $(otherAlternativeSystemLibsZip)
+		: $(ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR)
+		: "antares-alternative-gcc-archive" ;
+
+	# install the alternative libs in the right directory
+	ExtractArchiveToAntaresImage : $(otherAlternativeSystemLibsZip) ;
+}
+
+
+#pragma mark - User/Group Setup
+
+
+# add the root user and the root and users groups
+AddUserToAntaresImage $(ANTARES_ROOT_USER_NAME:E=baron) : 0 : 0 : /boot/home
+	: /bin/bash : $(ANTARES_ROOT_USER_REAL_NAME:E="Root User") ;
+AddGroupToAntaresImage root : 0 : ;
+AddGroupToAntaresImage users : 100 : ;
+
+
+#pragma mark - Host Name
+
+
+if $(ANTARES_IMAGE_HOST_NAME) {
+	actions BuildAntaresImageHostnameFile
+	{
+		echo "$(ANTARES_IMAGE_HOST_NAME)" > $(1)
+	}
+
+	local file = <antares-image>hostname ;
+	Always $(file) ;
+	MakeLocate $(file) : $(ANTARES_COMMON_PLATFORM_OBJECT_DIR) ;
+	BuildAntaresImageHostnameFile $(file) ;
+	AddFilesToAntaresImage common settings network : $(file) ;
+}
+
+
+#pragma mark - Build The Image
+
+
+# Execute pre-image user config rules.
+UserBuildConfigRulePreImage	;
+
+# Set image name and directory defaults and locate the image.
+ANTARES_IMAGE_NAME ?= $(ANTARES_DEFAULT_IMAGE_NAME) ;
+ANTARES_IMAGE_DIR ?= $(ANTARES_DEFAULT_IMAGE_DIR) ;
+ANTARES_IMAGE = $(ANTARES_IMAGE_NAME) ;
+ANTARES_IMAGE_SIZE ?= $(ANTARES_DEFAULT_IMAGE_SIZE) ; # 100 MB
+ANTARES_IMAGE_LABEL ?= $(ANTARES_DEFAULT_IMAGE_LABEL) ;
+MakeLocate $(ANTARES_IMAGE) : $(ANTARES_IMAGE_DIR) ;
+
+# Set the default installation directory.
+ANTARES_INSTALL_DIR ?= $(ANTARES_DEFAULT_INSTALL_DIR) ;
+
+# the pseudo target all image contents is attached to
+NotFile $(ANTARES_IMAGE_CONTAINER_NAME) ;
+
+# prepare the script that initializes the shell variables
+ANTARES_IMAGE_INIT_VARIABLES_SCRIPT = <AntaresImage>antares.image-init-vars ;
+local script = $(ANTARES_IMAGE_INIT_VARIABLES_SCRIPT) ;
+MakeLocate $(script) : $(ANTARES_OUTPUT_DIR) ;
+Always $(script) ;
+
+AddVariableToScript $(script) : sourceDir : $(ANTARES_TOP) ;
+AddVariableToScript $(script) : outputDir : $(ANTARES_OUTPUT_DIR) ;
+AddVariableToScript $(script) : tmpDir : $(ANTARES_TMP_DIR) ;
+AddVariableToScript $(script) : installDir : $(ANTARES_INSTALL_DIR) ;
+#AddVariableToScript $(script) : isImage : 1 ;
+AddVariableToScript $(script) : imageSize : $(ANTARES_IMAGE_SIZE) ;
+AddVariableToScript $(script) : imageLabel : $(ANTARES_IMAGE_LABEL) ;
+AddVariableToScript $(script) : addBuildCompatibilityLibDir
+	: $(HOST_ADD_BUILD_COMPATIBILITY_LIB_DIR) ;
+AddVariableToScript $(script) : dontClearImage : $(ANTARES_DONT_CLEAR_IMAGE) ;
+AddVariableToScript $(script) : updateOnly : [ IsUpdateAntaresImageOnly ] ;
+AddTargetVariableToScript $(script) : <build>addattr ;
+AddTargetVariableToScript $(script) : <build>bfs_shell : bfsShell ;
+AddTargetVariableToScript $(script) : <build>fs_shell_command : fsShellCommand ;
+AddTargetVariableToScript $(script) : <build>copyattr ;
+AddTargetVariableToScript $(script) : <build>create_image : createImage ;
+AddTargetVariableToScript $(script) : <build>makebootable ;
+AddTargetVariableToScript $(script) : <build>rc ;
+AddTargetVariableToScript $(script) : <build>resattr ;
+AddTargetVariableToScript $(script) : <build>unzip ;
+AddTargetVariableToScript $(script) : <build>vmdkimage ;
+if $(HOST_RM_ATTRS_TARGET) {
+	AddTargetVariableToScript $(script) : $(HOST_RM_ATTRS_TARGET) : rmAttrs ;
+} else {
+	AddVariableToScript $(script) : rmAttrs : rm ;
+}
+if $(optionalPackageDescriptions) {
+	AddTargetVariableToScript $(script) : $(optionalPackageDescriptions)
+		: optionalPackageDescriptions ;
+}
+
+
+# create the other scripts
+ANTARES_IMAGE_MAKE_DIRS_SCRIPT = <AntaresImage>antares.image-make-dirs ;
+ANTARES_IMAGE_COPY_FILES_SCRIPT = <AntaresImage>antares.image-copy-files ;
+ANTARES_IMAGE_EXTRACT_FILES_SCRIPT = <AntaresImage>antares.image-extract-files ;
+MakeLocate $(ANTARES_IMAGE_MAKE_DIRS_SCRIPT) $(ANTARES_IMAGE_COPY_FILES_SCRIPT)
+	$(ANTARES_IMAGE_EXTRACT_FILES_SCRIPT) : $(ANTARES_OUTPUT_DIR) ;
+
+CreateAntaresImageMakeDirectoriesScript $(ANTARES_IMAGE_MAKE_DIRS_SCRIPT) ;
+CreateAntaresImageCopyFilesScript $(ANTARES_IMAGE_COPY_FILES_SCRIPT) ;
+CreateAntaresImageExtractFilesScript $(ANTARES_IMAGE_EXTRACT_FILES_SCRIPT) ;
+
+# Convenience wrapper rule around BuildAntaresImage.
+rule _BuildAntaresImage image : isImage : isVMwareImage
+{
+	# _BuildAntaresImage <image target> : <isImage> : <isVMwareImage> ;
+	#
+
+	# build the image
+	# ANTARES_IMAGE_EARLY_USER_SCRIPTS, ANTARES_IMAGE_LATE_USER_SCRIPTS can be
+	# specified by the user.
+	BuildAntaresImage $(image) :
+		$(ANTARES_IMAGE_INIT_VARIABLES_SCRIPT)
+		$(ANTARES_IMAGE_EARLY_USER_SCRIPTS)
+		$(ANTARES_IMAGE_MAKE_DIRS_SCRIPT)
+		$(ANTARES_IMAGE_COPY_FILES_SCRIPT)
+		$(ANTARES_IMAGE_EXTRACT_FILES_SCRIPT)
+		$(ANTARES_IMAGE_LATE_USER_SCRIPTS)
+		: $(isImage)
+		: $(isVMwareImage)
+	;
+
+	# remove the scripts we have generated
+	RmTemps $(image) :
+		$(ANTARES_IMAGE_INIT_VARIABLES_SCRIPT)
+		$(ANTARES_IMAGE_MAKE_DIRS_SCRIPT)
+		$(ANTARES_IMAGE_COPY_FILES_SCRIPT)
+		$(ANTARES_IMAGE_EXTRACT_FILES_SCRIPT)
+	;
+}
+
+# build the image
+_BuildAntaresImage $(ANTARES_IMAGE) : true ;
+NotFile antares-image ;
+Depends antares-image : $(ANTARES_IMAGE) ;
+
+
+# install Antares into a directory
+NotFile install-antares ;
+_BuildAntaresImage install-antares : 0 ;
+
+
+# build the VMware image
+ANTARES_VMWARE_IMAGE_NAME ?= $(ANTARES_DEFAULT_VMWARE_IMAGE_NAME) ;
+ANTARES_VMWARE_IMAGE = $(ANTARES_VMWARE_IMAGE_NAME) ;
+MakeLocate $(ANTARES_VMWARE_IMAGE) : $(ANTARES_IMAGE_DIR) ;
+
+_BuildAntaresImage $(ANTARES_VMWARE_IMAGE) : true : true ;
+NotFile antares-vmware-image ;
+Depends antares-vmware-image : $(ANTARES_VMWARE_IMAGE) ;
+
+# Execute post-image user config rules.
+UserBuildConfigRulePostImage ;

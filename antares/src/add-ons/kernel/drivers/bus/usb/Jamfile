@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src add-ons kernel drivers bus usb ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirSysHdrs $(ANTARES_TOP) src add-ons kernel bus_managers usb ;
+UsePrivateHeaders kernel ;
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders [ FDirName drivers ] ;
+}
+
+KernelAddon usb_raw :
+	usb_raw.cpp
+	;

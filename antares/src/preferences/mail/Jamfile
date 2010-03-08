@@ -1,0 +1,58 @@
+SubDir ANTARES_TOP src preferences mail ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePublicHeaders [ FDirName add-ons mail_daemon ] ;
+UsePrivateHeaders mail ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers os add-ons mail_daemon ] ;
+
+# for BObjectList.h
+UsePrivateHeaders shared ;
+
+# TODO(bga): E-mail preferences does not really need to link against the
+# OpenSSL libraries. Remove this after problems with the runtime loader are
+# sorted up. Details here:
+#
+# http://www.freelists.org/post/antares-development/Runtime-loader-problem
+
+local sources =
+	Account.cpp
+	AutoConfig.cpp
+	AutoConfigWindow.cpp
+	AutoConfigView.cpp
+	CenterContainer.cpp
+	ConfigViews.cpp
+	ConfigWindow.cpp
+	DNSQuery.cpp
+	main.cpp
+;
+
+if $(ANTARES_OPENSSL_ENABLED) {
+	SubDirC++Flags -DUSE_SSL ;
+	SubDirSysHdrs $(ANTARES_OPENSSL_HEADERS) ;
+	Includes [ FGristFiles $(sources) ] : $(ANTARES_OPENSSL_HEADERS_DEPENDENCY) ;
+		# Dependency needed to trigger downloading/unzipping the package before
+		# compiling the files.
+	SetupFeatureObjectsDir ssl ;
+} else {
+	SetupFeatureObjectsDir no-ssl ;
+}
+
+Preference E-mail
+	: $(sources)
+	: be libmail.so $(ANTARES_NETWORK_LIBS) $(TARGET_NETAPI_LIB)
+		$(ANTARES_OPENSSL_LIBS) $(TARGET_LIBSUPC++)
+	: e-mail.rdef
+;
+
+Package antares-maildaemon-cvs :
+	E-mail :
+	boot beos preferences
+;
+
+SubInclude ANTARES_TOP src preferences mail ProviderInfo ;

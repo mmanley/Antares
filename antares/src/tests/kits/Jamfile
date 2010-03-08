@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src tests kits ;
+
+SubInclude ANTARES_TOP src tests kits app ;
+SubInclude ANTARES_TOP src tests kits game ;
+SubInclude ANTARES_TOP src tests kits interface ;
+SubInclude ANTARES_TOP src tests kits locale ;
+SubInclude ANTARES_TOP src tests kits media ;
+SubInclude ANTARES_TOP src tests kits midi ;
+SubInclude ANTARES_TOP src tests kits net ;
+SubInclude ANTARES_TOP src tests kits shared ;
+SubInclude ANTARES_TOP src tests kits storage ;
+SubInclude ANTARES_TOP src tests kits support ;
+SubInclude ANTARES_TOP src tests kits translation ;
+SubInclude ANTARES_TOP src tests kits opengl ;
+

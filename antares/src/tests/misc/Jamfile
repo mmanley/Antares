@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src tests misc ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SimpleTest rtti-test : rtti-test.cpp : be $(TARGET_LIBSUPC++) ;
+SimpleTest writev-test : writev-test.cpp : be ;
+
+SubInclude ANTARES_TOP src tests misc exception-test ;

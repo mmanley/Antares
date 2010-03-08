@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers disk scsi ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers disk scsi scsi_cd ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk scsi scsi_disk ;

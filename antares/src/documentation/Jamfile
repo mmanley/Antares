@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src documentation ;
+
+SEARCH on  <src!documentation>license.xml = [ FDirName $(ANTARES_TOP) src documentation ] ;
+
+SubInclude ANTARES_TOP src documentation uiguidelines ;
+SubInclude ANTARES_TOP src documentation shell_tools ;

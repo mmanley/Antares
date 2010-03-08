@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src bin sharutils ;
+
+SubInclude ANTARES_TOP src bin sharutils lib ;
+SubInclude ANTARES_TOP src bin sharutils src ; 

@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network syskonnect dev mii ;
+
+UseHeaders [ FDirName $(SUBDIR) .. .. ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs compat freebsd_network compat ] : true ;
+
+UsePrivateHeaders net system ;
+UsePrivateKernelHeaders ;
+
+SubDirCcFlags [ FDefines _KERNEL=1 FBSD_DRIVER=1 ] ;
+
+KernelStaticLibrary syskonnect_mii.a
+	:
+	xmphy.c
+	e1000phy.c
+	ukphy.c
+	ukphy_subr.c
+	;
+
+ObjectHdrs [ FGristFiles e1000phy$(SUFOBJ) ukphy$(SUFOBJ) xmphy$(SUFOBJ) ]
+        : [ FDirName $(TARGET_COMMON_DEBUG_OBJECT_DIR) libs compat freebsd_network ] ;
+Includes [ FGristFiles e1000phy.c ukphy.c xmphy.c ] : <src!libs!compat!freebsd_network>miidevs.h ;
+

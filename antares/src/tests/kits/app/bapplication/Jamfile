@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src tests kits app bapplication ;
+
+SubInclude ANTARES_TOP src tests kits app bapplication testapps ;

@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src build icu ;
+
+SubInclude ANTARES_TOP src build icu common ;
+SubInclude ANTARES_TOP src build icu i18n ;
+SubInclude ANTARES_TOP src build icu stubdata ;
+SubInclude ANTARES_TOP src build icu toolutil ;
+

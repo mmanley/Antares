@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons locale ;
+
+SubInclude ANTARES_TOP src add-ons locale catalogs ;
+SubInclude ANTARES_TOP src add-ons locale collators ;

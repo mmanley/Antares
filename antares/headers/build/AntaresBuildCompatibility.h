@@ -1,0 +1,310 @@
+#ifndef ANTARES_BUILD_COMPATIBILITY_H
+#define ANTARES_BUILD_COMPATIBILITY_H
+
+/*!
+	This header is automatically included in all Antares applications
+	that are built for BeOS or a Antares host (which might not be compatible
+	with the current Antares source anymore).
+	It will make BeOS/Antares a bit more Antares compatible, and slightly more
+	POSIX compatible, too. It is supposed to keep the BeOS compatibility
+	kludges in our source files at a minimum.
+*/
+
+#ifdef ANTARES_HOST_PLATFORM_DANO
+#	include <be_setup.h>
+#	include <be_errors.h>
+#	define _ERRORS_H
+		// this is what Antares/BeOS is using
+#endif
+
+#ifdef ANTARES_TARGET_PLATFORM_LIBBE_TEST
+#	define _BE_ERRNO_H_
+		// this is what Dano/Zeta is using
+#	include <Errors.h>
+#endif
+
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <SupportDefs.h>
+#include <TypeConstants.h>
+
+#include <string.h>
+
+// no addr_t under standard BeOS
+#ifndef ANTARES_HOST_PLATFORM_ANTARES
+	typedef unsigned long antares_build_addr_t;
+#	define addr_t antares_build_addr_t
+#endif
+
+#ifndef ANTARES_HOST_PLATFORM_ANTARES
+
+struct sockaddr_storage {
+	uint8	ss_len;			/* total length */
+	uint8	ss_family;		/* address family */
+	uint8	__ss_pad1[6];	/* align to quad */
+	uint64	__ss_pad2;		/* force alignment to 64 bit */
+	uint8	__ss_pad3[112];	/* pad to a total of 128 bytes */
+};
+
+typedef int socklen_t;
+
+#endif	// !ANTARES_HOST_PLATFORM_ANTARES
+
+#ifndef DEFFILEMODE
+#	define	DEFFILEMODE	(S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
+#endif
+
+#ifndef FS_WRITE_FSINFO_NAME
+#	define	FS_WRITE_FSINFO_NAME	0x0001
+#endif
+
+#ifndef B_CURRENT_TEAM
+#	define B_CURRENT_TEAM	0
+#endif
+
+#ifndef SYMLOOP_MAX
+#	define SYMLOOP_MAX	(16)
+#endif
+
+#ifndef B_FIRST_REAL_TIME_PRIORITY
+#	define B_FIRST_REAL_TIME_PRIORITY B_REAL_TIME_DISPLAY_PRIORITY
+#endif
+
+#ifndef B_SPINLOCK_INITIALIZER
+#	define B_SPINLOCK_INITIALIZER 0
+#endif
+
+#if defined(__GNUC__) && !defined(_PRINTFLIKE)
+#	define _PRINTFLIKE(_format_, _args_) \
+		__attribute__((format(__printf__, _format_, _args_)))
+#endif
+
+#if defined(ANTARES_TARGET_PLATFORM_LIBBE_TEST) \
+	&& !defined(ANTARES_HOST_PLATFORM_ANTARES)
+// BeOS version of BeBuild.h defines this
+#	define _IMPEXP_ROOT			__declspec(dllimport)
+#	define _IMPEXP_BE			__declspec(dllimport)
+#	define _IMPEXP_MEDIA		__declspec(dllimport)
+#	define _IMPEXP_TRACKER		__declspec(dllimport)
+#	define _IMPEXP_TRANSLATION	__declspec(dllimport)
+#	define _IMPEXP_DEVICE		__declspec(dllimport)
+#	define _IMPEXP_NET			__declspec(dllimport)
+#endif
+
+#if defined(__cplusplus) && !defined(ANTARES_HOST_PLATFORM_ANTARES)
+class BBuffer;
+class BBufferConsumer;
+class BBufferGroup;
+class BContinuousParameter;
+class BControllable;
+class BFileInterface;
+class BMimeType;
+class BParameterWeb;
+class BRegion;
+class BTextView;
+class BTranslator;
+class BTimeSource;
+struct entry_ref;
+struct media_node;
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern int32	atomic_set(vint32 *value, int32 newValue);
+extern int32	atomic_test_and_set(vint32 *value, int32 newValue,
+					int32 testAgainst);
+extern int32	atomic_get(vint32 *value);
+extern int64	atomic_set64(vint64 *value, int64 newValue);
+extern int64	atomic_test_and_set64(vint64 *value, int64 newValue,
+					int64 testAgainst);
+extern int64	atomic_get64(vint64 *value);
+extern int64	atomic_add64(vint64 *value, int64 addValue);
+extern int64	atomic_and64(vint64 *value, int64 andValue);
+extern int64	atomic_or64(vint64 *value, int64 orValue);
+
+extern size_t	strnlen(const char *string, size_t count);
+
+extern size_t	strlcat(char *dest, const char *source, size_t length);
+extern size_t   strlcpy(char *dest, const char *source, size_t length);
+
+extern char		*strcasestr(const char *string, const char *searchString);
+
+extern float	roundf(float value);
+
+#ifdef __cplusplus
+}
+#endif
+
+// These are R1-specific extensions
+#if !defined(ANTARES_TARGET_PLATFORM_LIBBE_TEST) \
+	&& !defined(ANTARES_HOST_PLATFORM_ANTARES)
+#	define B_TRANSLATION_MAKE_VERSION(major, minor, revision) \
+		((major << 8) | ((minor << 4) & 0xf0) | (revision & 0x0f))
+#	define B_TRANSLATION_MAJOR_VERSION(v) (v >> 8)
+#	define B_TRANSLATION_MINOR_VERSION(v) ((v >> 4) & 0xf)
+#	define B_TRANSLATION_REVISION_VERSION(v) (v & 0xf)
+#	ifndef USING_ANTARES_TYPE_CONSTANTS_H
+#		define B_LARGE_ICON_TYPE		'ICON'
+#		define B_MINI_ICON_TYPE			'MICN'
+#		define B_VECTOR_ICON_TYPE		'VICN'
+#		define B_BITMAP_NO_SERVER_LINK	0
+#		define B_BITMAP_SCALE_BILINEAR	0
+#	endif
+#endif	// ANTARES_TARGET_PLATFORM_LIBBE_TEST
+
+#if defined(ANTARES_TARGET_PLATFORM_BEOS) || defined(ANTARES_TARGET_PLATFORM_BONE)
+#	define B_REDO						'REDO'
+#	define B_BAD_DATA					(B_NOT_ALLOWED + 1)
+#	define B_DOCUMENT_BACKGROUND_COLOR	B_PANEL_BACKGROUND_COLOR
+#	define B_DOCUMENT_TEXT_COLOR		B_MENU_ITEM_TEXT_COLOR
+#endif
+
+#if !defined(ANTARES_HOST_PLATFORM_ANTARES) && !defined(ANTARES_TARGET_PLATFORM_LIBBE_TEST)
+#	if !defined(B_NOT_SUPPORTED) && !defined(ANTARES_HOST_PLATFORM_DANO)
+#		define B_NOT_SUPPORTED			(B_ERROR)
+#	endif
+#	define B_KERNEL_READ_AREA			0
+#	define B_KERNEL_WRITE_AREA			0
+#endif
+
+#if defined(ANTARES_TARGET_PLATFORM_BONE) || defined(ANTARES_TARGET_PLATFORM_DANO)
+#	define IF_NAMESIZE IFNAMSIZ
+#	define ifc_value ifc_val
+#	define IFF_AUTO_CONFIGURED 0
+#endif
+
+#include <limits.h>
+
+#ifndef INT32_MAX
+#	define INT32_MAX INT_MAX
+#endif
+
+#ifndef INT64_MAX
+#	define INT64_MAX LONGLONG_MAX
+#endif
+
+#ifndef ANTARES_HOST_PLATFORM_ANTARES
+#	define	B_MPEG_2_AUDIO_LAYER_1 (enum mpeg_id)0x201
+#	define	B_MPEG_2_AUDIO_LAYER_2 (enum mpeg_id)0x202
+#	define	B_MPEG_2_AUDIO_LAYER_3 (enum mpeg_id)0x203
+#	define	B_MPEG_2_VIDEO (enum mpeg_id)0x211
+#	define	B_MPEG_2_5_AUDIO_LAYER_1 (enum mpeg_id)0x301
+#	define	B_MPEG_2_5_AUDIO_LAYER_2 (enum mpeg_id)0x302
+#	define	B_MPEG_2_5_AUDIO_LAYER_3 (enum mpeg_id)0x303
+#endif
+
+// TODO: experimental API (keep in sync with Accelerant.h)
+#ifndef ANTARES_HOST_PLATFORM_ANTARES
+typedef struct {
+	uint32	version;
+	char	vendor[128];
+	char	name[128];
+	char	serial_number[128];
+	uint32	product_id;
+	struct {
+		uint16	week;
+		uint16	year;
+	}		produced;
+	float	width;
+	float	height;
+	uint32	min_horizontal_frequency;	// in kHz
+	uint32	max_horizontal_frequency;
+	uint32	min_vertical_frequency;		// in Hz
+	uint32	max_vertical_frequency;
+	uint32	max_pixel_clock;			// in kHz
+} monitor_info;
+#endif // !ANTARES_HOST_PLATFORM_ANTARES
+
+
+#if !defined(B_ANTARES_32_BIT) && !defined(B_ANTARES_64_BIT)
+#	ifdef ANTARES_HOST_PLATFORM_64_BIT
+#		define B_ANTARES_64_BIT	1
+#	else
+#		define B_ANTARES_32_BIT	1
+#	endif
+#endif
+
+#ifndef B_PRId8
+#	define	__ANTARES_PRI_PREFIX_32		"l"
+#	define	__ANTARES_PRI_PREFIX_64		"ll"
+#	define	__ANTARES_PRI_PREFIX_ADDR		"l"
+
+	/* printf()/scanf() format strings for [u]int* types */
+#	define B_PRId8			"d"
+#	define B_PRIi8			"i"
+#	define B_PRId16			"d"
+#	define B_PRIi16			"i"
+#	define B_PRId32			__ANTARES_PRI_PREFIX_32 "d"
+#	define B_PRIi32			__ANTARES_PRI_PREFIX_32 "i"
+#	define B_PRId64			__ANTARES_PRI_PREFIX_64 "d"
+#	define B_PRIi64			__ANTARES_PRI_PREFIX_64 "i"
+#	define B_PRIu8			"u"
+#	define B_PRIo8			"o"
+#	define B_PRIx8			"x"
+#	define B_PRIX8			"X"
+#	define B_PRIu16			"u"
+#	define B_PRIo16			"o"
+#	define B_PRIx16			"x"
+#	define B_PRIX16			"X"
+#	define B_PRIu32			__ANTARES_PRI_PREFIX_32 "u"
+#	define B_PRIo32			__ANTARES_PRI_PREFIX_32 "o"
+#	define B_PRIx32			__ANTARES_PRI_PREFIX_32 "x"
+#	define B_PRIX32			__ANTARES_PRI_PREFIX_32 "X"
+#	define B_PRIu64			__ANTARES_PRI_PREFIX_64 "u"
+#	define B_PRIo64			__ANTARES_PRI_PREFIX_64 "o"
+#	define B_PRIx64			__ANTARES_PRI_PREFIX_64 "x"
+#	define B_PRIX64			__ANTARES_PRI_PREFIX_64 "X"
+
+#	define B_SCNd8 			"hhd"
+#	define B_SCNi8 			"hhi"
+#	define B_SCNd16			"hd"
+#	define B_SCNi16	 		"hi"
+#	define B_SCNd32 		__ANTARES_PRI_PREFIX_32 "d"
+#	define B_SCNi32	 		__ANTARES_PRI_PREFIX_32 "i"
+#	define B_SCNd64			__ANTARES_PRI_PREFIX_64 "d"
+#	define B_SCNi64 		__ANTARES_PRI_PREFIX_64 "i"
+#	define B_SCNu8 			"hhu"
+#	define B_SCNo8 			"hho"
+#	define B_SCNx8 			"hhx"
+#	define B_SCNu16			"hu"
+#	define B_SCNo16			"ho"
+#	define B_SCNx16			"hx"
+#	define B_SCNu32 		__ANTARES_PRI_PREFIX_32 "u"
+#	define B_SCNo32 		__ANTARES_PRI_PREFIX_32 "o"
+#	define B_SCNx32 		__ANTARES_PRI_PREFIX_32 "x"
+#	define B_SCNu64			__ANTARES_PRI_PREFIX_64 "u"
+#	define B_SCNo64			__ANTARES_PRI_PREFIX_64 "o"
+#	define B_SCNx64			__ANTARES_PRI_PREFIX_64 "x"
+
+	/* printf() format strings for some standard types */
+	/* size_t */
+#	define B_PRIuSIZE		__ANTARES_PRI_PREFIX_ADDR "u"
+#	define B_PRIoSIZE		__ANTARES_PRI_PREFIX_ADDR "o"
+#	define B_PRIxSIZE		__ANTARES_PRI_PREFIX_ADDR "x"
+#	define B_PRIXSIZE		__ANTARES_PRI_PREFIX_ADDR "X"
+	/* ssize_t */
+#	define B_PRIdSSIZE		__ANTARES_PRI_PREFIX_ADDR "d"
+#	define B_PRIiSSIZE		__ANTARES_PRI_PREFIX_ADDR "i"
+	/* addr_t */
+#	define B_PRIuADDR		__ANTARES_PRI_PREFIX_ADDR "u"
+#	define B_PRIoADDR		__ANTARES_PRI_PREFIX_ADDR "o"
+#	define B_PRIxADDR		__ANTARES_PRI_PREFIX_ADDR "x"
+#	define B_PRIXADDR		__ANTARES_PRI_PREFIX_ADDR "X"
+	/* off_t */
+#	define B_PRIdOFF		B_PRId64
+#	define B_PRIiOFF		B_PRIi64
+	/* dev_t */
+#	define B_PRIdDEV		B_PRId32
+#	define B_PRIiDEV		B_PRIi32
+	/* ino_t */
+#	define B_PRIdINO		B_PRId64
+#	define B_PRIiINO		B_PRIi64
+	/* time_t */
+#	define B_PRIdTIME		B_PRId32
+#	define B_PRIiTIME		B_PRIi32
+#endif	// !B_PRId8
+
+
+#endif	// ANTARES_BUILD_COMPATIBILITY_H

@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics ati ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics common ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics et6x00 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics intel_extreme ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics matrox ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics neomagic ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics nvidia ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics nvidia_gpgpu ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics radeon ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics s3 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics tdfx ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics skeleton ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics vesa ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics via ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics vmware ;

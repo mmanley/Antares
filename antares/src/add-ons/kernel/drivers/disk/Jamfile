@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src add-ons kernel drivers disk ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers disk acpi_loader ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk floppy ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk scsi ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk usb ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk virtual ;

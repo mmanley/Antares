@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src system libroot posix sys ;
+
+UsePrivateHeaders libroot shared ;
+UsePrivateSystemHeaders ;
+
+MergeObject posix_sys.o :
+	chmod.c
+	flock.c
+	ftime.c
+	ftok.c
+	getrusage.c
+ 	gettimeofday.c
+	itimer.c
+	mkdir.c
+	mkfifo.c
+	mman.cpp
+	rlimit.c
+ 	select.c
+	stat.c
+	statvfs.c
+ 	times.c
+ 	uio.c
+ 	umask.c
+ 	uname.c
+ 	utimes.c
+	wait.c
+	xsi_msg_queue.cpp
+	xsi_sem.cpp
+;

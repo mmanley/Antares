@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src tests servers app workspace_activated ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName os app ] ;
+UseHeaders [ FDirName os interface ] ;
+
+Application WorkspaceActivated :
+	WorkspaceActivated.cpp
+	: be $(TARGET_LIBSTDC++) $(TARGET_LIBSUPC++)
+;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : WorkspaceActivated
+		: tests!apps ;
+}

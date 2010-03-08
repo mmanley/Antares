@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons mail_daemon system_filters parser ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePrivateHeaders mail ;
+UsePublicHeaders [ FDirName add-ons mail_daemon ] ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers os add-ons mail_daemon ] ;
+
+Addon Message\ Parser :
+	filter.cpp ;
+
+LinkAgainst Message\ Parser :
+	 be libmail.so $(TARGET_LIBSUPC++) ;
+
+Package antares-maildaemon-cvs :
+	Message\ Parser :
+	boot home config add-ons mail_daemon system_filters ;

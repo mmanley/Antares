@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src tests add-ons kernel network protocols ;
+
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols icmp ;
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols ipv4 ;
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols udp ;
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols tcp ;
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols raw ;
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols route ;
+

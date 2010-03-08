@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons translators tga ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator TGATranslator :
+	TGAMain.cpp
+	TGATranslator.cpp
+	TGAView.cpp
+	: be translation libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	TGATranslator :
+	boot home config add-ons Translators ;
+

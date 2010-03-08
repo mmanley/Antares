@@ -1,0 +1,62 @@
+SubDir ANTARES_TOP src add-ons kernel file_systems packagefs ;
+
+
+UseLibraryHeaders zlib ;
+UsePrivateKernelHeaders ;
+UsePrivateHeaders antares_package shared ;
+
+DEFINES += B_ENABLE_INCOMPLETE_POSIX_AT_SUPPORT ;
+	# TODO: Remove when it is complete!
+
+
+ANTARES_PACKAGE_FS_SOURCES =
+	BlockBufferCacheKernel.cpp
+	DebugSupport.cpp
+	Directory.cpp
+	GlobalFactory.cpp
+	kernel_interface.cpp
+	LeafNode.cpp
+	Node.cpp
+	Package.cpp
+	PackageDirectory.cpp
+	PackageDomain.cpp
+	PackageFile.cpp
+	PackageLeafNode.cpp
+	PackageNode.cpp
+	PackageNodeAttribute.cpp
+	PackageSymlink.cpp
+	Volume.cpp
+;
+
+ANTARES_PACKAGE_FS_PACKAGE_READER_SOURCES =
+	BlockBufferCache.cpp
+	BufferCache.cpp
+	DataOutput.cpp
+	DataReader.cpp
+	ErrorOutput.cpp
+	PackageEntryAttribute.cpp
+	PackageData.cpp
+	PackageDataReader.cpp
+	PackageEntry.cpp
+	PackageReader.cpp
+
+	# compression
+	ZlibCompressionBase.cpp
+	ZlibDecompressor.cpp
+;
+
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src bin package ] ;
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src bin package compression ] ;
+
+
+KernelAddon packagefs
+	:
+	$(ANTARES_PACKAGE_FS_SOURCES)
+	$(ANTARES_PACKAGE_FS_PACKAGE_READER_SOURCES)
+
+	: $(ANTARES_STATIC_LIBSUPC++) libz.a
+;
+
+
+AntaresSubInclude userland ;

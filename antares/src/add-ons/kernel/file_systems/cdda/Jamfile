@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons kernel file_systems cdda ;
+
+UsePrivateHeaders drivers kernel ;
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders [ FDirName storage ] ;
+
+KernelAddon cdda :
+	kernel_interface.cpp
+	cdda.cpp
+	cddb.cpp
+	;

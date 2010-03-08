@@ -1,0 +1,35 @@
+SubDir ANTARES_TOP src preferences filetypes ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseLibraryHeaders icon ;
+UsePrivateHeaders shared ;
+SubDirSysHdrs $(ANTARES_TOP) src kits tracker ;
+
+Preference FileTypes :
+	FileTypes.cpp
+	FileTypesWindow.cpp
+	ApplicationTypesWindow.cpp
+	AttributeListView.cpp
+	DropTargetListView.cpp
+	MimeTypeListView.cpp
+	NewFileTypeWindow.cpp
+	AttributeWindow.cpp
+	ExtensionWindow.cpp
+
+	ApplicationTypeWindow.cpp
+	FileTypeWindow.cpp
+	TypeListWindow.cpp
+	IconView.cpp
+
+	PreferredAppMenu.cpp
+	StringView.cpp
+	: be tracker $(TARGET_LIBSUPC++)
+	: FileTypes.rdef FileTypes.icons.rdef
+	;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : FileTypes
+		: tests!apps ;
+}

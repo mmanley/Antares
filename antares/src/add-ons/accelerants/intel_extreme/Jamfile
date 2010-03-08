@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons accelerants intel_extreme ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics intel_extreme ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+
+Addon intel_extreme.accelerant :
+	accelerant.cpp
+	cursor.cpp
+	dpms.cpp
+	engine.cpp
+	hooks.cpp
+	memory.cpp
+	mode.cpp
+	overlay.cpp
+#	overlay_3d_i965.cpp
+	: be libaccelerantscommon.a
+;
+
+Package antares-intel_extreme-cvs :
+	intel_extreme.accelerant :
+	boot home config add-ons accelerants ;
+

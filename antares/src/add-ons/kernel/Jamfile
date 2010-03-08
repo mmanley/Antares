@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons kernel ;
+
+SubInclude ANTARES_TOP src add-ons kernel bus_managers ;
+SubInclude ANTARES_TOP src add-ons kernel busses ;
+SubInclude ANTARES_TOP src add-ons kernel console ;
+SubInclude ANTARES_TOP src add-ons kernel cpu ;
+SubInclude ANTARES_TOP src add-ons kernel debugger ;
+SubInclude ANTARES_TOP src add-ons kernel drivers ;
+SubInclude ANTARES_TOP src add-ons kernel file_cache ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems ;
+SubInclude ANTARES_TOP src add-ons kernel interrupt_controllers ;
+SubInclude ANTARES_TOP src add-ons kernel network ;
+SubInclude ANTARES_TOP src add-ons kernel media ;
+SubInclude ANTARES_TOP src add-ons kernel partitioning_systems ;
+SubInclude ANTARES_TOP src add-ons kernel generic ;
+SubInclude ANTARES_TOP src add-ons kernel bluetooth ;

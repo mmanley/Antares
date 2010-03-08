@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons kernel network datalink_protocols ipv4_datagram ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <support/Errors.h> and maybe other stuff.
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UsePrivateHeaders kernel net ;
+
+KernelAddon ipv4_datagram :
+	ipv4_datagram.cpp
+;
+
+# Installation
+AntaresInstall install-networking : /boot/home/config/add-ons/kernel/antares_network/datalink_protocols
+	: ipv4_datagram ;
+
+Package antares-networkingkit-cvs :
+	antares :
+	boot home config add-ons kernel antares_network datalink_protocols ;

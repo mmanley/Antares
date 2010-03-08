@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src bin bc ;
+
+SubInclude ANTARES_TOP src bin bc lib ;
+SubInclude ANTARES_TOP src bin bc bc ; 
+SubInclude ANTARES_TOP src bin bc dc ; 

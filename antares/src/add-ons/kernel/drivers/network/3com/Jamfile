@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network 3com ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network 3com dev ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network 3com pci ;

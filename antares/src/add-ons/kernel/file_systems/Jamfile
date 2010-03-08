@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons kernel file_systems ;
+
+SubInclude ANTARES_TOP src add-ons kernel file_systems bfs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems cdda ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems ext2 ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems fat ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems googlefs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems iso9660 ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems netfs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems nfs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems ntfs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems packagefs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems ramfs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems reiserfs ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems udf ;
+SubInclude ANTARES_TOP src add-ons kernel file_systems userlandfs ;
+
+SubInclude ANTARES_TOP src add-ons kernel file_systems layers ;

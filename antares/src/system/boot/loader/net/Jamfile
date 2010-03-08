@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src system boot loader net ;
+
+UsePrivateHeaders kernel [ FDirName kernel boot platform $(TARGET_BOOT_PLATFORM) ] ;
+
+SubDirC++Flags -fno-rtti ;
+
+KernelStaticLibrary boot_net :
+	ARP.cpp
+	ChainBuffer.cpp
+	Ethernet.cpp
+	IP.cpp
+	NetDefs.cpp
+	NetStack.cpp
+	RemoteDisk.cpp
+	UDP.cpp
+
+	: -fno-pic
+;

@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tests add-ons kernel file_systems random_file_actions ;
+
+SimpleTest random_file_actions
+	: random_file_actions.cpp
+	: $(TARGET_LIBSTDC++)
+;

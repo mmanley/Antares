@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network wlan ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan ipw2100 ;
+
+#FreeBSD 8 WLAN drivers
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan aironetwifi ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan atheroswifi ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan broadcom43xx ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan iprowifi2100 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan iprowifi2200 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan iprowifi3945 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan iprowifi4965 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan marvell88w8363 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan marvell88w8335 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan ralinkwifi ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan wavelanwifi ;

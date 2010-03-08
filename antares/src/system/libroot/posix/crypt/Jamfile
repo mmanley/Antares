@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src system libroot posix crypt ;
+
+# filter warnings we don't want here
+TARGET_WARNING_CCFLAGS = [ FFilter $(TARGET_WARNING_CCFLAGS)
+	: -Wall -Wmissing-prototypes -Wsign-compare ] ;
+
+MergeObject posix_crypt.o :
+	crypt.c
+	crypt_util.c
+;

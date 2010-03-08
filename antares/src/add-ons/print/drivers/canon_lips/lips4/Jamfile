@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src add-ons print drivers canon_lips lips4 ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers libs print libprint ] ;
+
+AddResources Canon\ LIPS4\ Compatible : Lips4.rdef ;
+
+Addon Canon\ LIPS4\ Compatible :
+	Lips4Entry.cpp
+	Lips4.cpp
+	Lips4Cap.cpp
+	: be libprint.a $(TARGET_LIBSTDC++)
+;
+
+Package antares-printingkit-cvs :
+	Canon\ LIPS4\ Compatible :
+	boot home config add-ons Print ;
+

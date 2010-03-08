@@ -1,0 +1,34 @@
+SubDir ANTARES_TOP src add-ons kernel drivers midi usb_midi ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+local buffer_impl = ;
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os drivers ] : true ;
+                # We need the public usb headers also when not compiling for Antares.
+	buffer_impl = ring_buffer.cpp ;
+}
+UsePrivateHeaders [ FDirName kernel util ] ;
+
+KernelAddon usb_midi :
+	usb_midi.c
+	devlist.c
+	$(buffer_impl)
+;
+
+SEARCH on [ FGristFiles ring_buffer.cpp ] = [ FDirName $(ANTARES_TOP) src system kernel util ] ;
+
+ObjectHdrs [ FGristFiles usb_midi$(SUFOBJ) ]
+	: [ FDirName $(TARGET_COMMON_DEBUG_OBJECT_DIR) apps devices ] ;
+
+Includes [ FGristFiles usb_midi.c ] :
+	<src!apps!devices>usbdevs.h <src!apps!devices>usbdevs_data.h ;
+
+Package antares-usbmidi-cvs
+	:
+	usb_midi
+	:
+	boot home config add-ons kernel drivers bin ;
+
+PackageDriverSymLink antares-usbmidi-cvs : midi usb_midi ;
+

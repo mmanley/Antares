@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src system boot loader file_systems tarfs ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers libs zlib ] ;
+
+UsePrivateHeaders [ FDirName kernel boot platform $(TARGET_BOOT_PLATFORM) ] ;
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders kernel shared storage ;
+SubDirSysHdrs $(ANTARES_TOP) headers libs zlib ;
+
+local defines = [ FDefines _BOOT_MODE ] ;
+SubDirCcFlags $(defines) ;
+SubDirC++Flags -fno-rtti $(defines) ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src libs zlib ] ;
+
+
+KernelStaticLibrary boot_zlib :
+	inflate.c
+	inffast.c
+	inftrees.c
+	adler32.c
+	crc32.c
+	zutil.c
+	: -fno-pic
+	;
+
+
+KernelStaticLibrary boot_tarfs :
+	tarfs.cpp
+	: -fno-pic
+	;

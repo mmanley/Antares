@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src apps text_search ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared ;
+UsePrivateHeaders storage ;
+
+local additionalBeOSSources ;
+if $(TARGET_PLATFORM) != antares {
+	SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src kits storage ] ;
+	additionalBeOSSources += PathMonitor.cpp ;
+}
+
+Application TextSearch :
+	ChangesIterator.cpp
+	FileIterator.cpp
+	InitialIterator.cpp
+	GrepApp.cpp
+	GrepListView.cpp
+	Grepper.cpp
+	GrepWindow.cpp
+	Model.cpp
+	TextSearch.cpp
+
+	$(additionalBeOSSources)
+
+	: be tracker textencoding libshared.a $(TARGET_LIBSUPC++)
+	: TextSearch.rdef
+;

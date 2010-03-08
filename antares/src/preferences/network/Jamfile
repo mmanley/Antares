@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src preferences network ;
+
+UsePrivateHeaders shared ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers net ] : true ;
+
+Preference Network :
+	NetworkApp.cpp
+	NetworkWindow.cpp
+	EthernetSettingsView.cpp
+	Settings.cpp
+
+	: be $(ANTARES_NETWORK_LIBS) $(TARGET_LIBSUPC++) liblocale.so
+	: Network.rdef
+;
+
+DoCatalogs Network :
+	x-vnd.Antares-Network
+	:
+	EthernetSettingsView.cpp
+	NetworkWindow.cpp
+	: en.catalog
+	: bg.catkeys pt_br.catkeys de.catkeys fr.catkeys hu.catkeys it.catkeys
+	  lt.catkeys pl.catkeys pt.catkeys ru.catkeys sv.catkeys uk.catkeys
+	;

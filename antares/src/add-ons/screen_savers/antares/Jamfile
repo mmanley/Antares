@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons screen_savers antares ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders screen_saver ;
+	# For BuildScreenSaverDefaultSettingsView
+
+Addon Antares :
+	ScreenSaver.cpp
+	: be screensaver $(TARGET_LIBSUPC++)
+;
+

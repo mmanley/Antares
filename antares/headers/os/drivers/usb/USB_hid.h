@@ -1,0 +1,142 @@
+/*
+ * Copyright 2004-2009, Antares Inc. All Rights Reserved.
+ * Distributed under the terms of the MIT License.
+ */
+#ifndef _USB_HID_H
+#define _USB_HID_H
+
+
+#include <SupportDefs.h>
+
+
+// (Partial) USB Class Definitions for HID Devices, version 1.11
+// Reference: http://www.usb.org/developers/devclass_docs/hid1_11.pdf
+
+#define USB_HID_DEVICE_CLASS 			0x03
+#define USB_HID_CLASS_VERSION			0x0100
+
+// HID Interface Subclasses
+enum {
+	USB_HID_INTERFACE_NO_SUBCLASS	= 0x00,	//  No Subclass
+	USB_HID_INTERFACE_BOOT_SUBCLASS			//	Boot Interface Subclass
+};
+
+// HID Class-Specific descriptor subtypes
+enum {
+	USB_HID_DESCRIPTOR_HID			= 0x21,
+	USB_HID_DESCRIPTOR_REPORT,
+	USB_HID_DESCRIPTOR_PHYSICAL
+};
+
+// HID Class-specific requests
+enum {
+	USB_REQUEST_HID_GET_REPORT		= 0x01,
+	USB_REQUEST_HID_GET_IDLE,
+	USB_REQUEST_HID_GET_PROTOCOL,
+
+	USB_REQUEST_HID_SET_REPORT		= 0x09,
+	USB_REQUEST_HID_SET_IDLE,
+	USB_REQUEST_HID_SET_PROTOCOL
+};
+
+typedef struct {
+	uint8	length;
+	uint8	descriptor_type;
+	uint16	hid_version;
+	uint8	country_code;
+	uint8	num_descriptors;
+	struct {
+		uint8	descriptor_type;
+		uint16	descriptor_length;
+	} _PACKED descriptor_info [1];
+} _PACKED usb_hid_descriptor;
+
+
+/* Usage Pages/IDs */
+
+enum {
+	HID_USAGE_PAGE_GENERIC_DESKTOP = 0x1,
+	HID_USAGE_PAGE_SIMULATION,
+	HID_USAGE_PAGE_VR,
+	HID_USAGE_PAGE_SPORT,
+	HID_USAGE_PAGE_GAME,
+	HID_USAGE_PAGE_GENERIC,
+	HID_USAGE_PAGE_KEYBOARD,
+	HID_USAGE_PAGE_LED,
+	HID_USAGE_PAGE_BUTTON,
+	HID_USAGE_PAGE_ORDINAL,
+	HID_USAGE_PAGE_TELEPHONY,
+	HID_USAGE_PAGE_CONSUMER,
+	HID_USAGE_PAGE_DIGITIZER,
+	HID_USAGE_PAGE_PID = 0xf,
+	HID_USAGE_PAGE_UNICODE,
+	HID_USAGE_PAGE_ALPHANUM_DISPLAY = 0x14,
+	HID_USAGE_PAGE_MEDICAL = 0x40,
+	HID_USAGE_PAGE_MICROSOFT = 0xff00
+};
+
+/* Page 1: Generic Desktop */
+
+enum {
+	HID_USAGE_ID_POINTER = 0x1,
+	HID_USAGE_ID_MOUSE,
+	HID_USAGE_ID_JOYSTICK = 0x4,
+	HID_USAGE_ID_GAMEPAD,
+	HID_USAGE_ID_KEYBOARD,
+	HID_USAGE_ID_KEYPAD,
+	HID_USAGE_ID_MULTIAXIS = 0x8,
+
+	HID_USAGE_ID_X = 0x30,
+	HID_USAGE_ID_Y,
+	HID_USAGE_ID_Z,
+	HID_USAGE_ID_RX,
+	HID_USAGE_ID_RY,
+	HID_USAGE_ID_RZ,
+	HID_USAGE_ID_SLIDER,
+	HID_USAGE_ID_DIAL,
+	HID_USAGE_ID_WHEEL,
+	HID_USAGE_ID_HAT_SWITCH,
+	HID_USAGE_ID_COUNTED_BUFFER,
+	HID_USAGE_ID_BYTE_COUNT,
+	HID_USAGE_ID_MOTION_WAKEUP,
+	HID_USAGE_ID_START,
+	HID_USAGE_ID_SELECT,
+	HID_USAGE_ID_VX = 0x40,
+	HID_USAGE_ID_VY,
+	HID_USAGE_ID_VZ,
+	HID_USAGE_ID_VBRX,
+	HID_USAGE_ID_VBRY,
+	HID_USAGE_ID_VBRZ,
+	HID_USAGE_ID_VNO,
+	HID_USAGE_ID_FEATURE_NOTIFICATION
+};
+
+/* Page 2: Simulation */
+
+enum {
+	HID_USAGE_ID_RUDDER = 0xba,
+	HID_USAGE_ID_THROTTLE = 0xbb,
+};
+
+/* Page 7: Keyboard */
+
+enum {
+	HID_USAGE_ID_LEFT_CONTROL = 0xe0,
+	HID_USAGE_ID_LEFT_SHIFT,
+	HID_USAGE_ID_LEFT_ALT,
+	HID_USAGE_ID_LEFT_GUI,
+	HID_USAGE_ID_RIGHT_CONTROL,
+	HID_USAGE_ID_RIGHT_SHIFT,
+	HID_USAGE_ID_RIGHT_ALT,
+	HID_USAGE_ID_RIGHT_GUI
+};
+
+/* Page 8: LED */
+
+enum {
+	HID_USAGE_ID_LED_NUM_LOCK = 0x01,
+	HID_USAGE_ID_LED_CAPS_LOCK,
+	HID_USAGE_ID_LED_SCROLL_LOCK
+};
+
+#endif	// _USB_HID_H

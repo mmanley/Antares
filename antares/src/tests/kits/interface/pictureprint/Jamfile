@@ -1,0 +1,37 @@
+SubDir ANTARES_TOP src tests kits interface pictureprint ;
+
+UsePrivateHeaders interface print ;
+
+SimpleTest TestPictureApp :
+	PictureTestApp.cpp
+	PictureTestView.cpp
+	TestView.cpp
+	PictureTestWindow.cpp
+	;	
+
+LinkAgainst TestPictureApp :
+	be
+	root
+	libprintutils.a
+	$(TARGET_LIBSUPC++)
+	;
+
+SimpleTest DumpPrintJob :
+	DumpPrintJob.cpp
+	;
+
+LinkAgainst DumpPrintJob :
+	be
+	root
+	libprintutils.a
+	;
+
+SimpleTest ShowPrintJob :
+	Preview.cpp
+	;
+
+LinkAgainst ShowPrintJob :
+	be
+	root
+	libprintutils.a
+	;

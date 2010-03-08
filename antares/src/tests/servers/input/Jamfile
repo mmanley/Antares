@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src tests servers input ;
+
+SubInclude ANTARES_TOP src tests servers input comm ;
+SubInclude ANTARES_TOP src tests servers input inputdevice ;
+SubInclude ANTARES_TOP src tests servers input msgspy ;
+SubInclude ANTARES_TOP src tests servers input portspy ;
+SubInclude ANTARES_TOP src tests servers input prefs ;
+SubInclude ANTARES_TOP src tests servers input replicant ;
+SubInclude ANTARES_TOP src tests servers input view_input_device ;

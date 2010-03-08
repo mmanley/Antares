@@ -1,0 +1,36 @@
+SubDir ANTARES_TOP src add-ons kernel busses scsi usb ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders [ FDirName drivers ] ;
+}
+
+UsePrivateHeaders drivers ;
+
+KernelAddon usb_scsi :
+	usb_scsi.c
+	tracing.c
+	transform_procs.c
+	proto_common.c
+	proto_bulk.c
+	proto_cbi.c
+	settings.c
+	fake_device.c
+	sg_buffer.c
+;
+
+# BUILD_LOG_DAEMON
+#App usb_scsi_logging : kernel drivers busses scsi :
+#	tracing.c
+#	tracing_daemon.c
+#;
+
+Package antares-usb_scsi-cvs
+	:
+	usb_scsi
+	:
+	boot home config add-ons kernel busses scsi ;
+
+Package antares-usb_scsi-cvs : <usb_scsi!driver>usb_scsi.settings.sample
+        : boot home config settings kernel drivers sample ;

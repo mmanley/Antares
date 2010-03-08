@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src tests servers app benchmark ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName os app ] ;
+UseHeaders [ FDirName os interface ] ;
+
+Application Benchmark :
+	Benchmark.cpp
+	DrawingModeToString.cpp
+	HorizontalLineTest.cpp
+	RandomLineTest.cpp
+	StringTest.cpp
+	Test.cpp
+	TestWindow.cpp
+	VerticalLineTest.cpp
+	: be $(TARGET_LIBSUPC++)
+;
+
+if ( $(TARGET_PLATFORM) = libbe_test ) {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : Benchmark
+		: tests!apps ;
+}
+

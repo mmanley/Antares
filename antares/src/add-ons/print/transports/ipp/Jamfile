@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src add-ons print transports ipp ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons print transports shared ] ;
+
+Addon IPP : 
+	Ipp.cpp
+	IppSetupDlg.cpp
+	IppTransport.cpp
+	HttpURLConnection.cpp
+	IppContent.cpp
+	IppURLConnection.cpp
+	URL.cpp
+	Socket.o
+	SocketStream.o
+	DbgMsg.o
+	: be $(TARGET_NETWORK_LIBS) $(TARGET_LIBSTDC++)
+;
+
+ObjectReferences
+	<src!add-ons!print!transports!shared>Socket.o
+	<src!add-ons!print!transports!shared>SocketStream.o
+	<src!add-ons!print!transports!shared>DbgMsg.o
+;
+
+Package antares-printingkit-cvs :
+	IPP :
+	boot home config add-ons Print transport ;

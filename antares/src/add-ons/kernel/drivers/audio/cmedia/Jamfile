@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio cmedia ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders audio ;
+
+KernelAddon cmedia :
+	cm.c
+	joy.c
+	midi.c
+	mixer.c
+	mux.c
+	pcm.c
+;
+
+Package antares-cmedia-cvs
+	:
+	cmedia
+	:
+	boot home config add-ons kernel drivers bin ;
+
+PackageDriverSymLink antares-cmedia-cvs : audio cmedia ;

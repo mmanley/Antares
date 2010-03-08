@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src apps cdplayer ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Application CDPlayer : 
+	CDAudioDevice.cpp
+	CDDBSupport.cpp
+	CDPlayer.cpp
+	DoubleShotDrawButton.cpp
+	DrawButton.cpp
+	PlayList.cpp
+	TwoStateDrawButton.cpp
+	VolumeSlider.cpp
+
+	: be $(TARGET_SELECT_UNAME_ETC_LIB) $(TARGET_NETAPI_LIB) $(TARGET_LIBSTDC++)
+		translation textencoding
+	: CDPlayer.rdef
+;

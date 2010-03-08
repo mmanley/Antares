@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src apps debuganalyzer gui table ;
+
+UsePrivateHeaders debug interface kernel shared ;
+UsePrivateSystemHeaders ;
+
+UseHeaders $(ANTARES_DEBUG_ANALYZER_HEADERS) ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+MergeObject DebugAnalyzer_gui_table.o
+	:
+	AbstractTable.cpp
+	Table.cpp
+	TableColumn.cpp
+	TableColumns.cpp
+	TreeTable.cpp
+;

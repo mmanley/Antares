@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src tests servers app avoid_focus ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName os app ] ;
+UseHeaders [ FDirName os interface ] ;
+
+Application AvoidFocus :
+	AvoidFocus.cpp
+	: be $(TARGET_LIBSUPC++)
+;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : AvoidFocus
+		: tests!apps ;
+}
+

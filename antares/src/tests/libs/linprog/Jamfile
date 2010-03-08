@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src tests libs linprog ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseLibraryHeaders lp_solve linprog ;
+
+SimpleTest linprog_test :
+	Program.cpp
+	:
+	be liblpsolve55.so liblinprog.so $(TARGET_LIBSUPC++)
+;

@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src servers debug ;
+
+UsePrivateHeaders app ;
+UsePrivateHeaders debug ;
+UsePrivateHeaders kernel ;
+UsePrivateHeaders shared ;
+
+AddResources debug_server : debug_server.rdef ;
+
+Server debug_server
+ 	:
+ 	DebugServer.cpp
+	:
+	libroot.so	# Antares libroot
+	libbe.so	# Antares libbe
+	libdebug.so
+	$(TARGET_LIBSTDC++)
+;

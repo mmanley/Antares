@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src add-ons media plugins ogg ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+SubDirSysHdrs [ FDirName $(SUBDIR) libogg ] ;
+
+Addon ogg :
+	OggReaderPlugin.cpp
+	OggTrack.cpp
+	OggStream.cpp
+	OggSeekable.cpp
+	OggSpeexStream.cpp
+	OggSpeexSeekable.cpp
+	OggTheoraStream.cpp
+	OggTobiasStream.cpp
+	OggTobiasSeekable.cpp
+	OggVorbisStream.cpp
+	OggVorbisSeekable.cpp
+	: libogg.a be libmedia.so $(TARGET_LIBSTDC++)
+;
+
+SubInclude ANTARES_TOP src add-ons media plugins ogg libogg ;

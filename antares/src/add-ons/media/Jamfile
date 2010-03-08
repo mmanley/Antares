@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons media ;
+
+SubInclude ANTARES_TOP src add-ons media media-add-ons ;
+SubInclude ANTARES_TOP src add-ons media plugins ;

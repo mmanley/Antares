@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons mail_daemon system_filters outbox ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePrivateHeaders mail ;
+UsePublicHeaders [ FDirName add-ons mail_daemon ] ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers os add-ons mail_daemon ] ;
+
+Addon Outbox :
+	filter.cpp ;
+
+LinkAgainst Outbox :
+	 be libmail.so $(TARGET_LIBSUPC++) ;
+
+Package antares-maildaemon-cvs :
+	Outbox :
+	boot home config add-ons mail_daemon system_filters ;

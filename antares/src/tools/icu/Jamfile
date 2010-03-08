@@ -1,0 +1,33 @@
+SubDir ANTARES_TOP src tools icu ;
+
+SubInclude ANTARES_TOP src tools icu genbrk ;
+SubInclude ANTARES_TOP src tools icu gencfu ;
+SubInclude ANTARES_TOP src tools icu gencnval ;
+SubInclude ANTARES_TOP src tools icu genctd ;
+SubInclude ANTARES_TOP src tools icu gennames ;
+SubInclude ANTARES_TOP src tools icu genpname ;
+SubInclude ANTARES_TOP src tools icu genrb ;
+SubInclude ANTARES_TOP src tools icu gensprep ;
+SubInclude ANTARES_TOP src tools icu genuca ;
+SubInclude ANTARES_TOP src tools icu icupkg ;
+SubInclude ANTARES_TOP src tools icu makeconv ;
+SubInclude ANTARES_TOP src tools icu pkgdata ;
+
+# Pseudo target to build all ICU build tools
+NotFile ICU_BuildTools ;
+Depends ICU_BuildTools
+	:
+	<build>genbrk
+	<build>gencfu
+	<build>gencnval
+	<build>genctd
+	<build>gennames
+	<build>genpname
+	<build>genrb <build>derb
+	<build>gensprep
+	<build>genuca
+	<build>icupkg
+	<build>makeconv
+	<build>pkgdata
+	;
+ 

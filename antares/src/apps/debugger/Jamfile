@@ -1,0 +1,251 @@
+SubDir ANTARES_TOP src apps debugger ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+UsePrivateHeaders debug interface kernel shared ;
+UsePrivateSystemHeaders ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) arch ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) arch x86 ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) debug_info ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) debugger_interface ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) elf ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) files ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) ids ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) model ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) settings ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) settings generic ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) source_language ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) types ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) user_interface ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) user_interface gui ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) user_interface gui model ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) user_interface gui team_window ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) user_interface gui util ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) user_interface gui value ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) util ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) value ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) value value_handlers ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) value value_nodes ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) value values ] ;
+
+local debugAnalyzerSources
+	= [ FDirName $(ANTARES_TOP) src apps debuganalyzer ] ;
+
+SubDirHdrs [ FDirName $(SUBDIR) demangler ] ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) src bin debug ] ;
+SubDirHdrs [ FDirName $(debugAnalyzerSources) gui ] ;
+
+SourceHdrs
+	DwarfFunctionDebugInfo.cpp
+	DwarfImageDebugInfo.cpp
+	DwarfStackFrameDebugInfo.cpp
+	DwarfTeamDebugInfo.cpp
+	DwarfTypeFactory.cpp
+	DwarfTypes.cpp
+	: [ FDirName $(SUBDIR) dwarf ]
+;
+
+Application Debugger :
+	BreakpointManager.cpp
+	Debugger.cpp
+	Jobs.cpp
+	TeamDebugger.cpp
+	ThreadHandler.cpp
+	Worker.cpp
+
+	# arch
+	Architecture.cpp
+	CpuState.cpp
+	InstructionInfo.cpp
+	Register.cpp
+	RegisterMap.cpp
+
+	# arch/x86
+	ArchitectureX86.cpp
+	CpuStateX86.cpp
+
+	# debug_info
+	BasicFunctionDebugInfo.cpp
+	DebuggerImageDebugInfo.cpp
+	DebuggerTeamDebugInfo.cpp
+	DwarfFunctionDebugInfo.cpp
+	DwarfImageDebugInfo.cpp
+	DwarfStackFrameDebugInfo.cpp
+	DwarfTeamDebugInfo.cpp
+	DwarfTypeFactory.cpp
+	DwarfTypes.cpp
+	Function.cpp
+	FunctionDebugInfo.cpp
+	FunctionInstance.cpp
+	GlobalTypeLookup.cpp
+	ImageDebugInfo.cpp
+	ImageDebugInfoProvider.cpp
+	NoOpStackFrameDebugInfo.cpp
+	SpecificImageDebugInfo.cpp
+	SpecificTeamDebugInfo.cpp
+	StackFrameDebugInfo.cpp
+	TeamDebugInfo.cpp
+
+	# debugger_interface
+	DebugEvent.cpp
+	DebuggerInterface.cpp
+
+	# elf
+	ElfFile.cpp
+
+	# files
+	FileManager.cpp
+	LocatableDirectory.cpp
+	LocatableEntry.cpp
+	LocatableFile.cpp
+	SourceFile.cpp
+
+	# ids
+	FunctionID.cpp
+	LocalVariableID.cpp
+	ObjectID.cpp
+	FunctionParameterID.cpp
+
+	# model
+	Breakpoint.cpp
+	DisassembledCode.cpp
+	FileSourceCode.cpp
+	Image.cpp
+	ImageInfo.cpp
+	SourceCode.cpp
+	StackFrame.cpp
+	StackFrameValues.cpp
+	StackFrameValueInfos.cpp
+	StackTrace.cpp
+	Statement.cpp
+	SymbolInfo.cpp
+	UserBreakpoint.cpp
+	Team.cpp
+	TeamMemory.cpp
+	Thread.cpp
+	ThreadInfo.cpp
+	Type.cpp
+	TypeComponentPath.cpp
+	Variable.cpp
+
+	# settings
+	BreakpointSetting.cpp
+	TeamSettings.cpp
+	SettingsManager.cpp
+
+	# settings/generic
+	Setting.cpp
+	Settings.cpp
+	SettingsDescription.cpp
+
+	# source_language
+	CLanguage.cpp
+	CLanguageFamily.cpp
+	CppLanguage.cpp
+	SourceLanguage.cpp
+	SyntaxHighlighter.cpp
+	UnsupportedLanguage.cpp
+	X86AssemblyLanguage.cpp
+
+	# types
+	ArrayIndexPath.cpp
+	TargetAddressRangeList.cpp
+	ValueLocation.cpp
+
+	# user_interface
+	UserInterface.cpp
+
+	# user_interface/gui
+	GraphicalUserInterface.cpp
+
+	# user_interface/gui/model
+	VariablesViewState.cpp
+	VariablesViewStateHistory.cpp
+
+	# user_interface/gui/team_window
+	BreakpointListView.cpp
+	BreakpointsView.cpp
+	ImageFunctionsView.cpp
+	ImageListView.cpp
+	RegistersView.cpp
+	SourceView.cpp
+	StackTraceView.cpp
+	TeamWindow.cpp
+	ThreadListView.cpp
+	VariablesView.cpp
+
+	# user_interface/gui/util
+	SettingsMenu.cpp
+	TargetAddressTableColumn.cpp
+
+	# user_interface/gui/value
+	TableCellBoolRenderer.cpp
+	TableCellEnumerationRenderer.cpp
+	TableCellFloatRenderer.cpp
+	TableCellIntegerRenderer.cpp
+	TableCellStringRenderer.cpp
+	TableCellValueRenderer.cpp
+	TableCellValueRendererUtils.cpp
+
+	# util
+	ArchivingUtils.cpp
+	BitBuffer.cpp
+	IntegerFormatter.cpp
+	StringUtils.cpp
+
+	# value
+	TypeHandler.cpp
+	TypeHandlerRoster.cpp
+	Value.cpp
+	ValueHandler.cpp
+	ValueHandlerRoster.cpp
+	ValueLoader.cpp
+	ValueNode.cpp
+	ValueNodeContainer.cpp
+
+	# value/value_handlers
+	AddressValueHandler.cpp
+	BoolValueHandler.cpp
+	EnumerationValueHandler.cpp
+	FloatValueHandler.cpp
+	IntegerValueHandler.cpp
+
+	# value/value_nodes
+	AddressValueNode.cpp
+	ArrayValueNode.cpp
+	CompoundValueNode.cpp
+	EnumerationValueNode.cpp
+	PointerToMemberValueNode.cpp
+	PrimitiveValueNode.cpp
+	VariableValueNodeChild.cpp
+
+	# value/values
+	AddressValue.cpp
+	BoolValue.cpp
+	EnumerationValue.cpp
+	FloatValue.cpp
+	IntegerValue.cpp
+
+	:
+	<nogrist>Debugger_demangler.o
+	<nogrist>Debugger_disasm_x86.o
+	<nogrist>Debugger_dwarf.o
+	<nogrist>DebugAnalyzer_gui_table.o
+
+	libudis86.a
+	<bin>debug_utils.a
+	libcolumnlistview.a
+	libshared.a
+
+	$(TARGET_LIBSTDC++)
+	be libdebug.so
+
+	: Debugger.rdef
+;
+
+AntaresSubInclude arch x86 disasm ;
+AntaresSubInclude demangler ;
+AntaresSubInclude dwarf ;
+AntaresSubInclude user_interface gui running_teams_window ;

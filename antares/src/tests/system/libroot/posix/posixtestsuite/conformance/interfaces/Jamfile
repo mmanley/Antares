@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src tests system libroot posix posixtestsuite conformance interfaces ;
+
+AntaresSubInclude difftime ;
+AntaresSubInclude fork ;
+AntaresSubInclude kill ;
+AntaresSubInclude pthread_attr_destroy ;
+AntaresSubInclude pthread_create ;
+AntaresSubInclude pthread_key_create ;
+AntaresSubInclude pthread_key_delete ;
+AntaresSubInclude pthread_getspecific ;
+AntaresSubInclude pthread_once ;
+AntaresSubInclude pthread_setspecific ;
+AntaresSubInclude sighold ;
+AntaresSubInclude sigignore ;
+AntaresSubInclude sigprocmask ;
+AntaresSubInclude sigrelse ;
+AntaresSubInclude signal ;
+AntaresSubInclude sigset ;
+AntaresSubInclude sigsuspend ;

@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src system boot platform ;
+
+if $(TARGET_BOOT_PLATFORM) {
+	SubInclude ANTARES_TOP src system boot platform $(TARGET_BOOT_PLATFORM) ;
+}

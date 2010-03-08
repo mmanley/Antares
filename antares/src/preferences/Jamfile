@@ -1,0 +1,30 @@
+SubDir ANTARES_TOP src preferences ;
+
+SubInclude ANTARES_TOP src preferences appearance ;
+SubInclude ANTARES_TOP src preferences backgrounds ;
+SubInclude ANTARES_TOP src preferences bluetooth ;
+SubInclude ANTARES_TOP src preferences cpufrequency ;
+SubInclude ANTARES_TOP src preferences datatranslations ;
+SubInclude ANTARES_TOP src preferences deskbar ;
+#SubInclude ANTARES_TOP src preferences dun ;
+SubInclude ANTARES_TOP src preferences filetypes ;
+SubInclude ANTARES_TOP src preferences fonts ;
+SubInclude ANTARES_TOP src preferences joysticks ;
+SubInclude ANTARES_TOP src preferences keyboard ;
+SubInclude ANTARES_TOP src preferences keymap ;
+SubInclude ANTARES_TOP src preferences locale ;
+SubInclude ANTARES_TOP src preferences mail ;
+SubInclude ANTARES_TOP src preferences media ;
+SubInclude ANTARES_TOP src preferences mouse ;
+SubInclude ANTARES_TOP src preferences network ;
+SubInclude ANTARES_TOP src preferences opengl ;
+SubInclude ANTARES_TOP src preferences print ;
+SubInclude ANTARES_TOP src preferences screen ;
+SubInclude ANTARES_TOP src preferences screensaver ;
+SubInclude ANTARES_TOP src preferences shortcuts ;
+SubInclude ANTARES_TOP src preferences sounds ;
+SubInclude ANTARES_TOP src preferences time ;
+SubInclude ANTARES_TOP src preferences touchpad ;
+SubInclude ANTARES_TOP src preferences tracker ;
+SubInclude ANTARES_TOP src preferences virtualmemory ;
+

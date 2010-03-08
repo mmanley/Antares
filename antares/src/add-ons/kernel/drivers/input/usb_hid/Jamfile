@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src add-ons kernel drivers input usb_hid ;
+
+SubDirC++Flags -fno-rtti ;
+
+SubDirSysHdrs $(ANTARES_TOP) headers os drivers ;
+UsePrivateHeaders [ FDirName kernel util ] input drivers ;
+UsePrivateKernelHeaders ;
+
+KernelAddon usb_hid :
+	DeviceList.cpp
+	Driver.cpp
+	HIDDevice.cpp
+	KeyboardDevice.cpp
+	MouseDevice.cpp
+	ProtocolHandler.cpp
+
+	HIDCollection.cpp
+	HIDParser.cpp
+	HIDReport.cpp
+	HIDReportItem.cpp
+;

@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src add-ons kernel busses scsi ahci ;
+
+UsePrivateHeaders drivers ;
+UsePrivateKernelHeaders ;
+
+KernelAddon ahci :
+	ahci.c
+	ahci_controller.cpp
+	ahci_port.cpp
+	ahci_sim.cpp
+	sata_request.cpp
+	util.c
+	;

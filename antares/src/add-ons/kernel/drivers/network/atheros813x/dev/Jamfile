@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network atheros813x dev ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network atheros813x dev mii ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network atheros813x dev alc ;

@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers pci arch ppc ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) ] ;
+UsePrivateHeaders kernel [ FDirName kernel arch $(TARGET_ARCH) ] 
+	[ FDirName kernel boot platform $(ANTARES_BOOT_PLATFORM) ] ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) openfirmware ] ;
+
+KernelStaticLibrary pci_arch_bus_manager :
+	pci_controller.cpp
+	pci_io.c
+
+	# openfirmware
+	pci_openfirmware.cpp
+	uninorth.cpp
+;

@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src bin zic ;
+
+SubDirCcFlags -DNOID -DHAVE_STDINT_H=0 ;
+
+UsePrivateHeaders [ FDirName libroot time ] ;
+
+BuildPlatformMain zic :
+	zic.c
+	scheck.c
+	ialloc.c
+;
+
+BuildPlatformMain zdump :
+	zdump.c 
+	ialloc.c
+;

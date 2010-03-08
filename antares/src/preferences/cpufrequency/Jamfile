@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src preferences cpufrequency ;
+
+UsePrivateHeaders shared ;
+
+Preference CPUFrequency :
+	ColorStepView.cpp
+	CPUFrequencyView.cpp
+	DriverInterface.cpp
+	main.cpp
+	StatusView.cpp
+	: be $(TARGET_LIBSUPC++) liblocale.so
+	: cpufrequency.rdef
+	;
+
+DoCatalogs CPUFrequency :
+	x-vnd.Antares-CPUFrequencyPref
+	:
+	ColorStepView.cpp
+	CPUFrequencyView.cpp
+	main.cpp
+	StatusView.cpp
+	PreferencesWindow.h
+	: en.catalog
+	: bg.catkeys de.catkeys eo.catkeys fi.catkeys fr.catkeys hu.catkeys
+	  it.catkeys lt.catkeys pt.catkeys pt_br.catkeys ru.catkeys sv.catkeys uk.catkeys
+	;
+

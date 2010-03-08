@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src bin bash lib glob ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# filter warnings we don't want here
+TARGET_WARNING_CCFLAGS = [ FFilter $(TARGET_WARNING_CCFLAGS)
+	: -Wall -Wmissing-prototypes -Wsign-compare ] ;
+
+SubDirCcFlags -DHAVE_CONFIG_H -DSHELL ;
+
+SubDirSysHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) include ] ;
+
+StaticLibrary <bash>libglob.a : 
+	glob.c 
+	strmatch.c 
+	smatch.c 
+	xmbsrtowcs.c
+;

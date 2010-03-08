@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src apps tracker ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UsePrivateHeaders shared ;
+UsePrivateHeaders tracker ;
+SubDirHdrs $(ANTARES_TOP) src kits tracker ;
+
+Application Tracker :
+	main.cpp
+	: be tracker
+	: Tracker.rdef
+	;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : Tracker
+		: tests!apps ;
+}
+

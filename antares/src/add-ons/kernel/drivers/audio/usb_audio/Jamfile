@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio usb_audio ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders audio ;
+
+KernelAddon usb_audio :
+	usb_audio.c
+	USB_audio_utils.c
+;
+

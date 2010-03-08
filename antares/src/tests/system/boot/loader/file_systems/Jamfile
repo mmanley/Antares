@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src tests system boot loader file_systems ;
+
+SubInclude ANTARES_TOP src tests system boot loader file_systems amiga_ffs ;
+SubInclude ANTARES_TOP src tests system boot loader file_systems bfs ;
+SubInclude ANTARES_TOP src tests system boot loader file_systems tarfs ;

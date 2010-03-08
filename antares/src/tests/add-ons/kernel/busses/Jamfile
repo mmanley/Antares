@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tests add-ons kernel busses ;
+
+SubInclude ANTARES_TOP src tests add-ons kernel busses scsi ;
+SubInclude ANTARES_TOP src tests add-ons kernel busses usb ;

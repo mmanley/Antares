@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src bin multiuser ;
+
+UsePrivateSystemHeaders ;
+UsePrivateHeaders app ;
+UsePrivateHeaders kernel ;
+	# for <util/KMessage.h>
+UsePrivateHeaders libroot ;
+UsePrivateHeaders shared ;
+
+StaticLibrary libmultiuser_utils.a : multiuser_utils.cpp ;
+
+BinCommand login : login.cpp : libmultiuser_utils.a ;
+
+BinCommand passwd : passwd.cpp : libmultiuser_utils.a ;
+
+BinCommand useradd : useradd.cpp : libmultiuser_utils.a ;
+
+# set set-uid bit on passwd
+MODE on passwd = 04755 ;

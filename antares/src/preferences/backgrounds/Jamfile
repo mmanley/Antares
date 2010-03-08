@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src preferences backgrounds ;
+
+UsePrivateHeaders shared ;
+
+Preference Backgrounds :
+	BackgroundImage.cpp
+	Backgrounds.cpp
+	BackgroundsView.cpp
+	ImageFilePanel.cpp
+	: be tracker translation $(TARGET_LIBSUPC++) liblocale.so
+	: Backgrounds.rdef
+	;
+
+DoCatalogs Backgrounds :
+	x-vnd.Antares-Backgrounds
+	:
+	Backgrounds.cpp
+	BackgroundsView.cpp
+	ImageFilePanel.cpp
+	: en.catalog
+	: bg.catkeys de.catkeys eo.catkeys fr.catkeys hu.catkeys ja.catkeys
+	  lt.catkeys pl.catkeys pt.catkeys sv.catkeys
+	;
+

@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src add-ons mail_daemon inbound_filters spam_filter ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePrivateHeaders mail ;
+UsePublicHeaders [ FDirName add-ons mail_daemon ] ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers os add-ons mail_daemon ] ;
+
+Addon Spam\ Filter :
+	SpamFilterConfig.cpp
+	SpamFilter.cpp ;
+
+LinkAgainst Spam\ Filter :
+	 be libmail.so $(TARGET_LIBSUPC++) ;
+
+Package antares-maildaemon-cvs :
+	Spam\ Filter :
+	boot home config add-ons mail_daemon inbound_filters ;

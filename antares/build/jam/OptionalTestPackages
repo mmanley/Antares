@@ -1,0 +1,88 @@
+# This file defines the optional packages containing tests of all kinds that can
+# be added to the Antares image. It is directly included from AntaresImage -- all
+# variables defined there can be used
+
+# Available Optional Test Packages:
+#	libMicro
+#	PosixTestSuite
+
+
+# libMicro
+if [ IsOptionalAntaresImagePackageAdded libMicro ] {
+	# add scripts, tattle executable and README
+	SEARCH on <libmicro>bench <libmicro>multiview <libmicro>README
+		= [ FDirName $(ANTARES_TOP) src tests system benchmarks libMicro ] ;
+
+	AddFilesToAntaresImage home benchmarks libmicro
+		: <libmicro>bench <libmicro>multiview <libmicro>README ;
+	AddFilesToAntaresImage home benchmarks libmicro bin-BePC : tattle ;
+
+	# add libmicro benchmarks
+	AddFilesToAntaresImage home benchmarks libmicro bin-BePC :
+		atomic <libmicro>bind cachetocache cascade_cond cascade_fcntl
+		cascade_flock cascade_lockf cascade_mutex chdir close close_tcp
+		connection dup exec exec_bin exit exp fcntl fcntl_ndelay file_lock fork
+		getcontext getenv <libmicro>getpeername getpid getrusage getsockname
+		gettimeofday isatty listen localtime_r <libmicro>log longjmp lrand48
+		lseek malloc memcpy memmove memrand memset mktime mmap mprotect msync
+		munmap mutex nop <libmicro>open pipe poll pread pthread_create pwrite
+		read realpath recurse select semop setcontext setsockopt sigaction
+		siglongjmp signal sigprocmask <libmicro>socket socketpair <libmicro>stat
+		strcasecmp strchr strcmp strcpy strftime strlen strtol system time times
+		write writev ;
+
+	AddSymlinkToAntaresImage home benchmarks libmicro : bin-BePC : bin ;
+
+	AddOptionalPackageDescriptionToAntaresImage
+		<libmicro>.OptionalPackageDescription
+		: $(ANTARES_TOP) src tests system benchmarks libMicro ;
+	AddLicenseToAntaresImage <libmicro>OPENSOLARIS.LICENSE : OpenSolaris
+		: $(ANTARES_TOP) src tests system benchmarks libMicro ;
+}
+
+
+# PosixTestSuite
+if [ IsOptionalAntaresImagePackageAdded PosixTestSuite ] {
+	# add run script
+	AddFilesToAntaresImage home posixtestsuite : run_posix_tests ;
+
+	# add standard posix tests
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces difftime
+		: difftime_1-1 ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces fork
+		: fork_3-1 fork_4-1 fork_6-1 fork_8-1 fork_9-1 fork_12-1 ;
+
+	# add signal posix tests
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces kill
+		: kill_2-1 ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces sighold
+		: sighold_1-1 sighold_2-1 sighold_3-core-buildonly ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces sigignore
+		: sigignore_1-1 sigignore_4-1 sigignore_5-core-buildonly
+		  sigignore_6-1 sigignore_6-2 ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces sigprocmask
+		: sigprocmask_8-1 sigprocmask_8-2 sigprocmask_8-3 sigprocmask_12-1 ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces sigrelse
+		: sigrelse_1-1 sigrelse_2-1 sigrelse_3-core-buildonly ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces signal
+		: signal_1-1 signal_2-1 signal_3-1 signal_5-1 signal_6-1 signal_7-1 ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces sigset
+		: sigset_1-1 sigset_2-1 sigset_3-1 sigset_4-1 sigset_5-1 sigset_6-1
+		  sigset_7-1 sigset_8-1 sigset_9-1 sigset_10-1 ;
+	AddFilesToAntaresImage home posixtestsuite conformance interfaces sigsuspend
+		: sigsuspend_6-1 ;
+
+	# add pthreads tests
+	local interfacesDir = home posixtestsuite conformance interfaces ;
+	AddFilesToAntaresImage $(interfacesDir) pthread_getspecific
+		: pthread_getspecific_1-1 pthread_getspecific_3-1 ;
+	AddFilesToAntaresImage $(interfacesDir) pthread_key_create
+		: pthread_key_create_1-1 pthread_key_create_1-2 pthread_key_create_2-1
+		  pthread_key_create_3-1 ;
+	AddFilesToAntaresImage $(interfacesDir) pthread_key_delete
+		: pthread_key_delete_1-1 pthread_key_delete_1-2 pthread_key_delete_2-1 ;
+	AddFilesToAntaresImage $(interfacesDir) pthread_once
+		: pthread_once_1-1 pthread_once_1-2 pthread_once_1-3 pthread_once_2-1 ;
+	AddFilesToAntaresImage $(interfacesDir) pthread_setspecific
+		: pthread_setspecific_1-1 pthread_setspecific_1-2 ;
+}

@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio cmedia ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio echo ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio emuxki ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio hda ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ice1712 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio module_driver ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio null ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio sb16 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio sis7018 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio usb_audio ;
+

@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel bluetooth ; 
+
+SubInclude ANTARES_TOP src add-ons kernel bluetooth btCoreData ;
+SubInclude ANTARES_TOP src add-ons kernel bluetooth hci ;

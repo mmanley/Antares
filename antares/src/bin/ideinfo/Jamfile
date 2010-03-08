@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src bin ideinfo ;
+
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel bus_managers ide ;
+
+UsePrivateHeaders drivers ;
+
+StdBinCommands
+	ideinfo.c
+	;

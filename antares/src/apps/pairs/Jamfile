@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src apps pairs ;
+
+UseLibraryHeaders icon ;
+
+Application Pairs :
+	Pairs.cpp
+	PairsWindow.cpp
+	PairsView.cpp
+	PairsTopButton.cpp
+
+	: be liblocale.so $(TARGET_LIBSTDC++)
+	: Pairs.rdef
+;
+
+DoCatalogs Pairs :
+	x-vnd.Antares-Pairs
+	:
+	PairsWindow.cpp
+	: en.catalog
+;

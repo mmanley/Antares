@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ac97 auich ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+UsePrivateHeaders media ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) $(DOTDOT) ] ;
+
+KernelAddon auich :
+	ac97.c
+	debug.c
+	auich.c
+	io.c
+	multi.c
+	util.c
+;
+
+Package antares-auich-cvs
+	:
+	auich
+	:
+	boot home config add-ons kernel drivers bin ;
+
+PackageDriverSymLink antares-auich-cvs : audio hmulti auich ;

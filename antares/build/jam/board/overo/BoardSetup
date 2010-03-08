@@ -1,0 +1,63 @@
+# Gumstix Overo board-specific definitions
+
+ANTARES_BOARD_DESCRIPTION = "Gumstix Overo" ;
+
+
+#
+# Various hardcoded addresses
+#
+
+# load address for antares_loader
+ANTARES_BOARD_LOADER_BASE = 0x80008000 ;
+# entry points (raw binary, and netbsd loader emulation)
+ANTARES_BOARD_LOADER_ENTRY_RAW = 0x80008000 ;
+ANTARES_BOARD_LOADER_ENTRY_NBSD = 0x80008008 ;
+
+# load address for antares_loader uimage
+# (must be different than real load address)
+ANTARES_BOARD_LOADER_UIBASE = 0x84000000 ;
+
+ANTARES_BOARD_LOADER_STACK_BASE = 0x84000000 ;
+
+
+#
+# mmc/SD image
+#
+
+# in MB
+ANTARES_BOARD_SDIMAGE_SIZE = 256 ;
+
+# in MB
+ANTARES_BOARD_SDIMAGE_FAT_SIZE = 32 ;
+
+# offset in blocks XXX: FIXME
+# (autodetect from sfdisk or use cylinder count for fat size)
+ANTARES_BOARD_SDIMAGE_BFS_OFFSET = ;
+
+# autoboot script
+ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT_NAME = gumstix-factory.script ;
+ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT = "\
+setenv bootargs debug_screen true; \
+if mmcinit; then \
+	fatload mmc 0 $(ANTARES_BOARD_LOADER_UIBASE) antares_loader.ub; \
+	bootm $(ANTARES_BOARD_LOADER_UIBASE); \
+fi" ;
+
+ANTARES_BOARD_SDIMAGE_FILES =
+	antares_loader
+	antares_loader.ub
+	antares_loader_nbsd.ub
+	$(ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT_NAME)
+;
+
+
+#
+# gcc flags for the specific cpu
+#
+
+TARGET_KERNEL_CCFLAGS += -mcpu=cortex-a8 -mfpu=vfp -mfloat-abi=soft ;
+TARGET_KERNEL_C++FLAGS += -mcpu=cortex-a8 -mfpu=vfp -mfloat-abi=soft ;
+TARGET_CCFLAGS += -mcpu=cortex-a8 -mfpu=vfp -mfloat-abi=soft ;
+TARGET_C++FLAGS += -mcpu=cortex-a8 -mfpu=vfp -mfloat-abi=soft ;
+
+

@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src tests kits game ParticlesII ;
+
+SimpleTest ParticlesII
+	: particlesII.cpp
+	: game be root $(TARGET_LIBSUPC++)
+;
+

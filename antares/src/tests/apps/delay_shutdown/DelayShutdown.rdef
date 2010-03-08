@@ -1,0 +1,3 @@
+resource app_signature "application/x-vnd.Antares-DelayShutdown";
+
+resource app_flags B_SINGLE_LAUNCH;

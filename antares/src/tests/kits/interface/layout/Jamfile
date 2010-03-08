@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src tests kits interface layout ;
+
+SetSubDirSupportedPlatforms antares libbe_test ;
+
+SimpleTest LayoutTest1 :
+	LayoutTest1.cpp
+	:
+	be $(TARGET_LIBSUPC++)
+;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR)
+		: LayoutTest1
+		: tests!apps ;
+}
+
+AntaresSubInclude widget_layout_test ;

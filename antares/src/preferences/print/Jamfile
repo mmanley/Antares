@@ -1,0 +1,35 @@
+SubDir ANTARES_TOP src preferences print ;
+
+UsePrivateHeaders shared print ;
+
+Preference Printers :
+	AddPrinterDialog.cpp
+	Printers.cpp
+	PrintersWindow.cpp
+	PrinterListView.cpp
+	JobListView.cpp
+	SpoolFolder.cpp
+	Globals.cpp 
+	: 
+	be 
+	translation 
+	libprintutils.a
+	$(TARGET_LIBSUPC++)
+	liblocale.so
+	: 
+	Printers.rdef
+	;
+
+DoCatalogs Printers :
+	x-vnd.Be-PRNT
+	:
+	AddPrinterDialog.cpp
+	JobListView.cpp
+	PrinterListView.cpp
+	PrintersWindow.cpp
+	: 
+	en.catalog
+	: 
+	de.catkeys ja.catkeys
+	;
+	

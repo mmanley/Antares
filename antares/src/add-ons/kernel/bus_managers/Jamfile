@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers ;
+
+SubInclude ANTARES_TOP src add-ons kernel bus_managers acpi ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers agp_gart ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers config_manager ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers firewire ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers ata ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers ide ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers isa ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers pci ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers ps2 ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers scsi ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers tty ;
+SubInclude ANTARES_TOP src add-ons kernel bus_managers usb ;

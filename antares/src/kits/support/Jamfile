@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src kits support ;
+
+SetSubDirSupportedPlatforms antares libbe_test ;
+
+UsePrivateHeaders app interface media shared support ;
+
+MergeObject <libbe>support_kit.o :
+	Archivable.cpp
+	Beep.cpp
+	BlockCache.cpp
+	ByteOrder.cpp
+	DataIO.cpp
+	BufferIO.cpp
+	Flattenable.cpp
+	List.cpp
+	Locker.cpp
+	PointerList.cpp
+	Referenceable.cpp
+	StopWatch.cpp
+	String.cpp
+	Url.cpp
+;

@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src apps workspaces ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UsePrivateHeaders app interface ;
+
+Application Workspaces :
+	Workspaces.cpp 
+	: be $(TARGET_LIBSUPC++)
+	: Workspaces.rdef 
+	;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : Workspaces
+		: tests!apps ;
+}

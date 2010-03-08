@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src apps debuganalyzer gui chart ;
+
+UsePrivateHeaders shared ;
+
+UseHeaders $(ANTARES_DEBUG_ANALYZER_HEADERS) ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+MergeObject DebugAnalyzer_gui_chart.o
+	:
+	BigtimeChartAxisLegendSource.cpp
+	Chart.cpp
+	ChartAxis.cpp
+	ChartAxisLegendSource.cpp
+	ChartDataSource.cpp
+	ChartLegend.cpp
+	ChartRenderer.cpp
+	DefaultChartAxisLegendSource.cpp
+	LegendChartAxis.cpp
+	LineChartRenderer.cpp
+	NanotimeChartAxisLegendSource.cpp
+	StringChartLegend.cpp
+;

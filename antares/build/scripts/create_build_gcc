@@ -1,0 +1,86 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+	echo Usage: $0 '<arch>'
+	exit 1
+fi
+
+ARCH=$1
+case $ARCH in
+	x86) 
+		TARGET=i586-pc-antares
+		;;
+	ppc)
+		TARGET=powerpc-apple-antares
+		;;
+	*)
+		echo "Unsupported Architecture"
+		exit 1
+		;;
+esac
+
+# Create Build GCC
+rm -rf `pwd`/generated/$ARCH/build-gcc
+cp -r `pwd`/generated/$ARCH/cross-tools `pwd`/generated/$ARCH/build-gcc
+rm -rf `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/*
+
+# Headers
+ln -s `pwd`/headers/config `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/config
+ln -s `pwd`/headers/glibc `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/glibc
+ln -s `pwd`/headers/os `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/os
+ln -s `pwd`/headers/posix `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/posix
+ln -s `pwd`/headers/compatibility/bsd `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/bsd
+ln -s `pwd`/headers/compatibility/gnu `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/gnu
+ln -s `pwd`/headers/libs/freetype2 `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/freetype2
+ln -s `pwd`/headers/libs/jpeg `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/jpeg
+ln -s `pwd`/headers/libs/ncurses `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/ncurses
+ln -s `pwd`/headers/libs/png `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/png
+ln -s `pwd`/headers/libs/termcap `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/termcap
+ln -s `pwd`/headers/libs/zlib `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/zlib
+ln -s `pwd`/headers/libs/iconv `pwd`/generated/$ARCH/build-gcc/$TARGET/sys-include/iconv
+
+# Libraries
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/device/libdevice.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libdevice.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/network/libnetwork.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libnetwork.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/network/libnetapi/libbnetapi.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libbnetapi.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/coredata/libcoredata.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libcoredata.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/tracker/libtracker.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libtracker.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/translation/libtranslation.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libtranslation.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/locale/liblocale.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/liblocale.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/game/libgame.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libgame.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/debug/libdebug.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libdebug.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/midi2/libmidi2.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libmidi2.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/mail/libmail.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libmail.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/media/libmedia.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libmedia.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/screensaver/libscreensaver.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libscreensaver.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/textencoding/libtextencoding.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libtextencoding.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/opengl/libGL.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libGL.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/midi/libmidi.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libmidi.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/kits/libbe.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libbe.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/fluidsynth/src/libfluidsynth.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libfluidsynth.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/linprog/liblinprog.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/liblinprog.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/stdc++/current/libstdc++.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libstdc++.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/stdc++/current/libsupc++.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libsupc++.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/jpeg/libjpeg.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libjpeg.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/alm/libalm.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libalm.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/freetype2/libfreetype.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libfreetype.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/lp_solve/liblpsolve55.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/liblpsolve55.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/bsd/libbsd.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libbsd.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/icu/source/i18n/libicu-i18n.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libicu-i18n.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/icu/source/common/libicu-common.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libicu-common.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/icu/source/data/libicu-data.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libicu-data.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/zlib/libz.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libz.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/png/libpng.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libpng.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/libs/gnu/libgnu.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libgnu.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/add-ons/translators/exr/openexr/ilmimf/libilmimf.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libilmimf.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/kernel/kernel.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/kernel.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/kernel/linkhack.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/linkhack.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/libroot/libroot.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libroot.so
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/libroot/libroot.so `pwd`/generated/$ARCH/build-gcc/$TARGET/lib/libc.so
+
+# Glue
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/glue/antares_version_glue.o `pwd`/generated/$ARCH/build-gcc/lib/gcc/$TARGET/4.3.3/antares_version_glue.o
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/glue/init_term_dyn.o `pwd`/generated/$ARCH/build-gcc/lib/gcc/$TARGET/4.3.3/init_term_dyn.o
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/glue/start_dyn.o `pwd`/generated/$ARCH/build-gcc/lib/gcc/$TARGET/4.3.3/start_dyn.o
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/glue/arch/$ARCH/crti.o `pwd`/generated/$ARCH/build-gcc/lib/gcc/$TARGET/4.3.3/crti.o
+ln -s `pwd`/generated/$ARCH/objects/antares/$ARCH/release/system/glue/arch/$ARCH/crtn.o `pwd`/generated/$ARCH/build-gcc/lib/gcc/$TARGET/4.3.3/crtn.o

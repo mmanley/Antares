@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics nvidia ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics nvidia ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+
+KernelAddon nvidia :
+	driver.c
+;
+
+Package antares-nvidia-cvs :
+	README.html UPDATE.html ;
+Package antares-nvidia-cvs :
+	nvidia : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-nvidia-cvs : graphics nvidia ;
+Package antares-nvidia-cvs :
+	nvidia.settings :
+	boot home config settings kernel drivers ;
+

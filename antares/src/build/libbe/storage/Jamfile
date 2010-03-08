@@ -1,0 +1,37 @@
+SubDir ANTARES_TOP src build libbe storage ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private shared ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private app ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private kernel ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private storage ] : true ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) mime ] ;
+
+USES_BE_API on <libbe_build>storage_kit.o = true ;
+
+BuildPlatformMergeObjectPIC <libbe_build>storage_kit.o :
+	AppFileInfo.cpp
+	Directory.cpp
+	Entry.cpp
+	EntryList.cpp
+	File.cpp
+	Mime.cpp
+	MimeType.cpp
+	Node.cpp
+	NodeInfo.cpp
+	OffsetFile.cpp
+	Path.cpp
+	ResourceFile.cpp
+	ResourceItem.cpp
+	Resources.cpp
+	ResourcesContainer.cpp
+	ResourceStrings.cpp
+	Statable.cpp
+	SymLink.cpp
+	Volume.cpp
+	storage_support.cpp
+
+	database_support.cpp
+	MimeUpdateThread.cpp
+	UpdateMimeInfoThread.cpp
+;

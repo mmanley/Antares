@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons print drivers canon_lips ;
+
+SubInclude ANTARES_TOP src add-ons print drivers canon_lips lips3 ;
+SubInclude ANTARES_TOP src add-ons print drivers canon_lips lips4 ;
+

@@ -1,0 +1,30 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network wlan iprowifi4965 ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src libs compat freebsd_network compat ] 
+	: true ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs compat freebsd_wlan ] : true ;
+UsePrivateHeaders net system ;
+UsePrivateKernelHeaders ;
+
+SubDirCcFlags [ FDefines _KERNEL=1 FBSD_DRIVER=1 ] 
+	-Wno-format 
+	-Wno-unused 
+	-Wno-uninitialized 
+	-Werror ;
+
+UseHeaders [ FDirName $(SUBDIR) ] : true ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) dev iwn ] ;
+
+KernelAddon iprowifi4965 :
+	if_iwn.c
+	glue.c
+	:
+	libfreebsd_wlan.a
+	libfreebsd_network.a
+	;
+
+ANTARES_WIFI_FIRMWARE_PACKAGE on iprowifi4965 = iwlwifi-4965-ucode-4.44.1.20 ;
+ANTARES_WIFI_FIRMWARE_ARCHIVE on iprowifi4965 = iwlwifi-4965-ucode-4.44.1.20.tgz ;
+ANTARES_WIFI_FIRMWARE_DO_EXTRACT on iprowifi4965 = true ;
+

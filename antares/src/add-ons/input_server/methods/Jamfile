@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons input_server methods ;
+
+SubInclude ANTARES_TOP src add-ons input_server methods canna ;
+SubInclude ANTARES_TOP src add-ons input_server methods pen ;
+SubInclude ANTARES_TOP src add-ons input_server methods t9 ;

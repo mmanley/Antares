@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src add-ons translators exr openexr ;
+
+SubInclude ANTARES_TOP src add-ons translators exr openexr half ;
+SubInclude ANTARES_TOP src add-ons translators exr openexr iex ;
+SubInclude ANTARES_TOP src add-ons translators exr openexr ilmimf ;
+SubInclude ANTARES_TOP src add-ons translators exr openexr ilmthread ;
+SubInclude ANTARES_TOP src add-ons translators exr openexr imath ;
+

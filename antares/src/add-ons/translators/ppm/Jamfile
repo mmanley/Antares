@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src add-ons translators ppm ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Translator PPMTranslator
+	: PPMMain.cpp PPMTranslator.cpp colorspace.cpp
+	: be translation $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	PPMTranslator :
+	boot home config add-ons Translators ;
+
+

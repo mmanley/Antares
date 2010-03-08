@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ac97 ichaudio lala ;
+
+# R5KernelStaticLibrary liblala.a :
+# 	driver.c
+# ;
+
+KernelMergeObject lala.o :
+	driver.c
+	util.c
+	: 
+	-fno-pic -D_KERNEL_MODE
+	;

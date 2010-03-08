@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers ports ; 
+
+SubInclude ANTARES_TOP src add-ons kernel drivers ports pc_serial ;
+SubInclude ANTARES_TOP src add-ons kernel drivers ports usb_serial ;

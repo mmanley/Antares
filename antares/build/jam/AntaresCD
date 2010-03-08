@@ -1,0 +1,74 @@
+# Execute pre-image user config rules.
+UserBuildConfigRulePreImage	;
+
+# Set cd file name and directory defaults and locate the cd file.
+ANTARES_CD_NAME ?= $(ANTARES_DEFAULT_CD_NAME) ;
+ANTARES_CD_DIR ?= $(ANTARES_DEFAULT_CD_DIR) ;
+ANTARES_CD = $(ANTARES_CD_NAME) ;
+ANTARES_CD_LABEL ?= $(ANTARES_DEFAULT_CD_LABEL) ;
+MakeLocate $(ANTARES_CD) : $(ANTARES_CD_DIR) ;
+
+# prepare the script that initializes the shell variables
+ANTARES_CD_INIT_VARIABLES_SCRIPT = <AntaresCD>antares.cd-init-vars ;
+local script = $(ANTARES_CD_INIT_VARIABLES_SCRIPT) ;
+MakeLocate $(script) : $(ANTARES_OUTPUT_DIR) ;
+Always $(script) ;
+
+AddVariableToScript $(script) : sourceDir : $(ANTARES_TOP) ;
+AddVariableToScript $(script) : outputDir : $(ANTARES_OUTPUT_DIR) ;
+AddVariableToScript $(script) : tmpDir : $(ANTARES_TMP_DIR) ;
+AddVariableToScript $(script) : cdLabel : $(ANTARES_CD_LABEL) ;
+AddVariableToScript $(script) : addBuildCompatibilityLibDir
+	: $(HOST_ADD_BUILD_COMPATIBILITY_LIB_DIR) ;
+AddTargetVariableToScript $(script) : <build>addattr ;
+AddTargetVariableToScript $(script) : <build>copyattr ;
+AddTargetVariableToScript $(script) : <build>rc ;
+AddTargetVariableToScript $(script) : <build>resattr ;
+AddTargetVariableToScript $(script) : <build>unzip ;
+AddTargetVariableToScript $(script) : <build>generate_attribute_stores ;
+if $(HOST_RM_ATTRS_TARGET) {
+	AddTargetVariableToScript $(script) : $(HOST_RM_ATTRS_TARGET) : rmAttrs ;
+} else {
+	AddVariableToScript $(script) : rmAttrs : rm ;
+}
+if $(optionalPackageDescriptions) {
+	AddTargetVariableToScript $(script) : $(optionalPackageDescriptions)
+		: optionalPackageDescriptions ;
+}
+
+# Convenience wrapper rule around BuildAntaresCD.
+rule _BuildAntaresCD antaresCD : bootFloppy
+{
+	# _BuildAntaresCD <cd target> : <bootFloppy> ;
+	#
+
+	# build the cd
+	# ANTARES_IMAGE_EARLY_USER_SCRIPTS, ANTARES_IMAGE_LATE_USER_SCRIPTS can be
+	# specified by the user.
+	BuildAntaresCD $(antaresCD) : $(bootFloppy) :
+		$(ANTARES_CD_INIT_VARIABLES_SCRIPT)
+		$(ANTARES_IMAGE_EARLY_USER_SCRIPTS)
+		$(ANTARES_IMAGE_MAKE_DIRS_SCRIPT)
+		$(ANTARES_IMAGE_COPY_FILES_SCRIPT)
+		$(ANTARES_IMAGE_EXTRACT_FILES_SCRIPT)
+		$(ANTARES_IMAGE_LATE_USER_SCRIPTS)
+	;
+
+	# remove the scripts we have generated
+	RmTemps $(antaresCD) :
+		$(ANTARES_CD_INIT_VARIABLES_SCRIPT)
+		$(ANTARES_IMAGE_MAKE_DIRS_SCRIPT)
+		$(ANTARES_IMAGE_COPY_FILES_SCRIPT)
+		$(ANTARES_IMAGE_EXTRACT_FILES_SCRIPT)
+	;
+}
+
+# build the cd
+_BuildAntaresCD $(ANTARES_CD) : $(ANTARES_BOOT_FLOPPY) ;
+NotFile antares-cd ;
+Depends antares-cd : $(ANTARES_CD) ;
+
+RmTemps $(ANTARES_CD) : $(ANTARES_BOOT_FLOPPY) ;
+
+# Execute post-image user config rules.
+UserBuildConfigRulePostImage ;

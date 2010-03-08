@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src add-ons kernel drivers bus ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers bus firewire ;
+SubInclude ANTARES_TOP src add-ons kernel drivers bus pcmcia ;
+SubInclude ANTARES_TOP src add-ons kernel drivers bus scsi ;
+SubInclude ANTARES_TOP src add-ons kernel drivers bus usb ;

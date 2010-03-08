@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src tests add-ons kernel network interfaces ;
+
+SubInclude ANTARES_TOP src tests add-ons kernel network interfaces ethernet ;
+SubInclude ANTARES_TOP src tests add-ons kernel network interfaces loopback ;
+SubInclude ANTARES_TOP src tests add-ons kernel network interfaces ppp ;

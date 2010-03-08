@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src bin gdb ;
+
+SubInclude ANTARES_TOP src bin gdb bfd ;
+SubInclude ANTARES_TOP src bin gdb gdb ;
+SubInclude ANTARES_TOP src bin gdb libiberty ;
+SubInclude ANTARES_TOP src bin gdb opcodes ;
+SubInclude ANTARES_TOP src bin gdb readline ;

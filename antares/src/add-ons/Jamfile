@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons ;
+
+SubInclude ANTARES_TOP src add-ons accelerants ;
+SubInclude ANTARES_TOP src add-ons decorators ;
+SubInclude ANTARES_TOP src add-ons disk_systems ;
+SubInclude ANTARES_TOP src add-ons input_server ;
+SubInclude ANTARES_TOP src add-ons kernel ;
+SubInclude ANTARES_TOP src add-ons locale ;
+SubInclude ANTARES_TOP src add-ons mail_daemon ;
+SubInclude ANTARES_TOP src add-ons media ;
+SubInclude ANTARES_TOP src add-ons opengl ;
+SubInclude ANTARES_TOP src add-ons print ;
+SubInclude ANTARES_TOP src add-ons screen_savers ;
+SubInclude ANTARES_TOP src add-ons translators ;
+SubInclude ANTARES_TOP src add-ons tracker ;
+

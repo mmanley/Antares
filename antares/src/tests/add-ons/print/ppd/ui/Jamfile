@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src tests add-ons print ppd ui ;
+
+# SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs $(ANTARES_TOP) src tests add-ons print ppd model ;
+SubDirHdrs $(ANTARES_TOP) src tests add-ons print ppd parser ;
+
+StaticLibrary 
+	libppdtest.a
+	: 
+	PPDConfigView.cpp
+	PrinterSelection.cpp
+	UIUtils.cpp
+	;

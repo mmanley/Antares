@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel network ppp shared ;
+
+SubInclude ANTARES_TOP src add-ons kernel network ppp shared libkernelppp ;
+SubInclude ANTARES_TOP src add-ons kernel network ppp shared libppp ;

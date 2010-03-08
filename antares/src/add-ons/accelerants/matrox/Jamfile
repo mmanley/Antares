@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src add-ons accelerants matrox ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics matrox ] ;
+UseHeaders [ FDirName $(SUBDIR) engine ] ;
+
+Addon matrox.accelerant :
+	Cursor.c
+	EngineManagment.c
+	GetAccelerantHook.c
+	GetDeviceInfo.c
+	GetModeInfo.c
+	GetTimingConstraints.c
+	InitAccelerant.c
+	Overlay.c
+	ProposeDisplayMode.c
+	SetDisplayMode.c
+	: libmatrox_engine.a
+;
+
+Package antares-matrox-cvs :
+	matrox.accelerant :
+	boot home config add-ons accelerants ;
+
+Depends matrox.accelerant : matrox ;
+
+SubInclude ANTARES_TOP src add-ons accelerants matrox engine ;

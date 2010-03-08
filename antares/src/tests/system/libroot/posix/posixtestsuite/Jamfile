@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tests system libroot posix posixtestsuite ;
+
+MakeLocatePlatform run_posix_tests ;
+Shell run_posix_tests : run_posix_tests.sh ;
+
+SubInclude ANTARES_TOP src tests system libroot posix posixtestsuite conformance ;

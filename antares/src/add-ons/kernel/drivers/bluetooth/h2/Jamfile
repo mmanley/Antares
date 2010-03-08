@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src add-ons kernel drivers bluetooth h2 ; 
+
+SubInclude ANTARES_TOP src add-ons kernel drivers bluetooth h2 h2generic ;

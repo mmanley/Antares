@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src preferences opengl ;
+
+UsePrivateHeaders interface ;
+
+Preference OpenGL :
+	OpenGLApp.cpp
+	OpenGLWindow.cpp
+	OpenGLView.cpp
+	CapabilitiesView.cpp
+	ExtensionsList.cpp
+	ExtensionsView.cpp
+	InfoView.cpp
+	LogoView.cpp
+	: be GL translation libcolumnlistview.a liblocale.so $(TARGET_LIBSUPC++)
+	: OpenGL.rdef
+	;
+
+DoCatalogs OpenGL :
+    x-vnd.Antares-OpenGL
+	:
+	CapabilitiesView.cpp
+	ExtensionsList.cpp
+	ExtensionsView.cpp
+	InfoView.cpp
+	: en.catalog
+	: fr.catkeys hu.catkeys it.catkeys lt.catkeys pl.catkeys pt.catkeys
+	;
+	

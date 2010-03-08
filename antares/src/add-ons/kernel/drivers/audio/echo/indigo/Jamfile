@@ -1,0 +1,85 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio echo indigo ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os drivers ] : true ;
+	# We need the public pcmcia headers also when not compiling for Antares.
+}
+
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo generic ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo generic DSP ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo generic ASIC ;
+
+UsePrivateHeaders [ FDirName kernel ] 			# For kernel_cpp.cpp
+	media ;
+
+# set some additional defines
+SubDirCcFlags -DECHO_BEOS -DINDIGO_FAMILY -DCARDBUS ;
+SubDirC++Flags -DECHO_BEOS -DINDIGO_FAMILY -fno-rtti -DAUTO_DUCK_ALLOCATE -DCARDBUS ;
+
+local echo_files =
+	CChannelMask.cpp
+	CDaffyDuck.cpp
+	CDspCommObject.cpp
+	CDspCommObjectVmixer.cpp
+	CEchoGals.cpp
+	CEchoGals_info.cpp
+	CEchoGals_midi.cpp
+	CEchoGals_mixer.cpp
+	CEchoGals_power.cpp
+	CEchoGals_transport.cpp
+	CEchoGalsVmixer.cpp
+	CIndigo.cpp
+	CIndigoDspCommObject.cpp
+	CIndigoIO.cpp
+	CIndigoIODspCommObject.cpp
+	CIndigoDJ.cpp
+	CIndigoDJDspCommObject.cpp
+	CLineLevel.cpp
+	CMonitorCtrl.cpp
+	CPipeOutCtrl.cpp
+	;
+
+KernelAddon echoindigo :
+	kernel_cpp.cpp
+	debug.c
+	echo.cpp
+	multi.cpp
+	util.c
+	$(echo_files)
+	OsSupportBeOS.cpp
+;
+
+# suppress warnings on some files including the echo headers which provoke ugly warnings
+ObjectC++Flags $(echo_files) : -w ;
+ObjectC++Flags echo.cpp : -w ;
+
+SEARCH on [ FGristFiles
+	$(echo_files)
+	OsSupportBeOS.cpp
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel drivers audio echo generic ] ;
+
+SEARCH on [ FGristFiles
+		kernel_cpp.cpp 
+	] = [ FDirName $(ANTARES_TOP) src system kernel util ] ;
+
+SEARCH on [ FGristFiles
+		debug.c
+		echo.cpp
+		multi.cpp
+		util.c
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel drivers audio echo ] ;
+
+Package antares-echoindigo-cvs
+	:
+	echoindigo
+	:
+	boot home config add-ons kernel drivers bin ;
+
+PackageDriverSymLink antares-echoindigo-cvs : audio hmulti echoindigo ;
+
+Package antares-echoindigo-cvs : <echo!driver>echo.settings
+	: boot home config settings kernel drivers ;
+

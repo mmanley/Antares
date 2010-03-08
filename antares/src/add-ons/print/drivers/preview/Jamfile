@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons print drivers preview ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers libs print libprint ] ;
+
+AddResources Preview : Preview.rsrc ;
+
+Addon Preview :
+	PageSetupWindow.cpp
+	JobSetupWindow.cpp
+	Driver.cpp
+	PrinterDriver.cpp
+	PreviewDriver.cpp
+	: be libprint.a $(TARGET_LIBSTDC++)
+;
+
+Package antares-printingkit-cvs :
+	Preview :
+	boot home config add-ons Print ;

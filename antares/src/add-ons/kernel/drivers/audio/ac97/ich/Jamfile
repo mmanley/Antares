@@ -1,0 +1,35 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ac97 ich ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+KernelAddon ich_ac97 :
+	ac97_multi.c
+	config.c
+	debug.c
+	ich.c
+	io.c
+	util.c
+	ac97.c
+;
+
+# For OpenBeOS we should be building the driver objects this way.
+#KernelObjects
+#	ac97_multi.c
+#	config.c
+#	debug.c
+#	ich.c
+#	io.c
+#	util.c   
+#	ac97.c
+#	:
+#	-fno-pic -D_KERNEL_MODE
+#	;
+
+Package antares-ich-ac97-cvs :
+	ich_ac97 :
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-ich-ac97-cvs : audio multi ich_ac97 ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 ich distro ;

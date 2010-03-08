@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src add-ons kernel drivers common ;
+
+UsePrivateHeaders kernel ;
+
+KernelAddon dprintf :
+	dprintf.cpp
+	;
+
+KernelAddon null :
+	null.c
+	;
+
+KernelAddon zero :
+	zero.c
+	;
+
+KernelAddon console :
+	console.cpp
+	;

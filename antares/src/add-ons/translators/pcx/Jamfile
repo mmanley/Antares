@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons translators pcx ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator PCXTranslator :
+	# PCXTranslator classes
+	main.cpp
+	PCXTranslator.cpp
+	ConfigView.cpp
+	PCX.cpp
+	: be translation libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	PCXTranslator
+	: boot home config add-ons Translators
+	;

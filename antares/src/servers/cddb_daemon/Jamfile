@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src servers cddb_daemon ;
+
+UsePrivateHeaders drivers ;
+
+AddResources cddb_daemon : cddb_daemon.rdef ;
+
+Server cddb_daemon :
+	cddb_daemon.cpp
+	cddb_server.cpp
+	: be bnetapi $(TARGET_LIBSUPC++)
+	;

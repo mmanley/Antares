@@ -1,0 +1,63 @@
+SubDir ANTARES_TOP src kits opengl ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders interface ;
+UseLibraryHeaders mesa ;
+UsePrivateSystemHeaders ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os opengl ] : true ;
+		# We need our public GL headers also when not compiling for Antares.
+}
+
+
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa main ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa glapi ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa math ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa tnl ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa shader ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa swrast ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa swrast_setup ] ;
+
+{
+	local defines ;
+	defines = BEOS_THREADS GNU_ASSEMBLER ;
+
+	if $(TARGET_ARCH) = x86 {
+		defines += USE_X86_ASM USE_MMX_ASM USE_3DNOW_ASM USE_SSE_ASM ;
+	} else if $(TARGET_ARCH) = ppc {
+		# Not yet supported, as current Mesa3D PPC assembly is Linux-dependent!
+		# defines += USE_PPC_ASM ;
+	} else if $(TARGET_ARCH) = sparc {
+		defines += USE_SPARC_ASM ;
+	}
+
+	defines = [ FDefines $(defines) ] ;
+	SubDirCcFlags $(defines) ;
+	SubDirC++Flags $(defines) ;
+	SubDirAsFlags $(defines) ;
+}
+
+SharedLibrary libGL.so :
+	GLView.cpp
+	GLDispatcher.cpp
+	GLRenderer.cpp
+	GLRendererRoster.cpp
+	:
+
+	# Mesa GL API dispatching code
+	<mesa>glapi-dispatching.o
+
+	# GLU API is included in libGL.so under BeOS R5, not a separate libglu.so library
+	<opengl>sgi-glu.o
+
+	# GLUT API is included in libGL.so under Antares, not a separate libglut.so library
+	<opengl>glut.o 
+
+	# External libs:
+	be 
+	game			# BWindowScreen needed by BGLScreen stub class 
+	$(TARGET_LIBSTDC++)
+;

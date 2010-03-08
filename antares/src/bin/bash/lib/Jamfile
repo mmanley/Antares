@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src bin bash lib ;
+
+SubInclude ANTARES_TOP src bin bash lib glob ;
+SubInclude ANTARES_TOP src bin bash lib readline ;
+SubInclude ANTARES_TOP src bin bash lib sh ;
+SubInclude ANTARES_TOP src bin bash lib tilde ;

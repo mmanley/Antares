@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src add-ons kernel generic ide_adapter ;
+
+UsePrivateHeaders drivers kernel ;
+
+KernelAddon ide_adapter :
+	ide_adapter.c
+	;
+

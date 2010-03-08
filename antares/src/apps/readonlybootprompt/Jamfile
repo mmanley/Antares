@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src apps readonlybootprompt ;
+
+UsePrivateHeaders interface shared ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src preferences keymap ] ;
+
+Application ReadOnlyBootPrompt :
+	BootPrompt.cpp
+	BootPromptWindow.cpp
+	Keymap.cpp
+	KeymapListItem.cpp
+	: be libshared.a $(TARGET_LIBSTDC++) liblocale.so
+	: BootPrompt.rdef
+;
+
+DoCatalogs ReadOnlyBootPrompt :
+	x-vnd.Antares-ReadOnlyBootPrompt
+	:
+	BootPrompt.cpp
+	BootPromptWindow.cpp
+	: en.catalog
+	: de.catkeys hu.catkeys nl.catkeys pl.catkeys pt.catkeys ru.catkeys
+	  uk.catkeys
+	;
+

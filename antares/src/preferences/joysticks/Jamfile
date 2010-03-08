@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src preferences joysticks ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Preference Joysticks :
+	CalibWin.cpp
+	JoyWin.cpp
+	Joysticks.cpp
+	MessageWin.cpp
+	PortItem.cpp
+	: be libdevice.so
+	: Joysticks.rdef
+	;
+

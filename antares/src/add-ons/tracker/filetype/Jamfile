@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons tracker filetype ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# TODO: does not seem to work:
+AddResources FileType-F : FileType.rdef ;
+
+Addon FileType-F :
+	FileType.cpp
+
+	: be tracker
+;

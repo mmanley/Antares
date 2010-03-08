@@ -1,0 +1,39 @@
+SubDir ANTARES_TOP src apps debuganalyzer ;
+
+UsePrivateHeaders debug interface kernel shared ;
+UsePrivateSystemHeaders ;
+
+ANTARES_DEBUG_ANALYZER_HEADERS =
+	$(SUBDIR)
+	[ FDirName $(SUBDIR) gui ]
+	[ FDirName $(SUBDIR) model ]
+	[ FDirName $(SUBDIR) model_loader ]
+	[ FDirName $(SUBDIR) util ]
+;
+
+UseHeaders $(ANTARES_DEBUG_ANALYZER_HEADERS) ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+
+Application DebugAnalyzer
+	:
+	DebugAnalyzer.cpp
+
+	:
+	<nogrist>DebugAnalyzer_gui.o
+	<nogrist>DebugAnalyzer_model.o
+	<nogrist>DebugAnalyzer_model_loader.o
+	<nogrist>DebugAnalyzer_util.o
+
+	libcolumnlistview.a libshared.a libdebug.so be
+	$(TARGET_LIBSTDC++)
+	:
+	DebugAnalyzer.rdef
+;
+
+AntaresSubInclude gui ;
+AntaresSubInclude model ;
+AntaresSubInclude model_loader ;
+AntaresSubInclude util ;

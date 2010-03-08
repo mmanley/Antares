@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src preferences virtualmemory ;
+
+Preference VirtualMemory : 
+	VirtualMemory.cpp
+	SettingsWindow.cpp
+	Settings.cpp
+	$(DRIVER_SETTINGS)
+
+	: be $(TARGET_LIBSTDC++) liblocale.so
+	: VirtualMemory.rdef
+	;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	SEARCH on [ FGristFiles driver_settings.c ] += 
+		[ FDirName $(ANTARES_TOP) src system libroot os ] ;
+}
+
+DoCatalogs VirtualMemory : 
+    x-vnd.Antares-VirtualMemory 
+    : 
+    VirtualMemory.cpp 
+    SettingsWindow.cpp 
+    : en.catalog 
+	: fr.catkeys nl.catkeys pl.catkeys uk.catkeys
+    ; 

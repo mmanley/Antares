@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons multi_audio ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media shared ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	SubDirC++Flags -fmultiple-symbol-spaces ;
+}
+
+Addon hmulti_audio.media_addon :
+	MultiAudioAddOn.cpp
+	MultiAudioDevice.cpp
+	MultiAudioNode.cpp
+	MultiAudioUtility.cpp
+	TimeComputer.cpp
+	: be media $(TARGET_LIBSUPC++)
+;
+
+Package antares-multi_audio-cvs
+	: hmulti_audio.media_addon
+	: boot home config add-ons media ;
+

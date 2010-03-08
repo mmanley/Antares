@@ -1,0 +1,43 @@
+SubDir ANTARES_TOP src kits game ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+AddSubDirSupportedPlatforms libbe_test ;
+
+UsePrivateHeaders app ;
+UsePrivateHeaders interface ;
+UsePrivateHeaders input ;
+
+SubDirSysHdrs $(SUBDIR) ;
+
+
+if $(TARGET_PLATFORM) = antares {
+
+	SharedLibrary libgame.so :
+		# Public Game Kit
+		DirectWindow.cpp
+		WindowScreen.cpp
+		GameSound.cpp
+		SimpleGameSound.cpp
+		FileGameSound.cpp
+		PushGameSound.cpp
+		StreamingGameSound.cpp
+	
+		# Internal Functionality
+		GameProducer.cpp
+		GameSoundBuffer.cpp
+		GameSoundDevice.cpp
+		GSUtility.cpp
+		: be media $(TARGET_LIBSUPC++)
+	;
+} else if $(TARGET_PLATFORM) = libbe_test {
+
+	SharedLibrary libgame.so :
+		DirectWindow.cpp
+		WindowScreen.cpp
+		: be
+	;
+
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_LIB_DIR) : libgame.so
+		: tests!apps ;
+}

@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tests kits opengl ;
+
+SubInclude ANTARES_TOP src tests kits opengl direct_mode ;
+SubInclude ANTARES_TOP src tests kits opengl demos ;

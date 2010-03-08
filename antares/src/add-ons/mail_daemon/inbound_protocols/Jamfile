@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons mail_daemon inbound_protocols ;
+
+SubInclude ANTARES_TOP src add-ons mail_daemon inbound_protocols imap ;
+SubInclude ANTARES_TOP src add-ons mail_daemon inbound_protocols pop3 ;
+

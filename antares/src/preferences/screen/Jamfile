@@ -1,0 +1,30 @@
+SubDir ANTARES_TOP src preferences screen ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseLibraryHeaders icon ;
+UsePrivateHeaders [ FDirName graphics radeon ] ;
+UsePrivateHeaders interface ;
+
+Preference Screen :
+	AlertView.cpp
+	AlertWindow.cpp
+	gtf.cpp
+	MonitorView.cpp
+	multimon.cpp
+	RefreshSlider.cpp
+	RefreshWindow.cpp
+	ScreenApplication.cpp
+	ScreenMode.cpp
+	ScreenSettings.cpp
+	ScreenWindow.cpp
+	Utility.cpp
+	: be $(TARGET_LIBSUPC++)
+	: Screen.rdef
+	;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : Screen
+		: tests!apps ;
+}

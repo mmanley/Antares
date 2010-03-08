@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons print drivers pcl6 ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers libs print libprint ] ;
+
+AddResources PCL6\ Compatible : PCL6.rsrc ;
+
+Addon PCL6\ Compatible :
+	DeltaRowCompression.cpp
+	PCL6Entry.cpp
+	PCL6.cpp
+	PCL6Cap.cpp
+	PCL6Rasterizer.cpp
+	PCL6Writer.cpp
+	Rasterizer.cpp
+	: be libprint.a $(TARGET_LIBSTDC++)
+;
+
+Package antares-printingkit-cvs :
+	PCL6\ Compatible :
+	boot home config add-ons Print ;

@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src add-ons media plugins ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubInclude ANTARES_TOP src add-ons media plugins aiff_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins ape_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins asf_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins au_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins avi_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins ffmpeg ;
+SubInclude ANTARES_TOP src add-ons media plugins matroska ;
+SubInclude ANTARES_TOP src add-ons media plugins mov_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins mp3_decoder ;
+SubInclude ANTARES_TOP src add-ons media plugins mp3_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins mp4_reader ;
+SubInclude ANTARES_TOP src add-ons media plugins musepack ;
+SubInclude ANTARES_TOP src add-ons media plugins ogg ;
+SubInclude ANTARES_TOP src add-ons media plugins raw_decoder ;
+SubInclude ANTARES_TOP src add-ons media plugins speex ;
+#SubInclude ANTARES_TOP src add-ons media plugins theora ;
+SubInclude ANTARES_TOP src add-ons media plugins vorbis ;
+SubInclude ANTARES_TOP src add-ons media plugins wav_reader ;
+
+# The following add-ons are GPL licensed, and can only be used with
+# software whose license is GPL compatible. To include these GPL
+# licensed add-ons, you need to run configure with the --include-gpl-addons
+# parameter
+SubIncludeGPL ANTARES_TOP src add-ons media plugins ac3_decoder ;
+#SubIncludeGPL ANTARES_TOP src add-ons media plugins xvid_decoder ;

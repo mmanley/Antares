@@ -1,0 +1,15 @@
+/*
+ * ehci.rdef
+ */
+
+resource app_signature "application/x-vnd.antares-ehci";
+
+resource app_version {
+	major  = 1,
+	middle = 0,
+	minor  = 0,
+	variety = 0,
+	internal = 0,
+	short_info = "EHCI host controller driver",
+	long_info = "Antares EHCI HCD - Copyright 2006-2009, Antares Inc."
+};

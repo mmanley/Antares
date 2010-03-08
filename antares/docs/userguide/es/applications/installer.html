@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!-- 
+ *
+ * Copyright 2009, Antares. All rights reserved.
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ *		Humdinger <humdingerb@gmail.com>
+ * Translators:
+ *		CapitanPico
+ *
+-->
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="robots" content="all" />
+	<title>Installer</title>
+	<link rel="stylesheet" type="text/css" href="../../Antares-doc.css" />
+</head>
+<body>
+
+<div id="banner">
+<div><span>User guide</span></div>
+</div>
+
+<div class="nav">
+<div class="inner">
+<ul class="lang-menu">
+<li class="now"><img src="../../images/flags/es.png" alt="" /> Español</li>
+<li><a href="../../fr/applications/installer.html"><img src="../../images/flags/fr.png" alt="" />Français</a></li>
+<li><a href="../../de/applications/installer.html"><img src="../../images/flags/de.png" alt="" />Deutsch</a></li>
+<li><a href="../../it/applications/installer.html"><img src="../../images/flags/it.png" alt="" />Italiano</a></li>
+<li><a href="../../ru/applications/installer.html"><img src="../../images/flags/ru.png" alt="" />Русский</a></li>
+<li><a href="../../sv_SE/applications/installer.html"><img src="../../images/flags/sv_SE.png" alt="" />Svensk</a></li>
+<li><a href="../../jp/applications/installer.html"><img src="../../images/flags/jp.png" alt="" />日本語</a></li>
+<li><a href="../../en/applications/installer.html"><img src="../../images/flags/gb.png" alt="" />English</a></li>
+</ul>
+<span>
+ «  <a href="icon-o-matic.html">Icon-O-Matic</a> 
+::  <a href="../applications.html#list-of-apps" class="uplink">Aplicaciones</a> 
+::  <a href="magnify.html">Magnify</a>  »
+</span></div>
+</div>
+
+<div id="content">
+<div>
+
+<h2><img src="../../images/apps-images/installer-icon_64.png" alt="installer-icon_64.png" width="64" height="64" />Installer</h2>
+<table summary="layout" border="0" cellspacing="0" cellpadding="2">
+<tr><td>Deskbar:</td><td style="width:15px;"></td><td><span class="menu">Aplicaciones</span></td></tr>
+<tr><td>Ubicación:</td><td></td><td><span class="path">/boot/system/apps/Installer</span></td></tr>
+<tr><td>Configuración:</td><td></td><td><i>ninguna</i></td></tr>
+</table>
+<p><br /></p>
+<p>Installer se usa para copiar Antares a otro volumen.<br />
+Una vez ejecutado, muestra una ventana inicial con información importante. No es el simple EULA al que se está acostumbrado a lanzar de un vistazo, indica:</p>
+<ul>
+<li><p>Este software está en calidad de Alpha. ¡Haga copias de seguridad o aténgase a las consecuencias!  </p></li>
+<li><p>Installer necesita una partición preparada. A lo mejor es necesario usar un <a href="http://gparted.sourceforge.net/livecd.php">GParted LiveCD</a> o una herramienta similar hasta que el Drive Setup de Antares sea lo suficientemente maduro como para soportar esta tarea.</p></li>
+<li><p>Antares puede ser añadido manualmente al gestor de arranque <a href="http://www.gnu.org/software/grub/manual/grub.html">GRUB</a>. En resumen, hay que añadir una entrada a <span class="path">/boot/grub/menu.lst</span> de su instalación de linux, similar a ésta:</p>
+<pre># Antares en /dev/sda7
+title		Antares
+rootnoverify	(hd0,6)
+chainloader	+1</pre></li>
+</ul>
+<p><br /><br /></p>
+<p>Una vez admitido con <span class="button">Continue</span>, se le presenta la ventana principal:</p>
+<img src="../images/apps-images/installer.png" alt="installer.png" />
+<p>En la primera ventana emergente se selecciona la fuente de instalación. Puede ser un Antares actualmente instalado o provenir de un CD de instalación o pendrive, etc.<br />
+La segunda ventana emergente especifica el destino para la instalación. Esta partición/volumen de destino será sobreescrita completamente, y tiene que haber sido preparada previamente por un gestor de particiones tal como GParted.</p>
+<p>Clicando sobre el pequeño widget <i>Show Optional Packages</i>,si está disponible, se podrán elegir componentes para instalar sobre el Antares básico.</p>
+<p>Debería hacer una comprobación final de si eligió bien el destino antes de inicia la instalación. Clique sobre <span class="button">Setup partitions...</span> para abrir <a href="drivesetup.html">DriveSetup</a> y eche un vistazo al nombre y estilo de las particiones y volúmenes disponibles.</p>
+<p><span class="button">Comenzar</span> inicia el proceso de instalación, el cual, básicamente copia todo salvo los directorios <span class="path">home/</span> y <span class="path">common/</span> en el volumen de destino y lo hace arrancable.</p>
+<p>Al final de la instalación, la partición se hace arrancable automáticamente. Sin embargo, ipuede ocurrir que otro sistema operativo o herramienta de particionado sobreescriba (accidentalmente) el sector de arranque del volumen Antares. En este caso, arranque su CD de instalación e inicie instaler. Seleccione su partición de Antares del menú <span class="menu">Onto: Please Choose Target</span> y clique en <span class="button">Write Boot Sector</span> para hacerlo arrancable de nuevo.</p>
+
+</div>
+</div>
+
+<div class="nav">
+<div class="inner"><span>
+ «  <a href="icon-o-matic.html">Icon-O-Matic</a> 
+::  <a href="../applications.html#list-of-apps" class="uplink">Aplicaciones</a> 
+::  <a href="magnify.html">Magnify</a>  »
+</span></div>
+</div>
+
+</body>
+</html>

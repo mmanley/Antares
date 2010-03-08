@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src add-ons media plugins wav_reader ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+Addon wav_reader :
+	WavReaderPlugin.cpp
+	: be libmedia.so $(TARGET_LIBSUPC++)
+;

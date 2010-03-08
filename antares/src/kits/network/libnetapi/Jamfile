@@ -1,0 +1,52 @@
+SubDir ANTARES_TOP src kits network libnetapi ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders net ;
+
+local netapi_sources =
+	init.cpp
+	DynamicBuffer.cpp
+	NetEndpoint.cpp
+	NetAddress.cpp 
+	NetBuffer.cpp
+	NetDebug.cpp
+;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <net/*.h> and maybe other stuff.
+
+	local defines = [ FDefines BUILDING_R5_LIBNET ] ;
+	SubDirCcFlags $(defines) ;
+	SubDirC++Flags $(defines) ;
+
+	SharedLibrary libnetapi.so :
+		$(netapi_sources)
+		: be $(TARGET_NETWORK_LIBS) $(TARGET_LIBSUPC++)
+	;
+
+	# Installation -- in the test directory for the time being
+	AntaresInstallRelSymLink install-networking
+		: [ FDirName $(ANTARES_TEST_DIR) kits net lib ]
+		: libnetapi.so
+		: installed-networking-test ;
+
+	AntaresInstallRelSymLink install-userland-networking
+		: [ FDirName $(ANTARES_TEST_DIR) kits net userland lib ]
+		: libnetapi.so
+		: installed-userland-networking ;
+
+	Package antares-networkingkit-cvs :
+		libnetapi.so :
+	#	boot home config lib ;
+		boot home Desktop antares-networkingkit lib ;
+} else {
+	SharedLibrary libbnetapi.so :
+		$(netapi_sources)
+		: be $(TARGET_NETWORK_LIBS) $(TARGET_LIBSUPC++)
+	;
+}

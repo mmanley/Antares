@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons kernel network devices ;
+
+SubInclude ANTARES_TOP src add-ons kernel network devices ethernet ;
+SubInclude ANTARES_TOP src add-ons kernel network devices loopback ;
+

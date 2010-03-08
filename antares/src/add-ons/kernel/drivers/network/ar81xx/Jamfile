@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network ar81xx ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network ar81xx dev ;

@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network via_rhine ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network via_rhine dev ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network via_rhine pci ;

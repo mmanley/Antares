@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons screen_savers message ;
+
+UsePrivateHeaders screen_saver ;
+	# For BuildScreenSaverDefaultSettingsView
+UsePrivateHeaders shared ;
+	# For ObjectList
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+ScreenSaver Message :
+	Message.cpp : 
+	be libscreensaver.so $(TARGET_LIBSUPC++) ;
+
+Package antares-screensaverkit-cvs :
+	Message :
+	boot home config add-ons Screen\ Savers
+;
+

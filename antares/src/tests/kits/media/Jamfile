@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src tests kits media ;
+
+SimpleTest AreaTest : AreaTest.cpp : be $(TARGET_LIBSUPC++) ;
+
+SimpleTest BufferTest : BufferTest.cpp : libmedia.so be $(TARGET_LIBSUPC++) ;
+
+SimpleTest SizeofTest : SizeofTest.cpp : be ;
+
+SimpleTest TimedEventQueueTest : TimedEventQueueTest.cpp
+	: libmedia.so be ;
+
+SimpleTest mediaFormats :
+	mediaFormats.cpp
+	: media ;
+
+SimpleTest mediaDescriptions :
+	mediaDescriptions.cpp
+	: media ;
+
+SubInclude ANTARES_TOP src tests kits media media_decoder ;
+SubInclude ANTARES_TOP src tests kits media notificationtest ;
+SubInclude ANTARES_TOP src tests kits media nodetest ;
+SubInclude ANTARES_TOP src tests kits media playwav ;
+SubInclude ANTARES_TOP src tests kits media mp3_reader_test ;
+SubInclude ANTARES_TOP src tests kits media soundplayer ;
+SubInclude ANTARES_TOP src tests kits media wav_reader_test ;
+

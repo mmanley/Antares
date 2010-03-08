@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src kits device ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders device ;
+
+# for usb_raw.h that defines the ioctl protocol used by the USB classes
+UseHeaders [ FDirName $(ANTARES_TOP) src add-ons kernel drivers bus usb ] : true ;
+
+SharedLibrary libdevice.so :
+	A2D.cpp
+	D2A.cpp
+	DigitalPort.cpp
+	Joystick.cpp
+	JoystickTweaker.cpp
+	SerialPort.cpp
+	USBConfiguration.cpp
+	USBDevice.cpp
+	USBEndpoint.cpp
+	USBInterface.cpp
+	USBRoster.cpp
+	: be $(TARGET_LIBSUPC++)
+;

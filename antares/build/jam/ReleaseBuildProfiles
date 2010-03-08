@@ -1,0 +1,46 @@
+DefineBuildProfile alpha-raw : image : "antares-alpha.image" ;
+DefineBuildProfile alpha-vmware : vmware-image : "antares-alpha.vmdk" ;
+DefineBuildProfile alpha-cd : cd-image : "antares-alpha.iso" ;
+DefineBuildProfile nightly-raw : image : "antares-nightly.image" ;
+DefineBuildProfile nightly-vmware : vmware-image : "antares-nightly.vmdk" ;
+DefineBuildProfile nightly-cd : cd-image : "antares-nightly.iso" ;
+
+switch $(ANTARES_BUILD_PROFILE) {
+	case "alpha-*" : {
+		Echo Building Antares R1/alpha ;
+		ANTARES_ROOT_USER_NAME = user ;
+		ANTARES_ROOT_USER_REAL_NAME = "Yourself" ;
+		AddGroupToAntaresImage party : 101 : user sshd ;
+		ANTARES_IMAGE_HOST_NAME = shredder ;
+		ANTARES_IMAGE_SIZE = 650 ;
+
+		AddOptionalAntaresImagePackages BasicCommandLineTools ;
+		AddOptionalAntaresImagePackages BePDF BeZillaBrowser Clockwerk Pe Vision
+			VLC WonderBrush ;
+		AddOptionalAntaresImagePackages CVS Development Git Mercurial
+			Python Subversion OpenSSH ;
+		AddOptionalAntaresImagePackages Nano P7zip Welcome BeBook ;
+	}
+
+	case "beta-*" : {
+		Echo You wish. ;
+	}
+
+	case "nightly-*" : {
+		Echo Building Antares Nightly ;
+		ANTARES_ROOT_USER_NAME = user ;
+		ANTARES_ROOT_USER_REAL_NAME = "Yourself" ;
+		AddGroupToAntaresImage party : 101 : user sshd ;
+		ANTARES_IMAGE_HOST_NAME = shredder ;
+		ANTARES_IMAGE_SIZE = 450 ;
+
+		AddOptionalAntaresImagePackages BasicCommandLineTools ;
+		AddOptionalAntaresImagePackages Pe Nano Vision P7zip ;
+		AddOptionalAntaresImagePackages Development Subversion OpenSSH ;
+	}
+}
+
+
+# Uncomment in official release branch.
+#ANTARES_DEFINES += ANTARES_OFFICIAL_RELEASE ;
+#TARGET_DEFINES += ANTARES_OFFICIAL_RELEASE ;

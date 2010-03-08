@@ -1,0 +1,32 @@
+SubDir ANTARES_TOP src tests kits net ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SimpleTest firefox_crash : firefox_crash.cpp : $(TARGET_NETWORK_LIBS) ;
+
+SimpleTest udp_client : udp_client.c : $(TARGET_NETWORK_LIBS) ;
+SimpleTest udp_connect : udp_connect.cpp : $(TARGET_NETWORK_LIBS) ;
+SimpleTest udp_echo : udp_echo.c : $(TARGET_NETWORK_LIBS) ;
+SimpleTest udp_server : udp_server.c : $(TARGET_NETWORK_LIBS) ;
+
+SimpleTest tcp_server : tcp_server.c : $(TARGET_NETWORK_LIBS) ;
+SimpleTest tcp_client : tcp_client.c : $(TARGET_NETWORK_LIBS) ;
+
+SimpleTest getpeername : getpeername.cpp : $(TARGET_NETWORK_LIBS) ;
+
+SimpleTest tcp_connection_test : tcp_connection_test.cpp
+	: $(TARGET_NETWORK_LIBS) ;
+
+SimpleTest NetAddressTest : NetAddressTest.cpp
+	: $(TARGET_NETWORK_LIBS) $(ANTARES_NETAPI_LIB) ;
+
+SimpleTest NetEndpointTest : NetEndpointTest.cpp
+	: $(TARGET_NETWORK_LIBS) $(ANTARES_NETAPI_LIB) be $(TARGET_LIBSUPC++) ;
+
+SubInclude ANTARES_TOP src tests kits net DialUpPreflet ;
+SubInclude ANTARES_TOP src tests kits net multicast ;
+SubInclude ANTARES_TOP src tests kits net netperf ;
+SubInclude ANTARES_TOP src tests kits net preflet ;
+SubInclude ANTARES_TOP src tests kits net sock ;
+SubInclude ANTARES_TOP src tests kits net tcp_shell ;
+SubInclude ANTARES_TOP src tests kits net tcptester ;

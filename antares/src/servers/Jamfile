@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src servers ;
+
+SubInclude ANTARES_TOP src servers app ;
+SubInclude ANTARES_TOP src servers bluetooth ;
+SubInclude ANTARES_TOP src servers cddb_daemon ;
+SubInclude ANTARES_TOP src servers debug ;
+SubInclude ANTARES_TOP src servers input ;
+SubInclude ANTARES_TOP src servers mail ;
+SubInclude ANTARES_TOP src servers media ;
+SubInclude ANTARES_TOP src servers media_addon ;
+SubInclude ANTARES_TOP src servers midi ;
+SubInclude ANTARES_TOP src servers mount ;
+SubInclude ANTARES_TOP src servers net ;
+SubInclude ANTARES_TOP src servers power ;
+SubInclude ANTARES_TOP src servers print ;
+SubInclude ANTARES_TOP src servers registrar ;
+SubInclude ANTARES_TOP src servers services_daemon ;
+SubInclude ANTARES_TOP src servers syslog_daemon ;

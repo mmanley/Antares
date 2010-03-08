@@ -1,0 +1,34 @@
+# Quick start file for UserBuildConfig. Copy it and uncomment and edit the
+# lines you want. See UserBuildConfig.ReadMe for details.
+
+# Specify image size in MB.
+#ANTARES_IMAGE_SIZE	= 100 ;
+
+# Install Antares in directory /Antares.
+#ANTARES_INSTALL_DIR = /Antares ;
+
+# Install Antares on device /dev/sda57. Be sure you know what you're doing!
+#ANTARES_IMAGE_DIR	= /dev ;
+#ANTARES_IMAGE_NAME	= sda57 ;
+#ANTARES_DONT_CLEAR_IMAGE = 1 ;
+
+
+# Enable debugging for directory src/system/boot/loader recursively.
+#SetConfigVar DEBUG : ANTARES_TOP src system boot loader : 1 : global ;
+
+
+# Add symlink/file (timezone and keymap settings) to the image.
+#AddSymlinkToAntaresImage home config settings
+#	: /boot/system/data/timezones/Europe/Paris : timezone ;
+#AddFilesToAntaresImage home config settings : <keymap>US-International
+#	: Key_map ;
+
+# Copy artwork to the image.
+#CopyDirectoryToAntaresImage home Desktop : $(ANTARES_TOP)/data/artwork : : -x .svn ;
+
+
+# Add the optional package WonderBrush to the image.
+#AddOptionalAntaresImagePackages WonderBrush ;
+
+# Don't add the libraries built with the alternative gcc version.
+#ANTARES_ADD_ALTERNATIVE_GCC_LIBS = ;

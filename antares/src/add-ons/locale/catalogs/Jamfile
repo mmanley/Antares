@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons locale catalogs ;
+
+# Pseudo target to build all collator addons
+NotFile LocaleKitCatalogAddons ;
+Depends LocaleKitCatalogAddons
+	:
+	<catalog-addon>plaintext
+	<catalog-addon>zeta
+	;
+
+SubInclude ANTARES_TOP src add-ons locale catalogs plaintext ;
+SubInclude ANTARES_TOP src add-ons locale catalogs zeta ;

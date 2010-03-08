@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src tests kits net multicast ;
+
+BinCommand multicast :
+	multicast.cpp
+	: libnetwork.so
+;
+
+
+BinCommand multicat : multicat.c : libnetwork.so ;
+BinCommand multisend : multisend.c : libnetwork.so ;

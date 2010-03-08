@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network rtl8139 ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network rtl8139 dev ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network rtl8139 pci ;

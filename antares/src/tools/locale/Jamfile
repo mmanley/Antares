@@ -1,0 +1,42 @@
+SubDir ANTARES_TOP src tools locale ;
+
+UsePublicHeaders locale ;
+UsePrivateHeaders locale ;
+UsePrivateHeaders shared ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src kits tracker ] ;
+
+local localetools =
+	<build>linkcatkeys
+	<build>collectcatkeys
+;
+
+USES_BE_API on $(localetools) = true ;
+
+UseLibraryHeaders icu ;
+
+# TODO: temporary kludge
+local libAntaresCompat ;
+if $(HOST_PLATFORM) in r5 bone dano {
+	ObjectC++Flags database_support.cpp UpdateMimeInfoThread.cpp
+		MimeUpdateThread.cpp
+		: -include [ FDirName $(ANTARES_TOP) headers build
+			AntaresBuildCompatibility.h ] ;
+	libAntaresCompat = libantarescompat_build.a ;
+}
+
+BuildPlatformMain <build>collectcatkeys :
+	collectcatkeys.cpp
+	PlainTextCatalog.cpp
+	HashMapCatalog.cpp
+	Catalog.cpp
+	RegExp.cpp
+	: $(HOST_LIBBE)  $(HOST_LIBSUPC++) $(HOST_LIBSTDC++) ;
+
+BuildPlatformMain <build>linkcatkeys :
+	linkcatkeys.cpp
+	PlainTextCatalog.cpp
+	HashMapCatalog.cpp
+	DefaultCatalog.cpp
+	Catalog.cpp
+	: $(HOST_LIBBE) $(HOST_LIBSUPC++) $(HOST_LIBSTDC++) ;

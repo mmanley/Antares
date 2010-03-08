@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src apps expander ;
+
+Application Expander : 
+	ExpanderApp.cpp
+	ExpanderWindow.cpp
+	ExpanderThread.cpp
+	GenericThread.cpp
+	ExpanderSettings.cpp
+	ExpanderPreferences.cpp
+	DirectoryFilePanel.cpp
+	ExpanderRules.cpp
+	: be tracker liblocale.so $(TARGET_LIBSUPC++)
+	: Expander.rdef
+;
+
+DoCatalogs Expander :
+	x-vnd.Antares-Expander
+	:
+	ExpanderApp.cpp
+	ExpanderWindow.cpp
+	ExpanderSettings.cpp
+	DirectoryFilePanel.cpp
+	: en.catalog
+	:
+;

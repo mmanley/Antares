@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src libs mesa ;
+
+SubInclude ANTARES_TOP src libs mesa glu ;
+SubInclude ANTARES_TOP src libs mesa glut ;
+SubInclude ANTARES_TOP src libs mesa mesa ;

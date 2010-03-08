@@ -1,0 +1,7 @@
+# Host: Intel 586 running Antares
+
+NAT_FILE= nm-antares.h
+NATDEPFILES= antares-nat.o i386-antares-nat.o inf-child.o fork-child.o
+
+# No core file support yet.
+# corelow.o core-aout.o

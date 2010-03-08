@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src tests add-ons kernel network ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseLegacyHeaders network ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+UsePrivateHeaders net ;
+
+# the network stack tester app
+SimpleTest net_stack_tester : 
+	net_stack_tester.cpp 
+	userland_ipc.c
+	userland_modules.cpp
+	: be
+;
+
+# Installation -- in the test directory for the time being
+AntaresInstall install-userland-networking 
+	: [ FDirName $(ANTARES_TEST_DIR) kits net userland ]
+	: net_stack_tester
+	: installed-userland-networking
+;
+
+SubInclude ANTARES_TOP src tests add-ons kernel network core ;
+SubInclude ANTARES_TOP src tests add-ons kernel network interfaces ;
+SubInclude ANTARES_TOP src tests add-ons kernel network ppp ;
+SubInclude ANTARES_TOP src tests add-ons kernel network protocols ;

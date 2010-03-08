@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src system glue ;
+
+UsePrivateSystemHeaders ;
+
+KernelObjects
+	init_term_dyn.c
+	start_dyn.c
+	antares_version_glue.c
+;
+
+SubInclude ANTARES_TOP src system glue arch ;

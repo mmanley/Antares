@@ -1,0 +1,36 @@
+SubDir ANTARES_TOP src add-ons kernel network ppp shared libppp ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <support/Errors.h> and maybe other stuff.
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UsePrivateHeaders net ;
+UseHeaders [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared libppp
+	headers ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared
+	libkernelppp headers ] : true ;
+
+
+StaticLibrary libppp.a :
+	strlcat.c
+	driver_settings.c
+	settings_tools.cpp
+	KPPPUtils.cpp
+	
+	_libppputils.cpp
+	PPPInterface.cpp
+	PPPInterfaceListener.cpp
+	PPPManager.cpp
+	MessageDriverSettingsUtils.cpp
+;
+
+SEARCH on [ FGristFiles strlcat.c ] = [ FDirName $(ANTARES_TOP) src system libroot posix string ] ;
+SEARCH on [ FGristFiles driver_settings.c ] = [ FDirName $(ANTARES_TOP) src system libroot os ] ;
+SEARCH on [ FGristFiles settings_tools.cpp ] = [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared libkernelppp ] ;
+SEARCH on [ FGristFiles KPPPUtils.cpp ] = [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared libkernelppp ] ;

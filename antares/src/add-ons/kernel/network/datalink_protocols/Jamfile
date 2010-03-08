@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src add-ons kernel network datalink_protocols ;
+
+SubInclude ANTARES_TOP src add-ons kernel network datalink_protocols arp ;
+SubInclude ANTARES_TOP src add-ons kernel network datalink_protocols ethernet_frame ;
+SubInclude ANTARES_TOP src add-ons kernel network datalink_protocols ipv4_datagram ;
+SubInclude ANTARES_TOP src add-ons kernel network datalink_protocols loopback_frame ;

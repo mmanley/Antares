@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons media plugins matroska ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+# SubDirHdrs [ FDirName $(SUBDIR) libmatroska ] ;
+SubDirHdrs [ FDirName $(SUBDIR) libMatroskaParser ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) $(DOTDOT) ogg libogg ] ;
+
+Addon matroska :
+	matroska_codecs.cpp
+	matroska_reader.cpp
+	matroska_util.cpp
+	:
+#	libebml.a
+#	libmatroska.a
+	libMatroskaParser.a
+	libz.a
+	libmedia.so be $(TARGET_LIBSTDC++)
+;
+
+# SubInclude ANTARES_TOP src add-ons media plugins matroska libebml ;
+# SubInclude ANTARES_TOP src add-ons media plugins matroska libmatroska ;
+SubInclude ANTARES_TOP src add-ons media plugins matroska libMatroskaParser ;

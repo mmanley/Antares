@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src add-ons opengl ;
+
+SubInclude ANTARES_TOP src add-ons opengl mesa_software_renderer ;
+# SubInclude ANTARES_TOP src add-ons opengl nvidia ;
+# SubInclude ANTARES_TOP src add-ons opengl radeon ;
+

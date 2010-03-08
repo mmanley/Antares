@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src tests add-ons input_server ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs $(ANTARES_TOP) src add-ons input_server devices keyboard ;
+UsePrivateHeaders input tracker  ;
+
+SimpleTest TeamMonitorTest :
+	TeamMonitorTest.cpp
+	TMWindow.cpp
+	TMListItem.cpp
+	: be
+	;
+
+SEARCH on [ FGristFiles
+		TMWindow.cpp TMListItem.cpp
+	] = [ FDirName $(ANTARES_TOP) src add-ons input_server devices keyboard ] ;
+

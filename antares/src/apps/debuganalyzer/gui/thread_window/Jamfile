@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src apps debuganalyzer gui thread_window ;
+
+UsePrivateHeaders debug interface kernel shared ;
+UsePrivateSystemHeaders ;
+
+UseHeaders $(ANTARES_DEBUG_ANALYZER_HEADERS) ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+MergeObject DebugAnalyzer_gui_thread_window.o
+	:
+	ActivityPage.cpp
+	GeneralPage.cpp
+	ThreadWindow.cpp
+	WaitObjectsPage.cpp
+;

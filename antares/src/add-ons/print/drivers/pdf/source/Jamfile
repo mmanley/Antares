@@ -1,0 +1,61 @@
+SubDir ANTARES_TOP src add-ons print drivers pdf source ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders print ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers libs print libprint ] ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) src libs pdflib libs pdflib ] ;
+
+AddResources PDF\ Writer : 
+	PDFWriter.rdef
+;
+
+Addon PDF\ Writer :
+	AboutText.cpp
+	AdvancedSettingsWindow.cpp
+	Bezier.cpp
+	Bookmark.cpp
+	Cache.cpp
+	DocInfoWindow.cpp
+	DrawShape.cpp
+	Driver.cpp
+	Fonts.cpp
+	FontsWindow.cpp
+	Image.cpp
+	ImageCache.cpp
+	JobSetupWindow.cpp
+	LinePathBuilder.cpp
+	Link.cpp
+	Mask.cpp
+	PDFLinePathBuilder.cpp
+	PDFText.cpp
+	PDFWriter.cpp
+	PageSetupWindow.cpp
+	PictureIterator.cpp
+	PrinterDriver.cpp
+	PrinterPrefs.cpp
+	PrinterSettings.cpp
+	PrinterSetupWindow.cpp
+	RegExp.cpp
+	Report.cpp
+	Scanner.cpp
+	StatusWindow.cpp
+	SubPath.cpp
+	XReferences.cpp
+	:
+	be 
+	textencoding 
+	translation
+	libpdf.a
+	libprint.a 
+	libprintutils.a 
+	$(TARGET_LIBSUPC++)
+;
+
+Package antares-pdf_writer-cvs :
+	PDF\ Writer :
+	boot home config add-ons Print ;
+
+Package antares-printingkit-cvs :
+	PDF\ Writer :
+	boot home config add-ons Print ;

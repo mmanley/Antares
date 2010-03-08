@@ -1,0 +1,41 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers usb ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirC++Flags -fno-rtti ;
+
+local compatSources ;
+
+SubDirSysHdrs $(SUBDIR) ;
+if $(TARGET_PLATFORM) != antares {
+	UsePrivateHeaders kernel ;
+	UsePublicHeaders drivers ;
+	if ! $(HOST_PLATFORM_ANTARES_COMPATIBLE) {
+		compatSources = kernel_cpp.cpp ;
+	}
+} else {
+	UsePrivateKernelHeaders ;
+}
+
+KernelStaticLibrary libusb.a :
+	Stack.cpp
+	Device.cpp
+	Hub.cpp
+	BusManager.cpp
+	Transfer.cpp
+	Pipe.cpp
+	Interface.cpp
+	Object.cpp
+	PhysicalMemoryAllocator.cpp
+	$(compatSources)
+	: -fno-pic
+;	
+
+KernelAddon usb :
+	usb.cpp
+	: libusb.a
+	: usb.rdef
+	;
+
+SEARCH on [ FGristFiles $(compatSources) ]
+	= [ FDirName $(ANTARES_TOP) src system kernel util ] ;

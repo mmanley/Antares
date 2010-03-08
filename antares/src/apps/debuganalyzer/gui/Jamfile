@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src apps debuganalyzer gui ;
+
+UsePrivateHeaders debug interface kernel shared ;
+UsePrivateSystemHeaders ;
+
+UseHeaders $(ANTARES_DEBUG_ANALYZER_HEADERS) ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+MergeObject DebugAnalyzer_gui.o
+	:
+	AbstractGeneralPage.cpp
+	ColorCheckBox.cpp
+	HeaderView.cpp
+	ListSelectionModel.cpp
+	SubWindow.cpp
+	SubWindowManager.cpp
+	:
+	DebugAnalyzer_gui_chart.o
+	DebugAnalyzer_gui_main_window.o
+	DebugAnalyzer_gui_table.o
+	DebugAnalyzer_gui_thread_window.o
+;
+
+
+AntaresSubInclude chart ;
+AntaresSubInclude main_window ;
+#AntaresSubInclude model ;
+AntaresSubInclude table ;
+AntaresSubInclude thread_window ;

@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src documentation uiguidelines ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Doc2HTML 
+	AntaresHIG.xml
+	: index.html
+	: [ FDirName $(ANTARES_TOP) src documentation docbook-xsl html chunk.xsl ]
+	: HIG
+	:
+	: -stringparam use.id.as.filename 1
+;

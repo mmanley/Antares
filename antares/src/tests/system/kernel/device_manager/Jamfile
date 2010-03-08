@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src tests system kernel device_manager ;
+
+BinCommand <test>listdev :
+	dm_wrapper.c
+	listdev.c
+;
+
+KernelAddon <test_driver>config :
+	config.c
+;
+
+SubDirHdrs $(ANTARES_TOP) src system kernel device_manager ;
+UsePrivateKernelHeaders ;
+
+KernelAddon <test_driver>dma_resource_test :
+	dma_resource_test.cpp
+#: $(ANTARES_LIBSUPC++)
+;
+
+SubInclude ANTARES_TOP src tests system kernel device_manager playground ;

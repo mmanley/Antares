@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src tools elfsymbolpatcher ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers tools elfsymbolpatcher ] ;
+
+StaticLibrary libelfsymbolpatcher.a
+	: ElfFile.cpp
+	  ElfImage.cpp
+	  ElfSymbolPatcher.cpp
+;

@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src add-ons media plugins speex ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+SubDirHdrs $(SUBDIR) .. ogg ;
+SubDirSysHdrs $(SUBDIR) .. ogg libogg ;
+SubDirHdrs $(SUBDIR) libspeex ;
+
+Addon speex :
+	speexCodecPlugin.cpp
+	speexCodecDefaults.cpp
+	: libspeex.a be libmedia.so $(TARGET_LIBSUPC++)
+;
+
+SubInclude ANTARES_TOP src add-ons media plugins speex libspeex ;

@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src libs crypt ;
+
+SetSubDirSupportedPlatforms $(ANTARES_BONE_COMPATIBLE_PLATFORMS) ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers compatibility bsd ] : true ;
+
+local defines = [ FDefines SCCSID=0 ] ;
+SubDirCcFlags $(defines) ;
+
+StaticLibrary libcrypt.a :
+	blowfish.c
+	crypt.c
+	crypt-blowfish.c
+	crypt-des.c
+	crypt-md5.c
+	crypt-nthash.c
+	misc.c
+;

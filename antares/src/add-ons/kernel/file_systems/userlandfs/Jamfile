@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel file_systems userlandfs ;
+
+AntaresSubInclude kernel_add_on ;
+AntaresSubInclude server ;

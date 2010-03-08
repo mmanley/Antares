@@ -1,0 +1,104 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons usb_webcam ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# Zeta has a libusb.so, we have it in libdevice.so
+if $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	usbKitLibraryName = libdevice.so ;
+} else {
+#	usbKitLibraryName = USBKit.a ;
+#	UsePublicHeaders [ FDirName drivers ] ;
+#	UsePublicHeaders [ FDirName device ] ;
+	# use -lusb on ZETA
+	usbKitLibraryName = usb ;
+}
+
+# source directories
+local sourceDirs =
+	addons/quickcam
+	addons/sonix
+	addons/uvc
+	addons
+	cstransforms
+	sensors
+;
+
+local sourceDir ;
+for sourceDir in $(sourceDirs) {
+	SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src add-ons media media-add-ons
+		usb_webcam $(sourceDir) ] ;
+}
+
+## addon sources
+local addonSources ;
+addonSources =
+	QuickCamDevice.cpp
+	SonixCamDevice.cpp
+	NW80xCamDevice.cpp
+	UVCCamDevice.cpp
+;
+
+## colorspace transforms sources
+local csTransformsSources ;
+csTransformsSources = Bayer.cpp ;
+
+## sensors sources
+local sensorsSources ;
+sensorsSources =
+	hdcs1000.cpp
+	hv7131e1.cpp
+	pas106b.cpp
+	pb0100.cpp
+	tas5110c1b.cpp
+	tas5130d1b.cpp
+;
+
+## how to build header files from sources to include the list of built-in addons.
+# but it doesn't seem to work for some reason...
+
+rule USBWebcamHeaderGen header : macro : sources
+{
+	SEARCH on $(sources) = $(SEARCH_SOURCE) ;
+
+	Depends $(header) : $(sources) ;
+	MakeLocateArch $(header) ;
+	GREP_DEFINE on $(header) = $(macro) ;
+	USBWebcamHeaderGen1 $(header) : $(sources) ;
+	LocalClean clean : $(header) ;
+}
+
+actions USBWebcamHeaderGen1
+{
+	grep -h $(GREP_DEFINE) $(2) > $(1) ;
+}
+
+USBWebcamHeaderGen [ FGristFiles CamInternalAddons.h ]
+	: B_WEBCAM_MKINTFUNC : $(addonSources) ;
+USBWebcamHeaderGen [ FGristFiles CamInternalSensors.h ]
+	: B_WEBCAM_DECLARE_SENSOR : $(sensorsSources) ;
+USBWebcamHeaderGen [ FGristFiles CamInternalColorSpaceTransforms.h ]
+	: B_WEBCAM_DECLARE_CSTRANSFORM : $(csTransformsSources) ;
+
+Addon usb_webcam.media_addon :
+	$(addonSources)
+	$(csTransformsSources)
+	$(sensorsSources)
+	AddOn.cpp
+	Producer.cpp
+	CamBufferedFilterInterface.cpp
+	CamBufferingDeframer.cpp
+	CamColorSpaceTransform.cpp
+	CamDeframer.cpp
+	CamDevice.cpp
+	CamFilterInterface.cpp
+	CamRoster.cpp
+	CamSensor.cpp
+	CamStreamingDeframer.cpp
+	: be media $(usbKitLibraryName) $(TARGET_LIBSUPC++)
+;
+
+# force dependancies
+Includes [ FGristFiles CamRoster.cpp ] : [ FGristFiles CamInternalAddons.h ] ;
+Includes [ FGristFiles CamDevice.cpp ] : [ FGristFiles CamInternalSensors.h ] ;
+Includes [ FGristFiles CamColorSpaceTransform.cpp ]
+	: [ FGristFiles CamInternalColorSpaceTransforms.h ] ;

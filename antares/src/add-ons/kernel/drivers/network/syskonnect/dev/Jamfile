@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network syskonnect dev ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network syskonnect dev mii ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network syskonnect dev sk ;

@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src add-ons kernel drivers dvb ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers dvb cx23882 ;

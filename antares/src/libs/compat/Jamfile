@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src libs compat ;
+
+SubInclude ANTARES_TOP src libs compat freebsd_network ;
+SubInclude ANTARES_TOP src libs compat freebsd_wlan ;

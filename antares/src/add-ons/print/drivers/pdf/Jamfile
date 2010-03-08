@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src add-ons print drivers pdf ;
+
+Package antares-pdf_writer-cvs :
+	README TODO CHANGES ;
+
+SubInclude ANTARES_TOP src add-ons print drivers pdf source ;
+SubInclude ANTARES_TOP src add-ons print drivers pdf bookmarks ;
+SubInclude ANTARES_TOP src add-ons print drivers pdf encoding ;
+SubInclude ANTARES_TOP src add-ons print drivers pdf xrefs ;
+

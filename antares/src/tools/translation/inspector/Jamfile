@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src tools translation inspector ;
+
+AddResources Inspector : Inspector.rsrc ;
+
+Application Inspector : 
+	TranslatorItem.cpp
+	StatusCheck.cpp
+	ActiveTranslatorsWindow.cpp
+	InfoWindow.cpp
+	ImageView.cpp
+	ImageWindow.cpp
+	InspectorApp.cpp ;
+
+LinkAgainst Inspector : be tracker translation $(TARGET_LIBSUPC++) ;
+

@@ -1,0 +1,47 @@
+# This file contains setup for features that can optionally be used for the
+# build. For features that require downloading a zip file from somewhere it is
+# likely the same file use for an optional package.
+
+
+# SSL
+
+# Automatically enable the SSL feature, when the optional OpenSSL optional
+# package is enabled.
+if [ IsOptionalAntaresImagePackageAdded OpenSSL ] {
+	ANTARES_BUILD_FEATURE_SSL = 1 ;
+}
+
+local baseURL = http://antares-files.org/files/optional-packages ;
+ANTARES_OPENSSL_PACKAGE = openssl-0.9.8m-x86-gcc2-2010-03-03.zip ;
+ANTARES_OPENSSL_URL = $(baseURL)/$(ANTARES_OPENSSL_PACKAGE) ;
+
+if $(ANTARES_BUILD_FEATURE_SSL) {
+	if $(TARGET_ARCH) != x86 {
+		Echo "SSL build feature not available for $(TARGET_ARCH)" ;
+	} else {
+		# Download the zip archive.
+		local zipFile = [ DownloadFile $(ANTARES_OPENSSL_PACKAGE)
+			: $(ANTARES_OPENSSL_URL) ] ;
+
+		# zip file and output directory
+		ANTARES_OPENSSL_ZIP_FILE = $(zipFile) ;
+		ANTARES_OPENSSL_DIR = [ FDirName $(ANTARES_OPTIONAL_BUILD_PACKAGES_DIR)
+			$(ANTARES_OPENSSL_PACKAGE:B) ] ;
+
+		# extract headers and libraries
+		ANTARES_OPENSSL_HEADERS_DEPENDENCY = [ ExtractArchive $(ANTARES_OPENSSL_DIR)
+			: common/include/ : $(zipFile)
+		] ;
+
+		ANTARES_OPENSSL_LIBS = [ ExtractArchive $(ANTARES_OPENSSL_DIR)
+			:
+			common/lib/libcrypto.so
+			common/lib/libssl.so
+			: $(zipFile)
+		] ;
+
+		ANTARES_OPENSSL_ENABLED = 1 ;
+		ANTARES_OPENSSL_HEADERS
+			= [ FDirName $(ANTARES_OPENSSL_DIR) common include ] ;
+	}
+}

@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src bin desklink ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders app interface shared ;
+
+BinCommand desklink :
+	desklink.cpp
+	DeskButton.cpp
+	MediaReplicant.cpp
+	MixerControl.cpp
+	VolumeControl.cpp
+	VolumeWindow.cpp
+
+	: be libmedia.so $(TARGET_LIBSUPC++)
+	: desklink.rdef
+;

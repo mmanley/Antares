@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src system kernel vm ;
+
+UsePrivateHeaders shared ;
+
+UseHeaders [ FDirName $(SUBDIR) $(DOTDOT) device_manager ] ;
+
+KernelMergeObject kernel_vm.o :
+	PageCacheLocker.cpp
+	vm.cpp
+	vm_page.cpp
+	VMAddressSpace.cpp
+	VMAddressSpaceLocking.cpp
+	VMAnonymousCache.cpp
+	VMAnonymousNoSwapCache.cpp
+	VMArea.cpp
+	VMCache.cpp
+	VMDeviceCache.cpp
+	VMKernelAddressSpace.cpp
+	VMKernelArea.cpp
+	VMNullCache.cpp
+	VMPageQueue.cpp
+	VMTranslationMap.cpp
+	VMUserAddressSpace.cpp
+	VMUserArea.cpp
+
+	: $(TARGET_KERNEL_PIC_CCFLAGS)
+;

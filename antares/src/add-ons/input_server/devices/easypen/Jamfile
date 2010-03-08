@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src add-ons input_server devices easypen ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders input ;
+
+Addon <input>easypen : 
+	EasyPenInputDevice.cpp 
+	: be device input_server ;
+

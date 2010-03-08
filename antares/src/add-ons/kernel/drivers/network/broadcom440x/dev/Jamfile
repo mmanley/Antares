@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network broadcom440x dev ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network broadcom440x dev bfe ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network broadcom440x dev mii ;

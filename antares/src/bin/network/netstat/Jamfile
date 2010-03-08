@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src bin network netstat ;
+
+UsePrivateHeaders net ;
+UsePrivateSystemHeaders ;	# for syscalls.h
+
+BinCommand netstat :
+	netstat.cpp
+	: libnetwork.so
+;

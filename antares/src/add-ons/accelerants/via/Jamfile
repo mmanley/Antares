@@ -1,0 +1,30 @@
+SubDir ANTARES_TOP src add-ons accelerants via ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics via ] ;
+UseHeaders [ FDirName $(SUBDIR) engine ] ;
+
+Addon via.accelerant :
+	Acceleration.c
+	Cursor.c
+	EngineManagement.c
+	GetAccelerantHook.c
+	GetDeviceInfo.c
+	GetModeInfo.c
+	GetTimingConstraints.c
+	InitAccelerant.c
+	Overlay.c
+	ProposeDisplayMode.c
+	SetDisplayMode.c
+	: libvia_engine.a
+;
+
+Package antares-via_gfx-cvs :
+	via.accelerant : 
+	boot home config add-ons accelerants ;
+
+Depends via.accelerant : via ;
+
+SubInclude ANTARES_TOP src add-ons accelerants via engine ;

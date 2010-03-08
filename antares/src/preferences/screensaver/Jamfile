@@ -1,0 +1,32 @@
+SubDir ANTARES_TOP src preferences screensaver ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers os add-ons screen_saver ] : true ;
+	# we also need our headers when build for BeOS
+
+UsePrivateHeaders screen_saver ;
+SubDirSysHdrs $(SUBDIR) ;
+
+Preference ScreenSaver : 
+	ScreenSaverApp.cpp
+	ScreenSaverWindow.cpp
+	PasswordWindow.cpp
+	PreviewView.cpp
+	ScreenCornerSelector.cpp
+
+	ScreenSaver.cpp
+		# needed for some old/broken screen saver add-ons that do not
+		# link against libscreensaver.so
+
+	: tracker libscreensaver.so be $(TARGET_LIBSTDC++)
+	: ScreenSaver.rdef 
+	;
+
+SEARCH on [ FGristFiles
+		ScreenSaver.cpp
+	] = [ FDirName $(ANTARES_TOP) src kits screensaver ] ;
+
+Package antares-screensaverkit-cvs :
+	ScreenSaver :
+	boot home Desktop antares-screensaverkit ;

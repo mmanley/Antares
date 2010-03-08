@@ -1,0 +1,68 @@
+SubDir ANTARES_TOP src build libroot ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers build ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build os ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build os app ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build os kernel ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build os interface ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build os storage ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build os support ] : true ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private kernel ] : true ;
+
+{
+	local defines = [ FDefines
+		ANTARES_BUILD_ATTRIBUTES_DIR="\\\"$(ANTARES_BUILD_ATTRIBUTES_DIR)\\\""
+	] ;
+	SubDirCcFlags $(defines) ;
+	SubDirC++Flags $(defines) ;
+}
+
+# locate the library
+MakeLocate libroot_build.so : $(HOST_BUILD_COMPATIBILITY_LIB_DIR) ;
+
+# darwin already has strlcpy and strlcat in libSystem
+local strlSources ;
+if $(HOST_PLATFORM) != darwin {
+	strlSources = strlcpy.c strlcat.c ;
+}
+
+if $(HOST_PLATFORM) = cygwin || $(HOST_PLATFORM) = sunos {
+	strlSources += stpcpy.c strcasestr.c ;
+}
+
+local hostPlatformSources ;
+if $(HOST_PLATFORM) = freebsd {
+	hostPlatformSources = fs_freebsd.cpp ;
+}
+
+local librootSources =
+	atomic.cpp
+	byteorder.cpp
+	errors.cpp
+	fs.cpp
+	fs_attr.cpp
+	fs_descriptors.cpp
+	misc.cpp
+	sem.cpp
+	thread.cpp
+
+	$(hostPlatformSources)
+
+	$(strlSources)
+	strnlen.c
+;
+
+BuildPlatformSharedLibrary libroot_build.so :
+	$(librootSources)
+	:
+	$(HOST_LIBSUPC++) $(HOST_LIBSTDC++)
+;
+
+BuildPlatformStaticLibrary libroot_build.a :
+	:
+	[ FGristFiles $(librootSources:S=$(SUFOBJ)) ]
+;
+
+SEARCH on [ FGristFiles $(strlSources) strnlen.c ]
+	= [ FDirName $(ANTARES_TOP) src system libroot posix string ] ;

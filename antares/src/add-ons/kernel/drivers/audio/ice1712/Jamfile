@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ice1712 ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+KernelAddon ice1712 :
+	ice1712.c
+	io.c
+	midi.c
+	multi.c
+	util.c
+;
+

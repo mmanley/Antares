@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src add-ons kernel busses scsi 53c8xx ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirCcFlags -DBUILD_LOADABLE ;
+
+KernelAddon 53c8xx :
+	53c8xx.c
+;
+
+Package antares-53c8xx-cvs
+	:
+	53c8xx
+	:
+	boot home config add-ons kernel busses scsi ;

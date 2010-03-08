@@ -1,0 +1,81 @@
+# Gumstix Verdex board-specific definitions
+
+ANTARES_BOARD_DESCRIPTION = "Openmoko Neo FreeRunner" ;
+
+#
+# Various hardcoded addresses
+#
+
+# load address for antares_loader
+ANTARES_BOARD_LOADER_BASE = 0x32000000 ;
+# entry points (raw binary, and netbsd loader emulation)
+ANTARES_BOARD_LOADER_ENTRY_RAW = 0x32000000 ;
+ANTARES_BOARD_LOADER_ENTRY_NBSD = 0x32000008 ;
+
+# load address for antares_loader uimage
+# (must be different than real load address)
+ANTARES_BOARD_LOADER_UIBASE = 0x34000000 ;
+
+ANTARES_BOARD_LOADER_STACK_BASE = 0x34000000 ;
+
+#
+# Flash image
+#
+
+# u-boot binary image filename, to build the flash image
+# XXX: Locate it somehow (for now just put it in generated/)
+#ANTARES_BOARD_UBOOT_IMAGE ?= u-boot-verdex-400-r1604.bin ;
+#ANTARES_BOARD_UBOOT_IMAGE_URL = 
+	http://www.gumstix.net/feeds/u-boot/u-boot-verdex-400-r1604.bin ;
+
+
+#
+# mmc/SD image
+#
+
+# in MB
+ANTARES_BOARD_SDIMAGE_SIZE = 256 ;
+
+# in MB
+ANTARES_BOARD_SDIMAGE_FAT_SIZE = 32 ;
+
+# offset in blocks XXX: FIXME
+# (autodetect from sfdisk or use cylinder count for fat size)
+#ANTARES_BOARD_SDIMAGE_BFS_OFFSET = ;
+
+# autoboot script
+ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT_NAME = gumstix-factory.script ;
+
+ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT = "\
+setenv bootargs debug_screen true; \
+if mmcinit; then \
+	fatload mmc 0 $(ANTARES_BOARD_LOADER_UIBASE) antares_loader_nbsd.ub; \
+	bootm $(ANTARES_BOARD_LOADER_UIBASE); \
+fi" ;
+
+ANTARES_BOARD_SDIMAGE_FILES = 
+	antares_loader
+	antares_loader.ub
+	antares_loader_nbsd.ub
+	$(ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT_NAME)
+;
+
+
+#
+# gcc flags for the specific cpu
+#
+
+TARGET_KERNEL_CCFLAGS += -mcpu=arm920t ;
+TARGET_KERNEL_C++FLAGS += -mcpu=arm920t ;
+TARGET_CCFLAGS += -mcpu=arm920t ;
+TARGET_C++FLAGS += -mcpu=arm920t ;
+
+# Workaround for ld using 32k for alignment despite forcing it in the config...
+# should definitely not be needed!
+TARGET_KERNEL_LINKFLAGS +=
+	-Wl,-z -Wl,max-page-size=0x1000
+	-Wl,-z -Wl,common-page-size=0x1000 ;
+TARGET_LINKFLAGS +=
+	-Wl,-z -Wl,max-page-size=0x1000
+	-Wl,-z -Wl,common-page-size=0x1000 ;
+

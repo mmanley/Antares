@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src add-ons input_server methods canna ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders interface ;
+
+SubDirSysHdrs $(SUBDIR) ;
+SubDirHdrs [ FDirName $(SUBDIR) canna ] ;
+
+if $(TARGET_PLATFORM) != antares {
+	SubDirC++Flags -fmultiple-symbol-spaces ;
+}
+
+Addon canna : 
+	CannaInterface.cpp
+	CannaLooper.cpp
+	CannaMethod.cpp
+	KouhoWindow.cpp
+	PaletteWindow.cpp
+	: be textencoding input_server libcanna.a librk.a $(TARGET_LIBSUPC++) ;
+
+Package antares-cannaIM-cvs :
+	canna :
+	boot home config add-ons input_server methods ;
+
+SubInclude ANTARES_TOP src add-ons input_server methods canna lib ;
+SubInclude ANTARES_TOP src add-ons input_server methods canna rk ;

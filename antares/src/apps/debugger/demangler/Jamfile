@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src apps debugger demangler ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+UsePrivateHeaders kernel ;
+
+SEARCH_SOURCE
+	+= [ FDirName $(ANTARES_TOP) src add-ons kernel debugger demangle ] ;
+
+
+MergeObject Debugger_demangler.o
+	:
+	Demangler.cpp
+	
+	demangle.cpp
+	gcc2.cpp
+	gcc3+.cpp
+;

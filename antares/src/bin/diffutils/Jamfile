@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src bin diffutils ;
+
+SubInclude ANTARES_TOP src bin diffutils lib ;
+SubInclude ANTARES_TOP src bin diffutils src ; 

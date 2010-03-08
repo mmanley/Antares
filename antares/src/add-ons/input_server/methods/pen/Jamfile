@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons input_server methods pen ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders interface ;
+
+#SubDirSysHdrs $(SUBDIR) ;
+if $(TARGET_PLATFORM) != dano {
+	SubDirSysHdrs [ FDirName $(SUBDIR) compat ] ;
+}
+
+if $(TARGET_PLATFORM) != antares {
+	SubDirC++Flags -fmultiple-symbol-spaces ;
+}
+
+Addon pen : 
+	PenInputServerMethod.cpp
+	PenInputLooper.cpp
+	PenInputInkWindow.cpp
+	PenInputBackend.cpp
+	DumpMessage.cpp
+	StringIO.cpp
+	: be textencoding input_server ;
+
+SEARCH on [ FGristFiles StringIO.cpp ] = [ FDirName $(SUBDIR) compat ] ;

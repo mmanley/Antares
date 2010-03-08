@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src apps diskusage ;
+
+UsePrivateHeaders mount shared tracker ;
+SubDirHdrs $(ANTARES_TOP) src kits tracker ;
+
+Application DiskUsage :
+	App.cpp
+	Common.cpp
+	ControlsView.cpp
+	DiskUsage.cpp
+	InfoWindow.cpp
+	MainWindow.cpp
+	PieView.cpp
+	Scanner.cpp
+	Snapshot.cpp
+	StatusView.cpp
+	: be $(TARGET_LIBSTDC++)
+	: DiskUsage.rdef
+;
+

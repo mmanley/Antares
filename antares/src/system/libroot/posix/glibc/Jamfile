@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src system libroot posix glibc ;
+
+SubInclude ANTARES_TOP src system libroot posix glibc arch ;
+SubInclude ANTARES_TOP src system libroot posix glibc ctype ;
+SubInclude ANTARES_TOP src system libroot posix glibc extensions ;
+SubInclude ANTARES_TOP src system libroot posix glibc iconv ;
+SubInclude ANTARES_TOP src system libroot posix glibc locale ;
+SubInclude ANTARES_TOP src system libroot posix glibc libio ;
+SubInclude ANTARES_TOP src system libroot posix glibc misc ;
+SubInclude ANTARES_TOP src system libroot posix glibc regex ;
+SubInclude ANTARES_TOP src system libroot posix glibc stdio-common ;
+SubInclude ANTARES_TOP src system libroot posix glibc stdlib ;
+SubInclude ANTARES_TOP src system libroot posix glibc string ;
+SubInclude ANTARES_TOP src system libroot posix glibc wcsmbs ;
+SubInclude ANTARES_TOP src system libroot posix glibc wctype ;

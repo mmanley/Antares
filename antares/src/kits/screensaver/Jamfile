@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src kits screensaver ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers os add-ons screen_saver ] ;
+	# we also need our headers when build for BeOS
+
+UsePrivateHeaders screen_saver ;
+
+SharedLibrary libscreensaver.so :
+	BuildScreenSaverDefaultSettingsView.cpp
+	ScreenSaver.cpp
+	ScreenSaverSettings.cpp
+	ScreenSaverRunner.cpp
+	:
+	be game $(TARGET_LIBSUPC++)
+;
+
+Package antares-screensaverkit-cvs :
+	libscreensaver.so :
+	boot home config lib ;
+
+Packages antares-screensaverkit-cvs :
+	README ;

@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons kernel generic dpc ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders [ FDirName drivers ] ;
+}
+
+KernelAddon dpc :
+	dpc.c
+;
+

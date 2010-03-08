@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src apps aboutsystem ;
+
+UsePrivateHeaders app shared ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os kernel ] : true ;
+}
+if $(TARGET_PLATFORM) = r5 {
+	SubDirC++Flags -DR5_COMPATIBLE ;
+}
+if $(TARGET_PLATFORM) = dano {
+	SubDirC++Flags -DR5_COMPATIBLE ;
+}
+
+Application AboutSystem :
+	AboutSystem.cpp
+	HyperTextActions.cpp
+	HyperTextView.cpp
+	Utilities.cpp
+	: $(TARGET_LIBSTDC++) be translation
+	: AboutSystem.rdef
+;
+
+Includes [ FGristFiles AboutSystem.rdef ] : [ FGristFiles "ANTARES logo - black on white - tiny.png" ] ;
+SEARCH on [ FGristFiles "ANTARES logo - black on white - tiny.png" ]
+	= [ FDirName $(ANTARES_TOP) data artwork ] ;

@@ -1,0 +1,17 @@
+/*
+ * Copyright 2009, Colin Günther, coling@gmx.de.
+ * All Rights Reserved. Distributed under the terms of the MIT License.
+ */
+
+
+#include <sys/bus.h>
+
+
+ANTARES_FBSD_WLAN_DRIVER_GLUE(marvell8335, malo, pci)
+ANTARES_DRIVER_REQUIREMENTS(FBSD_TASKQUEUES | FBSD_FAST_TASKQUEUE | FBSD_WLAN);
+ANTARES_FIRMWARE_VERSION(0);
+
+NO_ANTARES_CHECK_DISABLE_INTERRUPTS();
+NO_ANTARES_REENABLE_INTERRUPTS();
+NO_ANTARES_FBSD_MII_DRIVER();
+NO_ANTARES_FIRMWARE_NAME_MAP();

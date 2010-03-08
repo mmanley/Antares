@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics common ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirCcFlags -DENABLE_LOGGING -DLOG_INCLUDE_STARTUP ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics radeon ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+
+StaticLibrary libgraphicscommon.a :
+	log_coll.c
+	log_dump.c
+	memory_manager.c
+;

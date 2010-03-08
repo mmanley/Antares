@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src add-ons translators wonderbrush ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# Include support sub folder
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src add-ons translators wonderbrush support ] ;
+
+UseLibraryHeaders zlib ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator WonderBrushTranslator :
+	Canvas.cpp
+	Layer.cpp
+	WonderBrushImage.cpp
+	WonderBrushMain.cpp
+	WonderBrushTranslator.cpp
+	WonderBrushView.cpp
+
+	# support
+	bitmap_compression.cpp
+	blending.cpp
+	lab_convert.cpp
+
+	: be translation z libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	WonderBrushTranslator :
+	boot home config add-ons Translators ;
+

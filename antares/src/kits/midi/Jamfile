@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src kits midi ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os midi ] : true ;
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os midi2 ] : true ;
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os ] : true ;
+}
+
+UsePrivateHeaders midi ;
+UseLibraryHeaders fluidsynth ;
+
+SharedLibrary libmidi.so :
+	Midi.cpp
+	MidiGlue.cpp
+	MidiPort.cpp
+	MidiStore.cpp
+	MidiSynth.cpp
+	MidiSynthFile.cpp
+	MidiText.cpp
+	Samples.cpp
+	SoftSynth.cpp
+	Synth.cpp
+	:
+	be
+	libmidi2.so
+	media
+	libfluidsynth.so
+	$(TARGET_LIBSUPC++)
+;

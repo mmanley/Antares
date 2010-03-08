@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src apps showimage ;
+
+UsePrivateSystemHeaders ;
+UsePrivateHeaders tracker shared ;
+UsePublicHeaders [ FDirName be_apps Tracker ] ;
+
+Application ShowImage :
+	ShowImageApp.cpp
+	ShowImageSettings.cpp
+	ShowImageStatusView.cpp
+	ShowImageUndo.cpp
+	ShowImageView.cpp
+	ShowImageWindow.cpp
+	PrintOptionsWindow.cpp
+	Filter.cpp
+	EntryMenuItem.cpp
+	ProgressWindow.cpp
+	ResizerWindow.cpp
+	: libshared.a
+	be tracker translation $(TARGET_LIBSUPC++)
+	: ShowImage.rdef
+	;
+

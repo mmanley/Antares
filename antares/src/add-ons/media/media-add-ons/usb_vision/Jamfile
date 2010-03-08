@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons usb_vision ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders usb_vision ;
+
+Addon usb_vision.media_addon :
+	AddOn.cpp
+	Producer.cpp
+	TunerLocale.cpp
+	: be media $(TARGET_LIBSTDC++)
+;

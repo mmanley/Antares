@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src apps installedpackages ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared interface ;
+SubDirHdrs $(ANTARES_TOP) src apps packageinstaller ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src kits interface ] ;
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src apps packageinstaller ] ;
+
+Application InstalledPackages :
+	InstalledPackageInfo.cpp
+	main.cpp
+	UninstallWindow.cpp
+	UninstallView.cpp
+	: be tracker $(TARGET_LIBSUPC++)
+;

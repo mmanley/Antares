@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src apps debuganalyzer util ;
+
+UsePrivateHeaders debug interface kernel shared ;
+UsePrivateSystemHeaders ;
+
+UseHeaders $(ANTARES_DEBUG_ANALYZER_HEADERS) ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+MergeObject DebugAnalyzer_util.o
+	:
+	DataSource.cpp
+;

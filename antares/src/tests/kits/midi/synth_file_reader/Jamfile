@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src tests kits midi synth_file_reader ;
+
+SimpleTest sfr
+	: SynthFileReader.cpp
+	  SynthFile.cpp
+	  main.cpp
+	: be root game
+;
+

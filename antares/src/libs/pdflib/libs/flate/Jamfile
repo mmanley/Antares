@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src libs pdflib libs flate ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src libs pdflib libs pdcore ] ;
+
+UseLibraryHeaders pdflib ;
+
+StaticLibrary libpdf.a : 
+	adler32.c
+	uncompr.c
+	infutil.c
+	compress.c
+	zutil.c
+	inffast.c
+	crc32.c
+	deflate.c
+	trees.c
+	inftrees.c
+	infblock.c
+	inflate.c
+	infcodes.c
+;
+

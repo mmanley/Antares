@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons disk_systems intel ;
+
+UsePrivateHeaders shared storage ;
+UsePrivateSystemHeaders ;
+
+SEARCH_SOURCE
+	+= [ FDirName $(ANTARES_TOP) src add-ons kernel partitioning_systems intel ] ;
+
+{
+	local defines = [ FDefines _USER_MODE ] ;
+	SubDirCcFlags $(defines) ;
+	SubDirC++Flags $(defines) ;
+}
+
+Addon <disk_system>intel :
+	IntelDiskSystem.cpp
+	ExtendedPartitionAddOn.cpp
+	PartitionMapAddOn.cpp
+	CreationParameterEditor.cpp
+
+	# kernel sources
+	PartitionMap.cpp
+
+	: be $(TARGET_LIBSUPC++)
+;

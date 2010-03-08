@@ -1,0 +1,34 @@
+SubDir ANTARES_TOP src tests ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UnitTestLib libexampletest.so
+	: ExampleTestAddon.cpp
+		ExampleTest.cpp
+	: be $(TARGET_LIBSTDC++)
+	:
+;
+
+UnitTest UnitTester
+	: UnitTester.cpp
+	: be $(TARGET_LIBSTDC++)
+	: UnitTester.rsrc
+;
+
+# Install libbe and other libraries for target platform libbe_test.
+if $(TARGET_PLATFORM) = libbe_test {
+	local libs = libbe_antares.so libbeadapter.so libtranslation.so ;
+	AntaresInstall install-unittest-libs : $(TARGET_UNIT_TEST_LIB_DIR)
+		: $(libs)
+		: tests!unittests ;
+}
+
+SubInclude ANTARES_TOP src tests add-ons ;
+SubInclude ANTARES_TOP src tests apps ;
+SubInclude ANTARES_TOP src tests bin ;
+SubInclude ANTARES_TOP src tests system ;
+SubInclude ANTARES_TOP src tests kits ;
+SubInclude ANTARES_TOP src tests libs ;
+SubInclude ANTARES_TOP src tests misc ;
+SubInclude ANTARES_TOP src tests servers ;

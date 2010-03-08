@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src add-ons print drivers pdf xrefs ;
+
+Package antares-pdf_writer-cvs :
+	English Deutsch :
+	boot home config settings PDF\ Writer xrefs ;	
+
+Package antares-printingkit-cvs :
+	English Deutsch :
+	boot home config settings PDF\ Writer xrefs ;	

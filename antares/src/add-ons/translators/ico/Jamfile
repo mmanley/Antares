@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons translators ico ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator ICOTranslator :
+	# ICOTranslator classes
+	main.cpp
+	ICOTranslator.cpp
+	ConfigView.cpp
+	ICO.cpp
+	: be translation libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	ICOTranslator
+	: boot home config add-ons Translators
+	;

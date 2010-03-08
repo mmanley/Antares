@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons tracker mark_as ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+AddResources Mark\ as… : MarkAs.rdef ;
+AddResources Mark\ as\ Read-R : MarkAsRead.rdef ;
+
+Addon Mark\ as… :
+	MarkAs.cpp
+	: be tracker $(TARGET_LIBSUPC++)
+;
+
+Addon Mark\ as\ Read-R :
+	MarkAsRead.cpp
+	: be tracker $(TARGET_LIBSUPC++)
+;

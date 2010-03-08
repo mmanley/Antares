@@ -1,0 +1,26 @@
+SubDir ANTARES_TOP src tests kits net preflet InterfacesAddOn ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src tests kits net preflet ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers net ] : true ;
+
+UsePrivateHeaders net shared ;
+UseLibraryHeaders agg icon ;
+
+AddResources Interfaces : 
+       InterfacesIcons.rdef 
+;
+
+Addon Interfaces : 
+	InterfacesAddOn.cpp
+	InterfacesListView.cpp
+	Setting.cpp
+	NetworkWindow.cpp
+	EthernetSettingsView.cpp
+	: 
+	be 
+	<nogrist>NetworkSetup 
+	$(TARGET_NETWORK_LIBS) 
+	$(TARGET_LIBSUPC++) 
+	libicon.a libagg.a
+;
+

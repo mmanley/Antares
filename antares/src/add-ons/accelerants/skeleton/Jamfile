@@ -1,0 +1,30 @@
+SubDir ANTARES_TOP src add-ons accelerants skeleton ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics skeleton ] ;
+UseHeaders [ FDirName $(SUBDIR) engine ] ;
+
+Addon skel.accelerant :
+	Acceleration.c
+	Cursor.c
+	EngineManagement.c
+	GetAccelerantHook.c
+	GetDeviceInfo.c
+	GetModeInfo.c
+	GetTimingConstraints.c
+	InitAccelerant.c
+	Overlay.c
+	ProposeDisplayMode.c
+	SetDisplayMode.c
+	: libskeleton_engine.a
+;
+
+Package antares-skeleton-cvs :
+	skel.accelerant : 
+	boot home config add-ons accelerants ;
+
+Depends skel.accelerant : skel.driver ;
+
+SubInclude ANTARES_TOP src add-ons accelerants skeleton engine ;

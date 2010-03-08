@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src system ;
+
+SubInclude ANTARES_TOP src system boot ;
+SubInclude ANTARES_TOP src system kernel ;
+SubInclude ANTARES_TOP src system glue ;
+SubInclude ANTARES_TOP src system libroot ;
+SubInclude ANTARES_TOP src system runtime_loader ;

@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src bin findutils ;
+
+SubInclude ANTARES_TOP src bin findutils gnulib ;
+SubInclude ANTARES_TOP src bin findutils lib ;
+SubInclude ANTARES_TOP src bin findutils find ;
+SubInclude ANTARES_TOP src bin findutils locate ;
+SubInclude ANTARES_TOP src bin findutils xargs ;

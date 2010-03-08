@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src tests servers app window_invalidation ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UsePrivateHeaders interface ;
+
+Application WindowInvalidation :
+	WindowInvalidation.cpp
+	: be $(TARGET_LIBSTDC++) $(TARGET_LIBSUPC++)
+;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : WindowInvalidation
+		: tests!apps ;
+}
+

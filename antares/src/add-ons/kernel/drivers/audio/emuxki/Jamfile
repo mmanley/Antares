@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio emuxki ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+KernelAddon emuxki :
+	ac97.c
+	debug.c
+	emuxki.c
+	io.c
+	midi.c
+	multi.c
+	util.c
+#	joy.c
+;
+
+SEARCH on <emuxki!driver>emuxki.settings = $(SUBDIR) ;
+
+Package antares-emuxki-cvs
+	:
+	emuxki
+	:
+	boot home config add-ons kernel drivers bin ;
+
+PackageDriverSymLink antares-emuxki-cvs : audio hmulti emuxki ;
+Package antares-emuxki-cvs : <emuxki!driver>emuxki.settings
+        : boot home config settings kernel drivers ;

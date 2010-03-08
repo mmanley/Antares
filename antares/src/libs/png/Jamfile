@@ -1,0 +1,32 @@
+SubDir ANTARES_TOP src libs png ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseLibraryHeaders png zlib ;
+
+local shared_files =
+	png.c
+	pngerror.c
+	pnggccrd.c
+	pngget.c
+	pngmem.c
+	pngpread.c
+	pngread.c
+	pngrio.c
+	pngrtran.c
+	pngrutil.c
+	pngset.c
+	pngtrans.c
+	pngvcrd.c
+	pngwio.c
+	pngwrite.c
+	pngwtran.c
+	pngwutil.c
+;
+
+Objects $(shared_files) ;
+
+SharedLibrary libpng.so : [ FGristFiles $(shared_files:S=.o) ] : z : 1.2 ;
+
+StaticLibrary libpng.a : [ FGristFiles $(shared_files:S=.o) ] ;

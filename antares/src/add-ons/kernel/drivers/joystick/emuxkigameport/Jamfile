@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src add-ons kernel drivers joystick emuxkigameport ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+KernelAddon emuxkigameport :
+	driver.cpp
+;

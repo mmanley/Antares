@@ -1,0 +1,33 @@
+SubDir ANTARES_TOP src apps aboutsystem ;
+
+UsePrivateHeaders app shared ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os kernel ] : true ;
+}
+if $(TARGET_PLATFORM) = r5 {
+	SubDirC++Flags -DR5_COMPATIBLE ;
+}
+if $(TARGET_PLATFORM) = dano {
+	SubDirC++Flags -DR5_COMPATIBLE ;
+}
+
+Application AboutSystem :
+	AboutSystem.cpp
+	HyperTextActions.cpp
+	HyperTextView.cpp
+	Utilities.cpp
+	: $(TARGET_LIBSTDC++) be translation liblocale.so
+	: AboutSystem.rdef
+;
+
+DoCatalogs AboutSystem :
+	x-vnd.Antares-About
+	:
+	AboutSystem.cpp
+	Utilities.cpp
+	: en.catalog
+	: hu.catkeys pl.catkeys pt.catkeys ru.catkeys uk.catkeys
+	;

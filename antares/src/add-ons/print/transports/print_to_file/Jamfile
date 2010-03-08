@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons print transports print_to_file ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# In case of changing the name of this transport add-on
+# the method NeedsLocking() in src/servers/print/ResourceManager.cpp
+# has to be updated as well.
+Addon Print\ To\ File : 
+	print_transport.cpp
+	FileSelector.cpp
+	: be tracker $(TARGET_LIBSUPC++)
+;
+
+Package antares-printingkit-cvs :
+	Print\ To\ File :
+	boot home config add-ons Print transport ;

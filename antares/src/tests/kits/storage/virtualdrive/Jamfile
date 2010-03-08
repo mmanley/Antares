@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src tests kits storage virtualdrive ;
+
+KernelAddon virtualdrive : 
+	virtualdrive.cpp ;
+
+SimpleTest mkvirtualdrive : mkvirtualdrive.cpp : be ;
+
+# Installation
+AntaresInstall install_virtualdrive
+	: /boot/home/config/add-ons/kernel/drivers/bin
+	: virtualdrive ;
+AntaresInstallRelSymLink install_virtualdrive
+	: /boot/home/config/add-ons/kernel/drivers/dev/misc
+	: <installed>virtualdrive
+	: installed-symlink ;

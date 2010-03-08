@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src libs compat freebsd_wlan ;
+
+SubInclude ANTARES_TOP src libs compat freebsd_wlan net80211 ;
+

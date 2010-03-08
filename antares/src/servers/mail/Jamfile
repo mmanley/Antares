@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src servers mail ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePublicHeaders [ FDirName add-ons mail_daemon ] ;
+UsePrivateHeaders mail ;
+UsePrivateHeaders shared ;
+UseLibraryHeaders icon ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers os add-ons mail_daemon ] ;
+
+AddResources mail_daemon : mail_daemon.rdef DeskbarViewIcons.rdef ;
+
+Server mail_daemon :
+	DeskbarView.cpp
+	LEDAnimation.cpp
+	main.cpp
+;
+
+LinkAgainst mail_daemon : be libmail.so tracker $(TARGET_LIBSTDC++) $(TARGET_NETWORK_LIBS) ;
+
+Package antares-maildaemon-cvs :
+	mail_daemon :
+	boot beos system servers ;
+
+Packages antares-maildaemon-cvs :
+	README LICENSE HISTORY install.sh ;

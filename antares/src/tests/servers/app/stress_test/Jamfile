@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src tests servers app stress_test ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName os app ] ;
+UseHeaders [ FDirName os interface ] ;
+
+Application StressTest :
+	main.cpp
+	: be $(TARGET_LIBSTDC++)
+;
+
+if ( $(TARGET_PLATFORM) = libbe_test ) {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : StressTest
+		: tests!apps ;
+}
+

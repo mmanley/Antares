@@ -1,0 +1,164 @@
+#!/bin/sh
+#
+# parameters <machine> <antares sourcedir> <buildtools dir> <antares output dir>
+
+# get and check the parameters
+if [ $# -lt 4 ]; then
+	echo Usage: $0 '<machine> <antares sourcedir> <buildtools dir>' \
+		'<antares output dir>' >&2
+	exit 1
+fi
+
+antaresMachine=$1
+antaresSourceDir=$2
+buildToolsDir=$3
+antaresOutputDir=$4
+shift 4
+additionalMakeArgs=$*
+
+case $(uname) in
+FreeBSD|OpenBSD)
+	MAKE=gmake
+	;;
+*)
+	MAKE=make
+	;;
+esac
+export MAKE
+
+case $antaresMachine in
+m68k-*)
+	binutilsConfigureArgs="--enable-multilib"
+	gccConfigureArgs="--enable-multilib"
+	;;
+arm-*)
+	binutilsConfigureArgs="--enable-multilib"
+	gccConfigureArgs="--enable-multilib"
+	;;
+*)
+	binutilsConfigureArgs="--disable-multilib"
+	gccConfigureArgs="--disable-multilib"
+	;;
+esac
+
+if [ ! -d $antaresSourceDir ]; then
+	echo "No such directory: \"$antaresSourceDir\"" >&2
+	exit 1
+fi
+
+if [ ! -d $buildToolsDir ]; then
+	echo "No such directory: \"$buildToolsDir\"" >&2
+	exit 1
+fi
+
+
+# create the output dir
+mkdir -p $antaresOutputDir || exit 1
+
+
+# get absolute paths
+currentDir=$(pwd)
+
+cd $antaresSourceDir
+antaresSourceDir=$(pwd)
+cd $currentDir
+
+cd $buildToolsDir
+buildToolsDir=$(pwd)
+cd $currentDir
+
+cd $antaresOutputDir
+antaresOutputDir=$(pwd)
+
+binutilsSourceDir=$buildToolsDir/binutils
+gccSourceDir=$buildToolsDir/gcc
+
+
+# get gcc version
+gccVersion=$(cat $gccSourceDir/gcc/BASE-VER)
+
+if [ -z "$gccVersion" ]; then
+	echo "Failed to find out gcc version." >&2
+	exit 1
+fi
+
+
+# create the object and installation directories for the cross compilation tools
+installDir=$antaresOutputDir/cross-tools
+objDir=$antaresOutputDir/cross-tools-build
+binutilsObjDir=$objDir/binutils
+gccObjDir=$objDir/gcc
+tmpIncludeDir=$objDir/sysincludes
+tmpLibDir=$objDir/syslibs
+
+rm -rf $installDir $objDir
+
+mkdir -p $installDir $objDir $binutilsObjDir $gccObjDir $tmpIncludeDir \
+	$tmpLibDir || exit 1
+mkdir -p $installDir/lib/gcc/$antaresMachine/$gccVersion
+
+
+# build binutils
+cd $binutilsObjDir
+CFLAGS="-O2" CXXFLAGS="-O2" $binutilsSourceDir/configure \
+	--prefix=$installDir --target=$antaresMachine --disable-nls \
+	--disable-shared --disable-werror $binutilsConfigureArgs || exit 1
+$MAKE $additionalMakeArgs || exit 1
+$MAKE $additionalMakeArgs install || exit 1
+
+export PATH=$PATH:$installDir/bin
+
+
+# build gcc
+
+# prepare the include files
+copy_headers()
+{
+	sourceDir=$1
+	targetDir=$2
+
+	headers="$(find $sourceDir -name \*\.h | grep -v /.svn)"
+	headers="$(echo $headers | sed -e s@$sourceDir/@@g)"
+	for f in $headers; do
+		headerTargetDir=$targetDir/$(dirname $f)
+		mkdir -p $headerTargetDir
+		cp $sourceDir/$f $headerTargetDir
+	done
+}
+
+copy_headers $antaresSourceDir/headers/config $tmpIncludeDir/config
+copy_headers $antaresSourceDir/headers/os $tmpIncludeDir/os
+copy_headers $antaresSourceDir/headers/posix $tmpIncludeDir/posix
+
+# configure gcc
+cd $gccObjDir
+CFLAGS="-O2" CXXFLAGS="-O2" $gccSourceDir/configure --prefix=$installDir \
+	--target=$antaresMachine --disable-nls --disable-shared \
+	--enable-languages=c,c++ \
+	--with-headers=$tmpIncludeDir --with-libs=$tmpLibDir \
+	$gccConfigureArgs || exit 1
+
+# make gcc
+$MAKE $additionalMakeArgs || {
+	echo "ERROR: Building gcc failed." >&2
+	exit 1
+}
+
+# install gcc
+$MAKE $additionalMakeArgs install || {
+	echo "ERROR: Installing the cross compiler failed." >&2
+	exit 1
+}
+
+# cleanup
+
+# remove the system headers from the installation dir
+# Only the ones from the source tree should be used.
+sysIncludeDir=$installDir/$antaresMachine/sys-include
+rm -rf $sysIncludeDir/os $sysIncludeDir/posix
+
+# remove the objects dir
+rm -rf $objDir
+
+
+echo "binutils and gcc for cross compilation have been built successfully!"

@@ -1,0 +1,37 @@
+SubDir ANTARES_TOP src tests system boot loader file_systems amiga_ffs ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders [ FDirName kernel ] ;
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders [ FDirName storage ] ;
+SubDirSysHdrs $(ANTARES_TOP) src tests system boot loader ;
+SubDirHdrs $(ANTARES_TOP) src system boot loader file_systems amiga_ffs ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders drivers ;	# disk_device_manager.h
+	UsePublicHeaders storage ;	# DiskDeviceDefs.h
+}
+
+ObjectDefines 
+	amiga_ffs.cpp
+	Volume.cpp
+	Directory.cpp
+	File.cpp
+	:
+	read_pos=boot_read_pos fstat=boot_fstat open=boot_open close=boot_close _BOOT_MODE
+	;
+
+KernelStaticLibrary boottest_amiga_ffs :
+	amiga_ffs.cpp
+	Volume.cpp
+	Directory.cpp
+	File.cpp
+	: #-fcheck-memory-usage -D_NO_INLINE_ASM
+	;
+
+# Tell Jam where to find the sources
+
+SEARCH on [ FGristFiles
+		amiga_ffs.cpp Volume.cpp Directory.cpp File.cpp
+	] = [ FDirName $(ANTARES_TOP) src system boot loader file_systems amiga_ffs ] ;

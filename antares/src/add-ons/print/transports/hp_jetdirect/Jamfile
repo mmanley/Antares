@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons print transports hp_jetdirect ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons print transports shared ] ;
+
+Addon HP\ JetDirect :
+	print_transport.cpp 
+	HPJetDirectTransport.cpp
+	SetupWindow.cpp
+	: be $(TARGET_NETAPI_LIB) $(TARGET_LIBSUPC++)
+;
+
+Package antares-printingkit-cvs :
+	HP\ JetDirect :
+	boot home config add-ons Print transport ;

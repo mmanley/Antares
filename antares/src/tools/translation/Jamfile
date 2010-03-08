@@ -1,0 +1,10 @@
+SubDir ANTARES_TOP src tools translation ;
+
+SubInclude ANTARES_TOP src tools translation bitsinfo ;
+SubInclude ANTARES_TOP src tools translation bmpinfo ;
+SubInclude ANTARES_TOP src tools translation inspector ;
+SubInclude ANTARES_TOP src tools translation pnginfo ;
+SubInclude ANTARES_TOP src tools translation stxtinfo ;
+SubInclude ANTARES_TOP src tools translation tgainfo ;
+SubInclude ANTARES_TOP src tools translation tiffinfo ;
+

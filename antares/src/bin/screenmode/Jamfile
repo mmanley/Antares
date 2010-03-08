@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src bin screenmode ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders [ FDirName graphics radeon ] ;
+	# for multimon.h
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src preferences screen ] ;
+
+BinCommand screenmode :
+	screenmode.cpp
+
+	# from Screen preferences
+	gtf.cpp
+	multimon.cpp
+	ScreenMode.cpp
+
+	: be $(TARGET_LIBSUPC++)
+;
+
+#SEARCH on [ FGristFiles
+#		ScreenMode.cpp
+#	] = [ FDirName $(ANTARES_TOP) src preferences screen ] ;

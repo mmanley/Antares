@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src system libroot posix locale ;
+
+MergeObject posix_locale.o :
+	#ctype.c
+	localeconv.c
+	setlocale.c
+	#mb_none.c
+	#mblen.c
+	#mbrtowc.c
+	#mbsinit.c
+	#wcrtomb.c
+;

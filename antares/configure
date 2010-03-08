@@ -1,0 +1,601 @@
+#!/bin/sh
+#
+# configure [ <options> ]
+
+# usage
+#
+# Prints usage.
+#
+usage()
+{
+	cat << EOF
+
+Usage: $0 <options>
+options:
+  --alternative-gcc-output-dir <dir>
+                              Build a Antares installation that supports running
+                              executables built with a gcc version incompatible
+                              with the primary gcc (e.g. gcc 2 executables under
+                              a gcc 4 Antares or vice versa). <dir> specifies the
+                              output directory of the other gcc. The directory
+                              must already be fully configured.
+                              Note, that a sub-jam will be executed when
+                              building Antares. When using a jam that is not
+                              simply invoked by "jam", the JAM build variable
+                              needs to be set accordingly.
+                              To disable building the alternative libraries
+                              the variable ANTARES_ADD_ALTERNATIVE_GCC_LIBS can be
+                              unset in the UserBuildConfig file.
+  --build-cross-tools <arch> <build tools dir>
+                              Assume cross compilation. <build tools dir>
+                              defines the location of the build tools sources.
+                              They will be compiled and placed in the output
+                              directory under "cross-tools". The ANTARES_* tools
+                              variables will be set accordingly.
+                              <arch> specifies the target architecture, either
+                              "x86", or "ppc".
+  --cross-tools-prefix <prefix>
+                              Assume cross compilation. <prefix> should be a
+                              path to the directory where the cross
+                              compilation tools are located, plus the platform
+                              prefix, e.g. "/path/to/tools/i586-pc-antares-".
+                              This overrides the ANTARES_* tool variables.
+  --distro-compatibility <level>
+                              The distribution's level of compatibility with
+                              the official Antares distribution. The generated
+                              files will contain the respective trademarks
+                              accordingly.
+                              official -- the official Antares distribution.
+                              compatible -- a Antares Compatible (tm) distro.
+                              default -- any other distro (default value).
+  --enable-multiuser          Enable experimental multiuser support.
+  --help                      Prints out this help.
+  --include-gpl-addons        Include GPL licensed add-ons.
+  --include-patented-code     Enable code that is known to implemented patented
+                              ideas and techniques. If this option is not
+                              specified, the resulting distribution may still
+                              implement patented ideas and techniques. This
+                              option only disables code that is currently known
+                              to be problematic.
+  --include-sources           Includes the source code of projects that require
+                              either an offer of source code or a copy of the
+                              patched sources. This is preferable when
+                              distributing on physical mediums.
+  --include-3rdparty          Include 3rdparty/ in the build system.
+  -j<n>                       Only relevant for --build-cross-tools and
+                              --build-cross-tools-gcc4. Is passed on to the
+                              make building the build tools.
+  --target=TARGET             Select build target platform.
+                              [default=${TARGET_PLATFORM}]
+                              valid targets=r5,bone,dano,antares
+  --update                    re-runs last configure invocation [must be given
+                              as first option!]
+  --use-gcc-pipe              Build with GCC option -pipe. Speeds up the build
+                              process, but uses more memory.
+  --use-32bit                 Use -m32 flag on 64bit host gcc compiler.
+  --use-xattr                 Use Linux xattr support for BeOS attribute
+                              emulation. Warning: Make sure your file system
+                              supports sufficient attribute sizes (4 KB per
+                              file for all attributes won't suffice).
+
+environment variables:
+  ANTARES_AR                    The static library archiver. Defaults to "ar".
+  ANTARES_CC                    The compiler. Defaults to "gcc".
+  ANTARES_LD                    The linker. Defaults to "ld".
+  ANTARES_OBJCOPY               The objcopy to be used. Defaults to "objcopy".
+  ANTARES_RANLIB                The static library indexer. Defaults to "ranlib".
+  ANTARES_YASM                  The yasm assembler (x86 only).
+  ANTARES_CPPFLAGS              The preprocessor flags. Defaults to "".
+  ANTARES_CCFLAGS               The C flags. Defaults to "".
+  ANTARES_CXXFLAGS              The C++ flags. Defaults to "".
+  ANTARES_LDFLAGS               The linker flags. Defaults to "".
+  ANTARES_ARFLAGS               The flags passed to ANTARES_AR for archiving.
+                              Defaults to "cru".
+  ANTARES_UNARFLAGS             The flags passed to ANTARES_AR for unarchiving.
+                              Defaults to "x".
+
+Non-standard output directories:
+  By default all objects, build configuration, and other related files are
+  stored in /path/to/antares_source/generated.  To store objects in a non-default
+  location, run "../../relative/path/to/antares_source/configure <options>" from
+  within your non-default location.  "jam [ options ] targets" can then be run
+  directly inside your non-default location.  Another option is to invoke "jam
+  [ options ] targets" from within antares_source.  This can be accomplished by
+  either "export ANTARES_OUTPUT_DIR=your non-default location" before invoking
+  jam or by creating a symlink of antares_source/generated pointing to your
+  non-default location and running jam.
+
+
+EOF
+}
+
+# assertparam
+#
+# Checks whether at least one parameter is left.
+#
+assertparam()
+{
+	if [ $2 -lt 2 ]; then
+		echo $0: \`$1\': Parameter expected.
+		exit 1
+	fi
+}
+
+# assertparams
+#
+# Checks whether at least a certain number of parameters is left.
+#
+assertparams()
+{
+	if [ $3 -le $2 ]; then
+		echo $0: \`$1\': Not enough parameters.
+		exit 1
+	fi
+}
+
+# standard_gcc_settings
+#
+# Sets the variables for a GCC platform.
+#
+standard_gcc_settings()
+{
+	# PLATFORM_LINKLIBS
+	gcclib=`$ANTARES_CC -print-libgcc-file-name`
+	gccdir=`dirname ${gcclib}`
+
+	ANTARES_GCC_RAW_VERSION=`$ANTARES_CC -dumpversion`
+	ANTARES_GCC_MACHINE=`$ANTARES_CC -dumpmachine`
+
+	ANTARES_GCC_LIB_DIR=${gccdir}
+	ANTARES_GCC_LIBGCC=${gccdir}/libgcc.a
+	ANTARES_GCC_GLUE_CODE="crtbegin.o crtend.o"
+	ANTARES_GCC_HEADERS_DIR="${gccdir}/include
+		${gccdir}/include-fixed"
+	ANTARES_GCC_LIBGCC_OBJECTS=`$ANTARES_AR t ${ANTARES_GCC_LIBGCC} | grep -v eabi.o`
+		# Note: We filter out eabi.o. It's present in gcc's libgcc for PPC and
+		# neither needed nor wanted.
+
+	case $ANTARES_GCC_RAW_VERSION in
+		4.*)
+			# for gcc 4 we use the libstdc++ and libsupc++ that come with the
+			# compiler
+			ANTARES_STATIC_LIBSTDCXX=`$ANTARES_CC -print-file-name=libstdc++.a`
+			ANTARES_SHARED_LIBSTDCXX=`$ANTARES_CC -print-file-name=libstdc++.so`
+			ANTARES_STATIC_LIBSUPCXX=`$ANTARES_CC -print-file-name=libsupc++.a`
+			ANTARES_SHARED_LIBSUPCXX=`$ANTARES_CC -print-file-name=libsupc++.so`
+
+			local headers
+			if [ -d $gccdir/../../../../$ANTARES_GCC_MACHINE/include/c++/$ANTARES_GCC_RAW_VERSION ]; then
+				headers=$gccdir/../../../../$ANTARES_GCC_MACHINE/include/c++/$ANTARES_GCC_RAW_VERSION
+			else
+				headers=$gccdir/../../../../include/c++/$ANTARES_GCC_RAW_VERSION
+			fi
+
+			ANTARES_CXX_HEADERS_DIR=$headers
+			for d in $ANTARES_GCC_MACHINE backward ext; do
+				# Note: We need the line break, otherwise the line might become
+				# too long for jam (512 bytes max).
+				ANTARES_CXX_HEADERS_DIR="$ANTARES_CXX_HEADERS_DIR
+					$headers/$d"
+			done
+
+			# when not building the crosscompiler, to use cpp headers from
+			# tree first, but fallback to local C++ system headers (like <new>)
+			# if [ "$buildCrossTools" = "" ]; then
+			#	ANTARES_CXX_HEADERS_DIR="headers/cpp $ANTARES_CXX_HEADERS_DIR"
+			# fi
+
+			if [ $ANTARES_STATIC_LIBSTDCXX = libstdc++.a ]; then
+				ANTARES_STATIC_LIBSTDCXX=
+			fi
+			if [ $ANTARES_SHARED_LIBSTDCXX = libstdc++.so ]; then
+				ANTARES_SHARED_LIBSTDCXX=
+			fi
+			if [ $ANTARES_STATIC_LIBSUPCXX = libsupc++.a ]; then
+				ANTARES_STATIC_LIBSUPCXX=
+			fi
+			if [ $ANTARES_SHARED_LIBSUPCXX = libsupc++.so ]; then
+				ANTARES_SHARED_LIBSUPCXX=
+			fi
+		;;
+		2.9*)
+			# check for correct (most up-to-date) legacy compiler and complain
+			# if an older one is installed
+			if [ $ANTARES_GCC_RAW_VERSION != $antaresRequiredLegacyGCCVersion ]; then
+				echo "GCC version $antaresRequiredLegacyGCCVersion is required!";
+				echo "Please download it from www.antares-os.org...";
+				exit 1;
+			fi
+		;;
+	esac
+}
+
+# set_default_value
+#
+# Set the value for a variable, if no value is set yet.
+#
+set_default_value()
+{
+	eval "$1=\${$1-$2}"
+}
+
+# get_build_tool_path
+#
+# Gets a usable absolute path of a build tool.
+#
+get_build_tool_path()
+{
+	local var="ANTARES_$1"
+	local tool=$2
+	local path="${crossToolsPrefix}$tool"
+
+	if [ -f "$path" ]; then
+		# get absolute path
+		local oldPwd="`pwd`"
+		cd "`dirname "$path"`"
+		path="`pwd`/`basename "$path"`"
+		cd $oldPwd
+	else
+		which "$path" &> /dev/null || {
+			echo "Build tool \"$path\" not found." >&2
+			exit 1
+		}
+	fi
+
+	eval "$var=$path"
+}
+
+# get cwd and the source directory
+currentDir=`pwd`
+cd `dirname "$0"`
+sourceDir=`pwd`
+cd "$currentDir"
+
+# backup the passed arguments
+configureArgs="$@"
+
+# internal default parameter values
+#
+platform=`uname`
+platformMachine=`uname  -m`
+targetArch=x86
+crossToolsPrefix=
+buildCrossTools=
+buildCrossToolsScript="$sourceDir/build/scripts/build_cross_tools"
+buildCrossToolsMachine=
+buildCrossToolsJobs=
+
+# exported (BuildSetup) default parameter values
+#
+ANTARES_GCC_RAW_VERSION=
+ANTARES_GCC_MACHINE=i586-pc-antares
+ANTARES_STATIC_LIBSTDCXX=
+ANTARES_SHARED_LIBSTDCXX=
+ANTARES_STATIC_LIBSUPCXX=
+ANTARES_SHARED_LIBSUPCXX=
+ANTARES_CXX_HEADERS_DIR=
+HOST_GCC_RAW_VERSION=`gcc -dumpversion`
+HOST_GCC_MACHINE=`gcc -dumpmachine`
+ANTARES_INCLUDE_GPL_ADDONS=0
+ANTARES_INCLUDE_PATENTED_CODE=0
+ANTARES_INCLUDE_SOURCES=0
+ANTARES_INCLUDE_3RDPARTY=0
+ANTARES_ENABLE_MULTIUSER=0
+ANTARES_DISTRO_COMPATIBILITY=default
+TARGET_PLATFORM=antares
+ANTARES_USE_GCC_PIPE=0
+ANTARES_HOST_USE_32BIT=0
+ANTARES_HOST_USE_XATTR=0
+ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR=
+ANTARES_ADD_ALTERNATIVE_GCC_LIBS=
+HOST_GCC_LD=`gcc -print-prog-name=ld`
+HOST_GCC_OBJCOPY=`gcc -print-prog-name=objcopy`
+SFDISK_BINARY=sfdisk
+HOST_SFDISK=$SFDISK_BINARY
+
+antaresRequiredLegacyGCCVersion="2.95.3-antares-090629"
+export antaresRequiredLegacyGCCVersion
+	# version of legacy gcc required to build antares
+
+set_default_value ANTARES_AR			ar
+set_default_value ANTARES_CC			gcc
+set_default_value ANTARES_LD			ld
+set_default_value ANTARES_OBJCOPY		objcopy
+set_default_value ANTARES_RANLIB		ranlib
+set_default_value ANTARES_YASM		yasm
+set_default_value ANTARES_CPPFLAGS	""
+set_default_value ANTARES_CCFLAGS		""
+set_default_value ANTARES_CXXFLAGS	""
+set_default_value ANTARES_LDFLAGS		""
+set_default_value ANTARES_ARFLAGS		cru
+set_default_value ANTARES_UNARFLAGS	x
+
+# check for update request
+if [ "$1" = "--update" ]; then
+	if ! [ -e "$buildConfigFile" ]; then
+		echo $0 --update: \'$buildConfigFile\' not found - updating not possible.
+		exit 1
+	fi
+	if ! type perl >/dev/null 2>&1; then
+		echo $0 --update: \'perl\' not found - updating not possible.
+		exit 1
+	fi
+	# convert BuildConfig from jam format to shell format and evaluate it
+	shellConfigFile="${buildConfigFile}.shell"
+	perl "$sourceDir/build/scripts/convert_build_config_to_shell_format.pl" \
+		<"$buildConfigFile" >"$shellConfigFile"
+	. "$shellConfigFile"
+	rm "$shellConfigFile"
+	shift
+fi
+
+# parse parameters
+#
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		--alternative-gcc-output-dir)
+			assertparam "$1" $#
+			cd $2 || exit 1
+			ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR=`pwd`
+			ANTARES_ADD_ALTERNATIVE_GCC_LIBS=1
+			cd $currentDir
+			shift 2
+			;;
+		--build-cross-tools)
+			assertparams "$1" 2 $#
+			buildCrossTools=$3
+			buildCrossToolsScript="${buildCrossToolsScript}"
+			case "$2" in
+				x86)	ANTARES_GCC_MACHINE=i586-pc-antares;;
+				ppc)	ANTARES_GCC_MACHINE=powerpc-apple-antares; targetArch=ppc;;
+				*)		echo "Unsupported target architecture: $2"
+						exit 1;;
+			esac
+			buildCrossToolsMachine=$ANTARES_GCC_MACHINE
+			shift 3
+			;;
+		--cross-tools-prefix)
+			assertparam "$1" $#
+			crossToolsPrefix=$2
+			shift 2
+			;;
+		--distro-compatibility)
+			assertparam "$1" $#
+			ANTARES_DISTRO_COMPATIBILITY=$2
+			case "$ANTARES_DISTRO_COMPATIBILITY" in
+				official)	;;
+				compatible)	;;
+				default)	;;
+				*)			echo "Invalid distro compatibility" \
+								"level: $ANTARES_DISTRO_COMPATIBILITY"
+							exit 1;;
+			esac
+			shift 2
+			;;
+		--enable-multiuser)	ANTARES_ENABLE_MULTIUSER=1; shift 1;;
+		--help | -h)	usage; exit 0;;
+		--include-gpl-addons)	ANTARES_INCLUDE_GPL_ADDONS=1; shift 1;;
+		--include-patented-code)	ANTARES_INCLUDE_PATENTED_CODE=1; shift 1;;
+		--include-sources)	ANTARES_INCLUDE_SOURCES=1; shift 1;;
+		--include-3rdparty)	ANTARES_INCLUDE_3RDPARTY=1; shift 1;;
+        -j*)				buildCrossToolsJobs="$1"; shift 1;;
+		--target=*)     TARGET_PLATFORM=`echo $1 | cut -d'=' -f2-`; shift 1;;
+		--use-gcc-pipe)	ANTARES_USE_GCC_PIPE=1; shift 1;;
+		--use-32bit)	ANTARES_HOST_USE_32BIT=1; shift 1;;
+		--use-xattr)	ANTARES_HOST_USE_XATTR=1; shift 1;;
+		*)				echo Invalid argument: \`$1\'; exit 1;;
+	esac
+done
+
+# determine output directory
+if [ "$currentDir" = "$sourceDir" ]; then
+	outputDir=$currentDir/generated/$targetArch
+else
+	outputDir=$currentDir
+fi
+buildOutputDir="$outputDir/build"
+ANTARES_BUILD_ATTRIBUTES_DIR="$outputDir/attributes"
+buildConfigFile="$buildOutputDir/BuildConfig"
+
+# detect the build platform
+case "${platform}" in
+	BeOS)	revision=`uname -r`
+			case "$revision" in
+				6.*)	HOST_PLATFORM=dano ;;
+				5.1)	HOST_PLATFORM=dano ;;
+				5.0.4)	HOST_PLATFORM=bone ;;
+				5.0*)	HOST_PLATFORM=r5 ;;
+				*)		echo Unknown BeOS version: $revision
+						exit 1 ;;
+			esac
+			;;
+	Darwin)	HOST_PLATFORM=darwin ;;
+	FreeBSD)	HOST_PLATFORM=freebsd
+				SFDISK_BINARY=sfdisk-linux
+				if [ "$ANTARES_HOST_USE_32BIT" = 1 ] ; then
+					echo Unsupported platform: FreeBSD ${platformMachine}
+					exit 1
+				fi	;;
+	Antares)	HOST_PLATFORM=antares_host ;;
+	Linux)	HOST_PLATFORM=linux ;;
+	OpenBSD) HOST_PLATFORM=openbsd ;;
+	SunOS)	HOST_PLATFORM=sunos ;;
+	CYGWIN_NT-*) HOST_PLATFORM=cygwin ;;
+	*)		echo Unsupported platform: ${platform}
+			exit 1 ;;
+esac
+
+# check yasm version
+if [ $targetArch = "x86" ]; then
+	$ANTARES_YASM --version > /dev/null || {
+		echo "The yasm assembler version 0.7.0 or later must be installed."
+		echo "Download from: http://www.tortall.net/projects/yasm/wiki/Download"
+		exit 1
+	}
+
+	set -- $($ANTARES_YASM --version | head -n 1)
+	versionOK=0
+	case $2 in
+		0.[0-6].*)		;;
+		*)				versionOK=1 ;;
+	esac
+
+	if [ $versionOK = 0 ]; then
+		echo "The yasm assembler version 0.7.0 or later must be installed."
+		echo "The installed version is $2."
+		echo "Download from: http://www.tortall.net/projects/yasm/wiki/Download"
+		exit 1
+	fi
+fi
+
+# check common locations for sfdisk
+for sfdiskDir in /sbin /usr/sbin /usr/local/sbin ; do
+	if [ -e ${sfdiskDir}/${SFDISK_BINARY} ]; then
+		HOST_SFDISK=${sfdiskDir}/${SFDISK_BINARY}
+	fi
+done
+
+# check for case-sensitive filesystem if on darwin
+if [ $HOST_PLATFORM = "darwin" ]; then
+	diskutil info $(pwd) | grep -i "case-sensitive" > /dev/null
+	if [ $? != 0 ]; then
+		echo "You need a case-sensitive file-system to build Antares."
+		echo "Please see the following guide on how to set one up:"
+		echo "http://antares-os.org/documents/dev/how_to_build_antares_on_mac_os_x"
+		exit 1
+	fi
+fi
+
+# create output directory
+mkdir -p "$buildOutputDir" || exit 1
+
+# build cross tools from sources
+if [ -n "$buildCrossTools" ]; then
+	"$buildCrossToolsScript" $buildCrossToolsMachine "$sourceDir" \
+		"$buildCrossTools" "$outputDir" $buildCrossToolsJobs || exit 1
+	crossToolsPrefix="$outputDir/cross-tools/bin/${ANTARES_GCC_MACHINE}-"
+fi
+
+# cross tools
+if [ -n "$crossToolsPrefix" ]; then
+	get_build_tool_path AR ar
+	get_build_tool_path CC gcc
+	get_build_tool_path LD ld
+	get_build_tool_path OBJCOPY objcopy
+	get_build_tool_path RANLIB ranlib
+fi
+
+# prepare gcc settings
+standard_gcc_settings
+
+# check whether the Antares compiler really targets Antares or BeOS
+case "$ANTARES_GCC_MACHINE" in
+	*-*-antares)	;;
+	*-*-beos)	;;
+	*) echo The compiler specified as Antares target compiler is not a valid \
+			Antares cross-compiler. Please see ReadMe.cross-compile. >&2
+	   echo compiler: $ANTARES_CC
+	   echo compiler is configured for target: $ANTARES_GCC_MACHINE
+	   exit 1 ;;
+esac
+
+# Generate BuildConfig
+cat << EOF > "$buildConfigFile"
+# BuildConfig
+# Note: This file has been automatically generated by configure with the
+# following arguments:
+# ${configureArgs}
+
+TARGET_PLATFORM 			?= "${TARGET_PLATFORM}" ;
+HOST_PLATFORM				?= "${HOST_PLATFORM}" ;
+
+ANTARES_INCLUDE_GPL_ADDONS			?= "${ANTARES_INCLUDE_GPL_ADDONS}" ;
+ANTARES_INCLUDE_PATENTED_CODE			?= "${ANTARES_INCLUDE_PATENTED_CODE}" ;
+ANTARES_INCLUDE_SOURCES				?= "${ANTARES_INCLUDE_SOURCES}" ;
+ANTARES_INCLUDE_3RDPARTY				?= "${ANTARES_INCLUDE_3RDPARTY}" ;
+ANTARES_ENABLE_MULTIUSER				?= "${ANTARES_ENABLE_MULTIUSER}" ;
+ANTARES_DISTRO_COMPATIBILITY			?= "${ANTARES_DISTRO_COMPATIBILITY}" ;
+ANTARES_USE_GCC_PIPE					?= "${ANTARES_USE_GCC_PIPE}" ;
+ANTARES_HOST_USE_32BIT				?= "${ANTARES_HOST_USE_32BIT}" ;
+ANTARES_HOST_USE_XATTR				?= "${ANTARES_HOST_USE_XATTR}" ;
+ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR	?= ${ANTARES_ALTERNATIVE_GCC_OUTPUT_DIR} ;
+ANTARES_ADD_ALTERNATIVE_GCC_LIBS		?= ${ANTARES_ADD_ALTERNATIVE_GCC_LIBS} ;
+
+ANTARES_GCC_RAW_VERSION		?= ${ANTARES_GCC_RAW_VERSION} ;
+ANTARES_GCC_MACHINE			?= ${ANTARES_GCC_MACHINE} ;
+ANTARES_GCC_LIB_DIR			?= ${ANTARES_GCC_LIB_DIR} ;
+ANTARES_GCC_HEADERS_DIR		?= ${ANTARES_GCC_HEADERS_DIR} ;
+ANTARES_GCC_LIBGCC			?= ${ANTARES_GCC_LIBGCC} ;
+
+ANTARES_STATIC_LIBSTDC++		?= ${ANTARES_STATIC_LIBSTDCXX} ;
+ANTARES_SHARED_LIBSTDC++		?= ${ANTARES_SHARED_LIBSTDCXX} ;
+ANTARES_STATIC_LIBSUPC++		?= ${ANTARES_STATIC_LIBSUPCXX} ;
+ANTARES_SHARED_LIBSUPC++		?= ${ANTARES_SHARED_LIBSUPCXX} ;
+ANTARES_C++_HEADERS_DIR		?= ${ANTARES_CXX_HEADERS_DIR} ;
+
+ANTARES_BUILD_ATTRIBUTES_DIR	?= ${ANTARES_BUILD_ATTRIBUTES_DIR} ;
+
+ANTARES_AR					?= ${ANTARES_AR} ;
+ANTARES_CC					?= ${ANTARES_CC} ;
+ANTARES_LD					?= ${ANTARES_LD} ;
+ANTARES_OBJCOPY				?= ${ANTARES_OBJCOPY} ;
+ANTARES_RANLIB				?= ${ANTARES_RANLIB} ;
+ANTARES_YASM					?= ${ANTARES_YASM} ;
+ANTARES_CPPFLAGS				?= ${ANTARES_CPPFLAGS} ;
+ANTARES_CCFLAGS				?= ${ANTARES_CCFLAGS} ;
+ANTARES_CXXFLAGS				?= ${ANTARES_CXXFLAGS} ;
+ANTARES_LDFLAGS				?= ${ANTARES_LDFLAGS} ;
+ANTARES_ARFLAGS				?= ${ANTARES_ARFLAGS} ;
+ANTARES_UNARFLAGS				?= ${ANTARES_UNARFLAGS} ;
+
+HOST_GCC_RAW_VERSION		?= ${HOST_GCC_RAW_VERSION} ;
+HOST_GCC_MACHINE			?= ${HOST_GCC_MACHINE} ;
+HOST_LD						?= ${HOST_GCC_LD} ;
+HOST_OBJCOPY				?= ${HOST_GCC_OBJCOPY} ;
+HOST_SFDISK					?= ${HOST_SFDISK} ;
+
+EOF
+
+# Libgcc.a objects
+
+cat << EOF > "$buildOutputDir/libgccObjects"
+# libgcc.a objects to be linked against libroot.so
+# Note: This file has been automatically generated by configure.
+
+ANTARES_GCC_LIBGCC_OBJECTS	?= ${ANTARES_GCC_LIBGCC_OBJECTS} ;
+EOF
+
+# Generate Timezones binaries bindings
+
+timezoneSources="africa antarctica asia australasia europe northamerica
+	southamerica pacificnew etcetera factory backward"
+
+cat << EOF > "$buildOutputDir/Timezones"
+# Timezones used for the build
+# Note: This file has been automatically generated by configure.
+
+ANTARES_TIME_ZONE_SOURCES = ${timezoneSources} ;
+
+EOF
+
+for source in ${timezoneSources}; do
+	f=$sourceDir/src/data/timezones/$source
+
+TZOBJECTS=`gawk '/^Zone/ { print $2 } /^Link/ { print $3 } ' "$f" `
+
+cat << EOF >> "$buildOutputDir/Timezones"
+TZ_OBJECTS on <timezone-source>${source} ?= $TZOBJECTS ;
+EOF
+done
+
+# Generate a boot strap Jamfile in the output directory.
+
+cat << EOF > $outputDir/Jamfile
+# automatically generated Jamfile
+
+ANTARES_TOP			= ${sourceDir} ;
+ANTARES_OUTPUT_DIR	= ${outputDir} ;
+
+include [ FDirName \$(ANTARES_TOP) Jamfile ] ;
+
+EOF

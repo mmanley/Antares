@@ -1,0 +1,223 @@
+SubDir ANTARES_TOP src system boot platform u-boot ;
+
+SubDirHdrs $(ANTARES_TOP) headers private kernel boot platform $(TARGET_BOOT_PLATFORM) ;
+
+SubDirHdrs $(ANTARES_TOP) src system boot arch $(TARGET_ARCH) ;
+
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+UsePrivateHeaders [ FDirName graphics vesa ] ;
+UsePrivateHeaders [ FDirName storage ] ;
+
+# XXX: FIXME! move this to arch/arm !
+
+UsePrivateHeaders [ FDirName kernel arch arm board $(TARGET_BOOT_BOARD) ] ;
+
+{
+	local defines = _BOOT_MODE ;
+
+	defines = [ FDefines $(defines) ] ;
+	SubDirCcFlags $(defines) -Wall -Wno-multichar -g3 ;
+	SubDirC++Flags $(defines) -Wall -Wno-multichar -fno-rtti -g3 ;
+}
+
+# we fake NetBSD since we don't have an OS ID yet for uimage,
+# and we also fake a netbsd loader anyway.
+local uImageFakeOS = "netbsd" ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src add-ons accelerants common ] ;
+
+local genericPlatformSources =
+	text_menu.cpp
+	video_blit.cpp
+	video_splash.cpp
+	video_rle.cpp
+;
+
+KernelMergeObject boot_platform_u-boot.o :
+	shell.S
+	start2.c
+	debug.c
+	console.cpp
+	serial.cpp
+	devices.cpp
+	keyboard.cpp
+	menu.cpp
+	cpu.cpp
+	uimage.cpp
+	video.cpp
+	mmu.cpp
+	$(genericPlatformSources)
+
+
+	: -fno-pic
+;
+
+# include board-specific defs
+SubInclude ANTARES_TOP src system boot platform $(TARGET_BOOT_PLATFORM) board ;
+# reset SubDir
+SubDir ANTARES_TOP src system boot platform u-boot ;
+
+# bootable flash image
+rule BuildUBootFlashImage image : antaresLoader : uboot_image
+{
+	Depends $(image) : $(antaresLoader) ;
+	#Depends $(image) : $(archive) ;
+	Depends $(image) : $(uboot_image) ;
+	LocalClean clean : $(image) ;
+	FLASH_IMAGE_BLOCK_SIZE on $(image) = 128k ;
+	FLASH_IMAGE_BLOCK_COUNT on $(image) = 256 ;
+	#FLASH_IMAGE_UBOOT_OFFSET on $(image) = 0 ;
+	FLASH_IMAGE_LOADER_OFFSET on $(image) = 248 ;
+	BuildUBootFlashImage1 $(image) : $(antaresLoader) $(uboot_image) ;
+}
+
+
+actions BuildUBootFlashImage1
+{
+	$(RM) $(<)
+
+	# make an empty image
+	dd of=$(<) \
+		if=/dev/zero \
+		bs=$(FLASH_IMAGE_BLOCK_SIZE) \
+		count=$(FLASH_IMAGE_BLOCK_COUNT)
+
+	# add u-boot
+	dd of=$(<) \
+		if=$(>[2]) \
+		bs=$(FLASH_IMAGE_BLOCK_SIZE) \
+		conv=notrunc
+
+	# add root fs
+#	dd of=$(<) \
+#		if=$(>[3]) \
+#		bs=$(FLASH_IMAGE_BLOCK_SIZE) \
+#		conv=notrunc \
+#		seek=$(FLASH_IMAGE_ROOTFS_OFFSET)
+
+	# add antares_loader (raw, elf or uimage)
+	dd of=$(<) \
+		if=$(>[1]) \
+		bs=$(FLASH_IMAGE_BLOCK_SIZE) \
+		conv=notrunc seek=$(FLASH_IMAGE_LOADER_OFFSET)
+}
+
+# uImage
+rule BuildUImage image : data : args
+{
+	Depends $(image) : $(data) ;
+	LocalClean clean : $(image) ;
+	MKIMAGE_ARGS on $(image) = $(args) ;
+	colon on $(image) = ":" ;
+	local files = $(data:G=) ;
+	BuildUImage1 $(image) : $(data) ;
+}
+
+actions BuildUImage1
+{
+	mkimage $(MKIMAGE_ARGS) -d $(>:J=$(colon)) $(<)
+}
+
+rule BuildUImageScript script : content
+{
+	LocalClean clean : $(script) ;
+	SCRIPTCONTENT on $(script) = $(content) ;
+	SCRIPTNAME on $(script) = $(script) ;
+	FAKEOS on $(script) = $(uImageFakeOS) ;
+	BuildUImageScript1 $(script) : $(content) ;
+}
+
+actions BuildUImageScript1
+{
+	rm -f $(<) $(<).txt
+	echo '$(SCRIPTCONTENT)' > $(<).txt
+	mkimage -A arm -O $(FAKEOS) -T script -C none -n $(SCRIPTNAME) \
+		-d $(<).txt $(<)
+	rm -f $(<).txt
+}
+
+# SD/mmc image rule
+# requires sfdisk and mtools packages on linux
+rule BuildUBootSDImage image : files 
+{
+	Depends $(image) : $(files) ;
+	SDIMAGE_BLOCK_SIZE on $(image) = 1M ;
+	SDIMAGE_SIZE on $(image) = $(ANTARES_BOARD_SDIMAGE_SIZE) ;
+	SDIMAGE_FDISK on $(image) = $(HOST_SFDISK) ;
+	SDIMAGE_FDISK_SCRIPT on $(image) = 
+		"0,$(ANTARES_BOARD_SDIMAGE_FAT_SIZE),0c,-\\\n,,eb\\\n\\\n" ;
+	SDIMAGE_FDISK_H on $(image) = 255 ;
+	SDIMAGE_FDISK_S on $(image) = 63 ;
+	SDIMAGE_FDISK_UNIT on $(image) = M ;
+	BuildUBootSDImage1 $(image) : $(files) ;
+}
+
+actions BuildUBootSDImage1
+{
+	$(RM) $(<)
+	$(RM) $(<).mtools
+
+	# make an empty image
+	dd of=$(<) \
+		if=/dev/zero \
+		bs=$(SDIMAGE_BLOCK_SIZE) \
+		count=$(SDIMAGE_SIZE)
+	# partition it
+	printf '$(SDIMAGE_FDISK_SCRIPT)' | $(SDIMAGE_FDISK) -f -D \
+		-H $(SDIMAGE_FDISK_H) -S $(SDIMAGE_FDISK_S) \
+		-u$(SDIMAGE_FDISK_UNIT) $(<)
+	# generate mtools config
+	echo 'drive i: file="$(<)" partition=1' > $(<).mtools
+	# format the image
+	MTOOLSRC=$(<).mtools mformat -v "Antares" i:
+	# populate
+	MTOOLSRC=$(<).mtools mcopy $(>) i:
+	# list content
+	#MTOOLSRC=$(<).mtools mdir i:
+	# cleanup
+	$(RM) $(<).mtools
+}
+
+# uimage targets
+BuildUImage antares_loader.ub : antares_loader : 
+	-A arm -O $(uImageFakeOS) -T kernel -C none
+	-a $(ANTARES_BOARD_LOADER_BASE) -e $(ANTARES_BOARD_LOADER_ENTRY_RAW)
+		-n 'antares_loader' ;
+
+local tgzArchive = antares-floppyboot.tgz ;
+BuildUImage antares_loader_nbsd.ub : antares_loader $(tgzArchive) : 
+	-A arm -O $(uImageFakeOS) -T multi -C none
+	-a $(ANTARES_BOARD_LOADER_BASE) -e $(ANTARES_BOARD_LOADER_ENTRY_NBSD)
+		-n 'antares_loader' ;
+
+if $(ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT_NAME) {
+	BuildUImageScript $(ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT_NAME) : 
+		$(ANTARES_BOARD_SDIMAGE_UBOOT_SCRIPT) ;
+}
+
+if $(ANTARES_BOARD_UBOOT_IMAGE) && $(ANTARES_BOARD_UBOOT_IMAGE_URL) {
+	# Download the u-boot binary file.
+	ubootFile = [ DownloadFile $(ANTARES_BOARD_UBOOT_IMAGE) 
+		: $(ANTARES_BOARD_UBOOT_IMAGE_URL) ] ;
+}
+
+# flash image targets
+BuildUBootFlashImage antares_flash_image_raw.img : antares_loader : 
+	$(ubootFile) ;
+#BuildUBootFlashImage antares_flash_image_elf.img : boot_loader_u-boot : 
+#	$(ubootFile) ;
+BuildUBootFlashImage antares_flash_image_uimage.img : antares_loader.ub : 
+	$(ubootFile) ;
+
+# SD/mmc image targets
+BuildUBootSDImage antares.mmc : $(ANTARES_BOARD_SDIMAGE_FILES) ;
+
+SEARCH on [ FGristFiles shell.S ]
+	= [ FDirName $(ANTARES_TOP) src system boot platform $(TARGET_BOOT_PLATFORM) arch $(TARGET_ARCH) ] ;
+SEARCH on [ FGristFiles $(genericPlatformSources) ]
+	= [ FDirName $(ANTARES_TOP) src system boot platform generic ] ;
+
+# Tell the build system to where stage1.bin can be found, so it can be used
+# elsewhere.
+SEARCH on stage1.bin = $(SUBDIR) ;

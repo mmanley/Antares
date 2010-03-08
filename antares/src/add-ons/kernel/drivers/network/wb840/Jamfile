@@ -1,0 +1,58 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network wb840 ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# set some additional flags
+SubDirCcFlags -Wall ;
+
+# For ether_driver.h
+UsePrivateHeaders net ;
+
+KernelAddon wb840 :
+	driver.c
+	device.c
+	interface.c
+	wb840.c
+	;
+
+Package antares-wb840-cvs :
+	wb840 : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-wb840-cvs : net wb840 ;
+# Package antares-wb840-cvs :
+#	wb840.settings :
+#	boot home config settings kernel drivers sample ;
+
+Package antares-networkingkit-cvs :
+	wb840 :
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-networkingkit-cvs : net wb840 ;
+#Package antares-networkingkit-cvs :
+#	wb840.settings :
+#	boot home config settings kernel drivers sample ;
+
+
+
+rule Installwb840
+{
+	Depends $(<) : $(>) ;
+}
+
+actions ignore Installwb840
+{
+	cp $(>) /boot/home/config/add-ons/kernel/drivers/bin/
+}
+
+#Installwb840 install : wb840 ;
+
+# Installation
+
+AntaresInstall install-networking : /boot/home/config/add-ons/kernel/drivers/bin : 
+ 	wb840 
+;
+
+AntaresInstallRelSymLink install-networking : /boot/home/config/add-ons/kernel/drivers/dev/net : 
+	<installed>wb840 : 
+	installed-symlink 
+;
+

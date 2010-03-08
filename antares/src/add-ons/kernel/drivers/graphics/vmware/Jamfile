@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics vmware ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders [ FDirName graphics vmware ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+UsePrivateHeaders graphics ;
+
+KernelAddon vmware :
+	driver.c
+	device.c
+;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	LinkAgainst vmware : $(TARGET_ANTARES_COMPATIBILITY_LIBS) ;
+}
+
+Package antares-vmware-video-svn :
+	vmware : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-vmware-video-svn : graphics vmware ;

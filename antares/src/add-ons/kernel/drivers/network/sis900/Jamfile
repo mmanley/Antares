@@ -1,0 +1,58 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network sis900 ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# set some additional flags
+SubDirCcFlags -Wall ;
+
+# For ether_driver.h
+UsePrivateHeaders net ;
+
+KernelAddon sis900 :
+	driver.c
+	device.c
+	interface.c
+	sis900.c
+	;
+
+Package antares-sis900-cvs :
+	sis900 : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-sis900-cvs : net sis900 ;
+Package antares-sis900-cvs :
+	sis900.settings :
+	boot home config settings kernel drivers sample ;
+
+Package antares-networkingkit-cvs :
+	sis900 :
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-networkingkit-cvs : net sis900 ;
+Package antares-networkingkit-cvs :
+	sis900.settings :
+	boot home config settings kernel drivers sample ;
+
+
+
+rule InstallSiS900
+{
+	Depends $(<) : $(>) ;
+}
+
+actions ignore InstallSiS900
+{
+	cp $(>) /boot/home/config/add-ons/kernel/drivers/bin/
+}
+
+#InstallSiS900 install : sis900 ;
+
+# Installation
+
+AntaresInstall install-networking : /boot/home/config/add-ons/kernel/drivers/bin : 
+ 	sis900 
+;
+
+AntaresInstallRelSymLink install-networking : /boot/home/config/add-ons/kernel/drivers/dev/net : 
+	<installed>sis900 : 
+	installed-symlink 
+;
+

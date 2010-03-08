@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src kits registry ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SharedLibrary libregistry.so :
+	Registry.cpp
+	:
+	be
+	$(TARGET_LIBSTDC++)
+	libcoredata.so
+;

@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src apps diskprobe ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseLibraryHeaders icon ;
+UsePrivateHeaders shared ;
+
+Application DiskProbe :
+	DiskProbe.cpp
+	DataEditor.cpp
+	DataView.cpp
+	ProbeWindow.cpp
+	FileWindow.cpp
+	AttributeWindow.cpp
+	TypeEditors.cpp
+	ProbeView.cpp
+	OpenWindow.cpp
+	FindWindow.cpp
+	: be tracker translation libexpression_parser.a libmapm.a 
+		$(TARGET_LIBSUPC++)
+	: DiskProbe.rdef
+	;

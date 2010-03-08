@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src system glue arch ppc ;
+
+KernelObjects
+	crti.S
+	crtn.S
+	;
+

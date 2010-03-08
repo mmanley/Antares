@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers agp_gart ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+SubDirC++Flags -fno-rtti ;
+
+UsePrivateHeaders [ FDirName graphics intel_extreme ] ;
+UsePrivateHeaders graphics ;
+UsePrivateKernelHeaders ;
+
+KernelAddon agp_gart :
+	agp_gart.cpp
+	;

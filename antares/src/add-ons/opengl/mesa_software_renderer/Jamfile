@@ -1,0 +1,42 @@
+SubDir ANTARES_TOP src add-ons opengl mesa_software_renderer ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os opengl ] : true ;
+		# We need our public GL headers also when not compiling for Antares.
+}
+
+{
+	local defines ;
+	defines = BEOS_THREADS GNU_ASSEMBLER ;
+
+	if $(TARGET_ARCH) = x86 {
+		defines += USE_X86_ASM USE_MMX_ASM USE_3DNOW_ASM USE_SSE_ASM ; 
+	} else if $(TARGET_ARCH) = ppc {
+		# Not yet supported, as current Mesa3D PPC assembly is Linux-dependent!
+		# defines += USE_PPC_ASM ;
+	} else if $(TARGET_ARCH) = sparc {
+		defines += USE_SPARC_ASM ;
+	}
+
+	SubDirC++Flags [ FDefines $(defines) ] ;
+}
+
+
+UsePrivateHeaders interface ;
+UseLibraryHeaders mesa ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa main ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa glapi ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa tnl ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa x86 ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa ppc ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs mesa mesa sparc ] ;
+
+Addon Mesa\ Software\ Renderer :
+	MesaSoftwareRenderer.cpp
+	: libGL.so libmesa.a be $(TARGET_LIBSUPC++)
+;
+

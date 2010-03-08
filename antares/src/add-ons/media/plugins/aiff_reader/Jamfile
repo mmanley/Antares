@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src add-ons media plugins aiff_reader ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+Addon aiff_reader :
+	aiff_reader.cpp
+	: be libmedia.so $(TARGET_LIBSUPC++) ;

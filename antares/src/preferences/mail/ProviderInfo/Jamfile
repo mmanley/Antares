@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src preferences mail ProviderInfo ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+ANTARES_PROVIDER_INFOS =
+	aol.com
+	arcor.de
+	cern.ch
+	free.fr
+	freenet.de
+	gmail.com
+	gmx.de
+	googlemail.com
+	laposte.net
+	lycos.de
+	mymail.ch
+	netcologne.de
+	o2online.de
+	physik.rwth-aachen.de
+	rwth-aachen.de
+	t-online.de
+	web.de
+	yahoo.de
+;
+
+for file in $(ANTARES_PROVIDER_INFOS) {
+	ResAttr $(file) : "$(file).rdef" : true ;
+}
+

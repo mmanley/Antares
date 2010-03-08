@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons kernel debugger hangman ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+# UsePrivateHeaders drivers ;
+UsePrivateHeaders kernel ;
+
+
+KernelAddon <kdebug>hangman :
+	hangman.c
+	;

@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src add-ons print drivers pdf bookmarks ;
+
+Package antares-pdf_writer-cvs :
+	Sample :
+	boot home config settings PDF\ Writer bookmarks ;	
+
+Package antares-printingkit-cvs :
+	Sample :
+	boot home config settings PDF\ Writer bookmarks ;	

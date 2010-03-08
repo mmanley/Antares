@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tests add-ons opengl ;
+
+SubInclude ANTARES_TOP src tests add-ons opengl fake_renderer ;
+

@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src tests add-ons kernel kernelland_emu ;
+
+UsePrivateKernelHeaders ;
+UsePrivateHeaders shared ;
+
+SharedLibrary libkernelland_emu.so :
+	condition_variable.cpp
+	debug.cpp
+	device_manager.cpp
+	lock.cpp
+	low_resource_manager.cpp
+	misc.cpp
+	module.cpp
+	scheduler.cpp
+	slab.cpp
+	vm.cpp
+
+	khash.c
+	list.c
+
+	: be $(TARGET_LIBSTDC++) ;
+
+AbsSymLink <boot!home!config!lib>libkernelland_emu.so : libkernelland_emu.so
+	: /boot/home/config/lib : false ;
+
+SEARCH on [ FGristFiles
+		list.c khash.c
+	] = [ FDirName $(ANTARES_TOP) src system kernel util ] ;

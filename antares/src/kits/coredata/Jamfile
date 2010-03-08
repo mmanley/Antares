@@ -1,0 +1,78 @@
+SubDir ANTARES_TOP src kits coredata ;
+
+UsePrivateHeaders coredata ;
+
+SharedLibrary libcoredata.so :
+ 	alter.c
+	analyze.c
+	attach.c
+	auth.c
+	backup.c
+	bitvec.c
+	btmutex.c
+	btree.c
+	build.c
+	callback.c
+	complete.c
+	date.c
+	delete.c
+	expr.c
+	fault.c
+	fkey.c
+	func.c
+	global.c
+	hash.c
+	insert.c
+	journal.c
+	legacy.c
+	loadext.c
+	main.c
+	malloc.c
+	mem0.c
+	mem1.c
+	mem2.c
+	mem3.c
+	mem5.c
+	memjournal.c
+	mutex.c
+	mutex_noop.c
+	mutex_os2.c
+	mutex_unix.c
+	mutex_w32.c
+	notify.c
+	os.c
+	os_os2.c
+	os_unix.c
+	os_win.c
+	opcodes.c
+	pager.c
+	pcache.c
+	pcache1.c
+	pragma.c
+	prepare.c
+	printf.c
+	parse.c
+	random.c
+	resolve.c
+	rowset.c
+	select.c
+	status.c
+	shell.c
+	table.c
+	tokenize.c
+	trigger.c
+	utf.c
+	update.c
+	util.c
+	vacuum.c
+	vdbe.c
+	vdbeapi.c
+	vdbeaux.c
+	vdbeblob.c
+	vdbemem.c
+	vdbetrace.c
+	vtab.c
+	walker.c
+	where.c
+	: be $(TARGET_LIBSUPC++)
+;

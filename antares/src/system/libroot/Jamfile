@@ -1,0 +1,96 @@
+SubDir ANTARES_TOP src system libroot ;
+
+UsePrivateHeaders libroot runtime_loader ;
+UsePrivateSystemHeaders ;
+
+UnarchiveObjects $(TARGET_GCC_LIBGCC_OBJECTS) : $(TARGET_GCC_LIBGCC) ;
+	# we need to link against libgcc.a objects and make
+	# it available to other applications as in BeOS
+
+local librootObjects =
+	os_main.o
+	os_arch_$(TARGET_ARCH).o
+
+	posix_arch_$(TARGET_ARCH).o
+	posix_crypt.o
+	posix_locale.o
+	posix_main.o
+	posix_pthread.o
+	posix_signal.o
+	posix_stdio.o
+	posix_gnu_arch_$(TARGET_ARCH).o
+	posix_gnu_ctype.o
+	posix_gnu_ext.o
+	posix_gnu_iconv.o
+	posix_gnu_libio.o
+	posix_gnu_locale.o
+	posix_gnu_misc.o
+	posix_gnu_regex.o
+	posix_gnu_stdio.o
+	posix_gnu_stdlib.o
+	posix_gnu_string.o
+	posix_gnu_wcsmbs.o
+	posix_gnu_wctype.o
+	posix_stdlib.o
+	posix_string.o
+	posix_string_arch_$(TARGET_ARCH).o
+	posix_sys.o
+	posix_time.o
+	posix_unistd.o
+;
+
+local librootDebugObjects =
+	posix_malloc_debug.o
+;
+
+local librootNoDebugObjects =
+	posix_malloc.o
+;
+
+DONT_LINK_AGAINST_LIBROOT on libroot.so = true ;
+DONT_LINK_AGAINST_LIBROOT on libroot_debug.so = true ;
+
+SetVersionScript libroot.so : libroot_versions ;
+SetVersionScript libroot_debug.so : libroot_versions ;
+
+SharedLibrary libroot.so
+	:
+	libroot_init.c
+	:
+	$(TARGET_GCC_LIBGCC_OBJECTS)
+	$(librootObjects:G=nogrist)
+	$(librootNoDebugObjects:G=nogrist)
+	$(TARGET_STATIC_LIBSUPC++)
+;
+
+# Use the standard libroot.so soname, so when the debug version is pre-loaded
+# it prevents the standard version to be loaded as well.
+ANTARES_SONAME on libroot_debug.so = libroot.so ;
+
+SharedLibrary libroot_debug.so
+	:
+	libroot_init.c
+	:
+	$(TARGET_GCC_LIBGCC_OBJECTS)
+	$(librootObjects:G=nogrist)
+	$(librootDebugObjects:G=nogrist)
+	$(TARGET_STATIC_LIBSUPC++)
+;
+
+
+# Copy libroot.so and update the copy's revision section. We link everything
+# against the original, but the copy will end up on the disk image (this way
+# we avoid unnecessary dependencies). The copy will be located in a subdirectory.
+if $(TARGET_PLATFORM) = antares {
+	MakeLocate <revisioned>libroot.so
+		: [ FDirName $(TARGET_DEBUG_$(DEBUG)_LOCATE_TARGET) revisioned ] ;
+	CopySetAntaresRevision <revisioned>libroot.so : libroot.so ;
+
+	MakeLocate <revisioned>libroot_debug.so
+		: [ FDirName $(TARGET_DEBUG_$(DEBUG)_LOCATE_TARGET) revisioned ] ;
+	CopySetAntaresRevision <revisioned>libroot_debug.so : libroot_debug.so ;
+}
+
+
+SubInclude ANTARES_TOP src system libroot os ;
+SubInclude ANTARES_TOP src system libroot posix ;

@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src libs alm ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseLibraryHeaders lp_solve linprog alm ;
+
+SharedLibrary libalm.so : 
+	Area.cpp
+	Column.cpp
+	BALMLayout.cpp
+	Row.cpp
+	XTab.cpp
+	YTab.cpp
+	:
+	be liblpsolve55.so liblinprog.so $(TARGET_LIBSUPC++)
+;
+

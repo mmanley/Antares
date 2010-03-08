@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src apps bootman ;
+
+UsePrivateHeaders shared ;
+UsePrivateHeaders storage ;
+
+Application bootman :
+	BootManager.cpp
+	BootManagerController.cpp
+	BootManagerWindow.cpp
+	DefaultPartitionPage.cpp
+	DescriptionPage.cpp
+	EntryPage.cpp
+	FileSelectionPage.cpp
+	LegacyBootDrive.cpp
+	PartitionsPage.cpp
+#	TestBootDrive.cpp
+	UninstallPage.cpp
+	WizardController.cpp
+	WizardPageView.cpp
+	WizardView.cpp
+	: be tracker $(TARGET_LIBSUPC++)
+	: bootman.rdef
+;

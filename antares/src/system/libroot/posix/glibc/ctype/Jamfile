@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src system libroot posix glibc ctype ;
+
+SubDirSysHdrs $(SUBDIR) ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc include arch
+	$(TARGET_ARCH) ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc include arch generic ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc include ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc locale ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc ;
+
+MergeObject posix_gnu_ctype.o :
+	ctype_l.c
+	ctype.c
+	ctype-extn.c
+	ctype-info.c
+;

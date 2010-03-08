@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons legacy ;
+
+UsePrivateHeaders media ;
+
+Addon legacy.media_addon : 
+	LegacyAudioConsumer.cpp
+	LegacyAudioDevice.cpp
+	LegacyAudioProducer.cpp
+	LegacyMediaAddOn.cpp
+	: be media $(TARGET_LIBSUPC++)
+;

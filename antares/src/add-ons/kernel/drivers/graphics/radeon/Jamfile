@@ -1,0 +1,39 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics radeon ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics radeon ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+
+StaticLibrary libradeon.a :
+	pll_access.c
+	utils.c
+;
+
+KernelAddon radeon :
+	driver.c
+	agp.c
+	bios.c
+	detect.c
+	DMA.c
+	global_data.c
+	init.c
+	irq.c
+	mem_controller.c
+	CP_setup.c
+	PCI_GART.c
+	vip.c
+	: libgraphicscommon.a libradeon.a
+;
+
+#Package antares-radeon-cvs :
+#	README.html UPDATE.html ;
+Package antares-radeon-cvs :
+	radeon : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-radeon-cvs : graphics radeon ;
+#Package antares-radeon-cvs :
+#	radeon.settings :
+#	boot home config settings kernel drivers ;
+

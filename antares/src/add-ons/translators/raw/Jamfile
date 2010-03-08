@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons translators raw ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator RAWTranslator :
+	# RawTranslator classes
+	main.cpp
+	RAWTranslator.cpp
+	ConfigView.cpp
+	RAW.cpp
+	: be translation libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	RAWTranslator
+	: boot home config add-ons Translators
+	;

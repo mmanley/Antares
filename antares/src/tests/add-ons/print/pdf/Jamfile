@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tests add-ons print pdf ;
+
+SubInclude ANTARES_TOP src tests add-ons print pdf bezierbounds ;
+SubInclude ANTARES_TOP src tests add-ons print pdf linepathbuilder ;

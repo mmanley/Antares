@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src tests system benchmarks ;
+
+SimpleTest memspeedTest :
+	memspeed.c
+;
+
+SimpleTest syscallbenchTest :
+	syscallbench.c
+;
+
+SimpleTest ctxbenchTest :
+	ctxbench.c
+;
+
+SimpleTest execbenchTest :
+	execbench.c
+;
+
+SimpleTest forkbenchTest :
+	forkbench.c
+;
+
+SubInclude ANTARES_TOP src tests system benchmarks libMicro ;

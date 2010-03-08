@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src tests add-ons media ;
+
+SubInclude ANTARES_TOP src tests add-ons media plugins ;

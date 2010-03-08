@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src bin coreutils ;
+
+SubInclude ANTARES_TOP src bin coreutils lib ;
+SubInclude ANTARES_TOP src bin coreutils man ;
+SubInclude ANTARES_TOP src bin coreutils src ; 

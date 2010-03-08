@@ -1,0 +1,42 @@
+SubDir ANTARES_TOP src add-ons kernel network stack ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <support/Errors.h> and maybe other stuff.
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+
+UseHeaders $(TARGET_PRIVATE_KERNEL_HEADERS) : true ;
+UsePrivateHeaders net shared ;
+
+KernelAddon stack :
+	ancillary_data.cpp
+	datalink.cpp
+	domains.cpp
+	interfaces.cpp
+	net_buffer.cpp
+	net_socket.cpp
+	notifications.cpp
+	link.cpp
+	radix.c
+	routes.cpp
+	stack.cpp
+	stack_interface.cpp
+	utility.cpp
+
+	# for test purposes
+	#simple_net_buffer.cpp
+;
+
+# Installation
+AntaresInstall install-networking : /boot/home/config/add-ons/kernel/antares_network
+	: stack ;
+
+Package antares-networkingkit-cvs :
+	antares :
+	boot home config add-ons kernel antares_network ;

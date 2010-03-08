@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src add-ons mail_daemon system_filters ;
+
+SubInclude ANTARES_TOP src add-ons mail_daemon system_filters inbox ;
+SubInclude ANTARES_TOP src add-ons mail_daemon system_filters notifier ;
+SubInclude ANTARES_TOP src add-ons mail_daemon system_filters outbox ;
+SubInclude ANTARES_TOP src add-ons mail_daemon system_filters parser ;
+

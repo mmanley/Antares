@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src tests system ;
+
+SubInclude ANTARES_TOP src tests system benchmarks ;
+SubInclude ANTARES_TOP src tests system boot ;
+SubInclude ANTARES_TOP src tests system consoled ;
+SubInclude ANTARES_TOP src tests system kernel ;
+SubInclude ANTARES_TOP src tests system libroot ;

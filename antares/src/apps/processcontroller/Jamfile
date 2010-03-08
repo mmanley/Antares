@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src apps processcontroller ;
+
+UsePrivateSystemHeaders ;
+
+Application ProcessController :
+	AutoIcon.cpp
+	IconMenuItem.cpp
+	KernelMemoryBarMenuItem.cpp
+	MemoryBarMenu.cpp
+	MemoryBarMenuItem.cpp
+	NoiseBarMenuItem.cpp
+	ProcessController.cpp
+	PCWindow.cpp
+	PCWorld.cpp
+	Preferences.cpp
+	PriorityMenu.cpp
+	QuitMenu.cpp
+	TeamBarMenu.cpp
+	TeamBarMenuItem.cpp
+	ThreadBarMenu.cpp
+	ThreadBarMenuItem.cpp
+	Utilities.cpp
+	: be $(TARGET_LIBSUPC++)
+	: ProcessController.rdef
+	;

@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src bin network ftpd ;
+
+SetSubDirSupportedPlatforms $(ANTARES_BONE_COMPATIBLE_PLATFORMS) ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers compatibility bsd ] : true ;
+UseHeaders $(SUBDIR) : true ;
+
+BinCommand ftpd :
+	ftpd.c
+	ftpcmd.y
+	logwtmp.c
+	popen.c
+
+	# from libmd
+	md5c.c
+	md5hl.c
+	: libutil.a libbsd.so $(TARGET_NETWORK_LIBS)
+;

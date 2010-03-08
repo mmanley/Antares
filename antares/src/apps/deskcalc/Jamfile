@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src apps deskcalc ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared ;
+
+Application DeskCalc :
+	CalcApplication.cpp
+	CalcOptions.cpp
+	CalcView.cpp
+	CalcWindow.cpp
+	DeskCalc.cpp
+	ExpressionTextView.cpp
+	InputTextView.cpp
+	: be $(TARGET_LIBSTDC++) media libexpression_parser.a libmapm.a
+	: DeskCalc.rdef
+;

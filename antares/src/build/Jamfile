@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src build ;
+
+SubInclude ANTARES_TOP src build icu ;
+SubInclude ANTARES_TOP src build libbe ;
+SubInclude ANTARES_TOP src build libantarescompat ;
+SubInclude ANTARES_TOP src build libroot ;
+

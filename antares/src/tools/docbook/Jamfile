@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tools docbook ;
+
+SubInclude ANTARES_TOP src tools docbook libxml2 ;
+SubInclude ANTARES_TOP src tools docbook libxslt ;

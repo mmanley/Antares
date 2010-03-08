@@ -1,0 +1,43 @@
+SubDir ANTARES_TOP src tests add-ons kernel network ppp shared libkernelppp ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+	# Needed for the atomic_add64() prototype. :-/
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+	# We need the public network headers also when not compiling for Antares.
+	# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UsePrivateHeaders net ;
+UseHeaders [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared libkernelppp headers ] : true ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src add-ons kernel network ppp shared libkernelppp ] ;
+
+StaticLibrary <userland>libkernelppp.a :
+	KPPPConfigurePacket.cpp
+	KPPPDevice.cpp
+	KPPPInterface.cpp
+	KPPPLayer.cpp
+	KPPPLCP.cpp
+	KPPPLCPExtension.cpp
+	KPPPOptionHandler.cpp
+	KPPPProtocol.cpp
+	KPPPReportManager.cpp
+	KPPPStateMachine.cpp
+	KPPPUtils.cpp
+	settings_tools.cpp
+	
+	# integrated modules
+	_KPPPMRUHandler.cpp
+	_KPPPAuthenticationHandler.cpp
+	_KPPPPFCHandler.cpp
+	
+	# for driver_settings
+	strlcat.c
+	driver_settings.c
+;
+
+SEARCH on [ FGristFiles strlcat.c ] = [ FDirName $(ANTARES_TOP) src system libroot posix string ] ;
+SEARCH on [ FGristFiles driver_settings.c ] = [ FDirName $(ANTARES_TOP) src system libroot os ] ;

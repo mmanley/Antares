@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src add-ons kernel partitioning_systems ;
+
+AntaresSubInclude amiga ;
+AntaresSubInclude apple ;
+AntaresSubInclude atari ;
+AntaresSubInclude efi ;
+AntaresSubInclude intel ;
+AntaresSubInclude session ;
+AntaresSubInclude vmdk ;

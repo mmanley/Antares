@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src servers app drawing remote ;
+
+UseLibraryHeaders agg ;
+UsePrivateHeaders app graphics interface kernel shared ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+UsePrivateSystemHeaders ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter drawing_modes ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter font_support ] ;
+UseFreeTypeHeaders ;
+
+StaticLibrary libasremote.a :
+	NetReceiver.cpp
+	NetSender.cpp
+
+	RemoteDrawingEngine.cpp
+	RemoteEventStream.cpp
+	RemoteHWInterface.cpp
+	RemoteMessage.cpp
+
+	StreamingRingBuffer.cpp
+;

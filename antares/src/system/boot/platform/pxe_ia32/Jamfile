@@ -1,0 +1,94 @@
+SubDir ANTARES_TOP src system boot platform pxe_ia32 ;
+
+SubDirHdrs $(SUBDIR) $(DOTDOT) bios_ia32 ;
+SubDirHdrs $(ANTARES_TOP) headers private kernel boot platform bios_ia32 ;
+SubDirHdrs $(ANTARES_TOP) headers private kernel boot platform $(TARGET_BOOT_PLATFORM) ;
+
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+UsePrivateHeaders [ FDirName graphics vesa ] ;
+UsePrivateHeaders [ FDirName storage ] ;
+
+{
+	local defines = _BOOT_MODE _PXE_ENV ;
+
+	defines = [ FDefines $(defines) ] ;
+	SubDirCcFlags $(defines) -Wall -Wno-multichar ;
+	SubDirC++Flags $(defines) -Wall -Wno-multichar -fno-rtti ;
+}
+
+local genericPlatformSources =
+	text_menu.cpp
+	video_blit.cpp
+	video_splash.cpp
+	video_rle.cpp
+;
+
+local bios_ia32_src =
+	start.c
+	debug.c
+	bios.S
+	console.cpp
+	serial.cpp
+	keyboard.cpp
+	menu.cpp
+	mmu.cpp
+	multiboot.cpp
+	cpu.cpp
+	acpi.cpp
+	smp.cpp
+	support.S
+	video.cpp
+	hpet.cpp
+	apm.cpp
+;
+
+local bios_ia32_edid_src =
+	decode_edid.c
+	dump_edid.c
+;
+
+
+KernelMergeObject boot_platform_pxe_ia32.o :
+	pxe_stage2.S
+	smp_trampoline.S
+	pxe_bios.S
+	devices.cpp
+	network.cpp
+	pxe_undi.cpp
+	$(bios_ia32_src)
+	$(bios_ia32_edid_src)
+	$(genericPlatformSources)
+
+	: -fno-pic
+;
+
+
+rule BuildPXEstage1 bin : source {
+	SEARCH on $(source) = $(SEARCH_SOURCE) ;
+	Depends $(bin) : $(source) ;
+	MakeLocateDebug $(bin) ;
+	LocalClean clean : $(bin) ;
+}
+
+
+actions BuildPXEstage1 {
+	rm -f $(1)
+	$(TARGET_CC) -c -o $(1).o $(2) &&
+	$(TARGET_LD) --oformat binary --Ttext 0x7C00 -o $(1) $(1).o
+}
+
+BuildPXEstage1 pxeantares : pxe_stage1.S ;
+
+SEARCH on [ FGristFiles $(bios_ia32_src) ]
+	= [ FDirName $(SUBDIR) $(DOTDOT) bios_ia32 ] ;
+
+SEARCH on [ FGristFiles $(bios_ia32_edid_src) ]
+	= [ FDirName $(ANTARES_TOP) src add-ons accelerants common ] ;
+
+SEARCH on [ FGristFiles $(genericPlatformSources) ]
+	= [ FDirName $(ANTARES_TOP) src system boot platform generic ] ;
+
+# We also need the bios_ia32 stage1.bin for building bin/makebootable
+SEARCH on stage1.bin
+ 	= [ FDirName $(SUBDIR) $(DOTDOT) bios_ia32 ] ;

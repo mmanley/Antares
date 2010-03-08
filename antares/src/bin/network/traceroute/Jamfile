@@ -1,0 +1,40 @@
+SubDir ANTARES_TOP src bin network traceroute ;
+
+SetSubDirSupportedPlatforms $(ANTARES_BONE_COMPATIBLE_PLATFORMS) ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+local defines = [ FDefines HAVE_MALLOC_H=1 HAVE_SYS_SELECT=1 HAVE_NET_ROUTE_H=1
+			   HAVE_STRERROR=1 HAVE_USLEEP=1 HAVE_SETLINEBUF=1
+			   BYTESWAP_IP_HDR=1 HAVE_MALLOC_H=1
+			   HAVE_ICMP_NEXTMTU=1 HAVE_SOCKADDR_SA_LEN=1 ] ;
+
+SubDirCcFlags $(defines) ;
+SubDirC++Flags $(defines) ;
+
+BinCommand traceroute :
+	findsaddr-antares.c
+	ifaddrlist.c
+	traceroute.c
+	version.c
+	: $(TARGET_NETWORK_LIBS) $(TARGET_SELECT_UNAME_ETC_LIB) ;
+
+# Installation -- in the test directory for the time being
+AntaresInstall install-networking
+	: [ FDirName $(ANTARES_TEST_DIR) kits net ]
+	: traceroute ;
+
+AntaresInstall install-userland-networking 
+	: [ FDirName $(ANTARES_TEST_DIR) kits net userland ]
+	: traceroute
+	: installed-userland-networking
+;
+
+Package antares-networkingkit-cvs :
+	traceroute :
+#	boot home config bin ;
+	boot home Desktop antares-networkingkit ;

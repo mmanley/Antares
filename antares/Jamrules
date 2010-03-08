@@ -1,0 +1,94 @@
+# Antares Jamrules
+
+# Main directories used by the build.
+ANTARES_OUTPUT_DIR					?= [ FDirName $(ANTARES_TOP) generated ] ;
+ANTARES_BUILD_OUTPUT_DIR				= [ FDirName $(ANTARES_OUTPUT_DIR) build ] ;
+ANTARES_BUILD_DIR						= [ FDirName $(ANTARES_TOP) build ] ;
+ANTARES_BUILD_RULES_DIR				= [ FDirName $(ANTARES_BUILD_DIR) jam ] ;
+ANTARES_OBJECT_DIR					= [ FDirName $(ANTARES_OUTPUT_DIR) objects ] ;
+ANTARES_COMMON_PLATFORM_OBJECT_DIR	= [ FDirName $(ANTARES_OBJECT_DIR) common ] ;
+ANTARES_DOWNLOAD_DIR					= [ FDirName $(ANTARES_OUTPUT_DIR)
+											download ] ;
+ANTARES_OPTIONAL_BUILD_PACKAGES_DIR	= [ FDirName $(ANTARES_OUTPUT_DIR)
+											build_packages ] ;
+
+# Cache files for header scanning and jamfile caching
+HCACHEFILE = header_cache ;
+JCACHEFILE = jamfile_cache ;
+LOCATE on $(HCACHEFILE) $(JCACHEFILE) = $(ANTARES_BUILD_OUTPUT_DIR) ;
+
+# include BuildConfig
+local buildConfig = [ GLOB $(ANTARES_BUILD_OUTPUT_DIR) : BuildConfig ] ;
+if ! $(buildConfig) {
+	ECHO "No `BuildConfig' found in $(ANTARES_BUILD_OUTPUT_DIR)!" ;
+	EXIT "Run ./configure in the source tree's root directory first!" ;
+}
+LOCATE on BuildConfig = $(ANTARES_BUILD_OUTPUT_DIR) ;
+include BuildConfig ;
+
+# The build setup and rules are neatly organized in several files. Include
+# them now. Start with the side-effect-less rules, since they are the most
+# likely to be used in the top level context (i.e. not only in rules).
+# At the end include BuildSetup that sets up global variables etc. The
+# optional user-defined UserBuildConfig is included thereafter.
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) HelperRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) MathRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) BeOSRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) CommandLineArguments ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) ConfigRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) DocumentationRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) FileRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) FreetypeRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) HeadersRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) KernelRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) ImageRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) CDRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) MainBuildRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) MiscRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) OverriddenJamRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) PackageRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) TestsRules ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) BuildSetup ] ;
+
+# Declare no-op user-overridable build rules.
+rule UserBuildConfigRulePostBuildTargets	{ }
+rule UserBuildConfigRulePreImage			{ }
+rule UserBuildConfigRulePostImage			{ }
+
+# Include UserBuildConfig.
+if ! $(ANTARES_IGNORE_USER_BUILD_CONFIG) {
+	local userBuildConfig
+		= [ GLOB $(ANTARES_BUILD_RULES_DIR) : UserBuildConfig ] ;
+	if $(userBuildConfig) {
+		include $(userBuildConfig) ;
+	}
+
+	# allow for a separate UserBuildConfig per output directory
+	local userBuildConfig
+		= [ GLOB $(ANTARES_OUTPUT_DIR) : UserBuildConfig ] ;
+	if $(userBuildConfig) {
+		include $(userBuildConfig) ;
+	}
+}
+
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) ReleaseBuildProfiles ] ;
+
+# If a build profile was specified on the command line, now is the time to
+# check whether it is unknown or one of the default profiles.
+if $(ANTARES_BUILD_PROFILE) && ! $(ANTARES_BUILD_PROFILE_DEFINED) {
+	# define the obvious default profiles
+	if $(ANTARES_BUILD_PROFILE) in image vmware-image install {
+		DefineBuildProfile $(ANTARES_BUILD_PROFILE) : $(ANTARES_BUILD_PROFILE) ;
+	} else {
+		Exit "Build profile" $(ANTARES_BUILD_PROFILE) "not defined." ;
+	}
+}
+
+# Include embedded board-specific file.
+# UserBuildConfig can override ANTARES_BOOT_BOARD.
+if $(ANTARES_BOOT_BOARD) {
+	include [ FDirName $(ANTARES_BUILD_RULES_DIR) board $(ANTARES_BOOT_BOARD)
+		BoardSetup ] ;
+}
+
+PrepareConfigVariables ;

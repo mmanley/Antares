@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src kits print ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared print ;
+
+StaticLibrary libprintutils.a :
+	BeUtils.cpp
+	BeUtilsTranslation.cpp
+	FolderWatcher.cpp
+	Jobs.cpp
+	PicturePrinter.cpp
+	PrintTransport.cpp
+	PictureIterator.cpp
+;

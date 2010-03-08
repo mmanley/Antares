@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons kernel drivers disk floppy pc_floppy ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders drivers kernel ;
+
+KernelAddon pc_floppy :
+	floppy.c
+	floppy_ctrl.c
+	device_icons.c
+;
+

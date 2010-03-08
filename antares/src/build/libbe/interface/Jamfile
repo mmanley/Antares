@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src build libbe interface ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private app ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private interface ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private shared ] : true ;
+
+USES_BE_API on <libbe_build>interface_kit.o = true ;
+
+BuildPlatformMergeObjectPIC <libbe_build>interface_kit.o :
+	Bitmap.cpp
+ 	GraphicsDefs.cpp
+ 	Point.cpp
+ 	Rect.cpp
+ 	Region.cpp
+ 	RegionSupport.cpp
+;

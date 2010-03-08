@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src bin grep ;
+
+SubInclude ANTARES_TOP src bin grep lib ;
+SubInclude ANTARES_TOP src bin grep src ; 

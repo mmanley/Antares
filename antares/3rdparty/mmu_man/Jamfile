@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP 3rdparty mmu_man ;
+
+SubInclude ANTARES_TOP 3rdparty mmu_man themes ;
+
+# distro stuff located in my own branch, 
+# to use it symlink it here.
+{
+	local subDir
+		= [ GLOB [ FDirName $(ANTARES_TOP) 3rdparty mmu_man ] : distro ] ;
+	if $(subDir) {
+		SubInclude ANTARES_TOP 3rdparty mmu_man distro ;
+	}
+}

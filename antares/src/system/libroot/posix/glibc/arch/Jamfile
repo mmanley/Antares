@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src system libroot posix glibc arch ;
+
+SubInclude ANTARES_TOP src system libroot posix glibc arch $(TARGET_ARCH) ;
+

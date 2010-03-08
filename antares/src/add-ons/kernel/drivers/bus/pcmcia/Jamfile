@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src add-ons kernel drivers bus pcmcia ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FStandardOSHeaders ] : true ;
+		# Needed for <support/Errors.h> and maybe other stuff.
+        UseHeaders [ FDirName $(ANTARES_TOP) headers os drivers ] : true ;
+                # We need the public pcmcia headers also when not compiling for Antares.
+}
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers compatibility bsd ] : true ;
+
+KernelAddon ds :
+	ds.c
+	;
+

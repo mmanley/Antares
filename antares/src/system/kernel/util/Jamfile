@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src system kernel util ;
+
+UsePrivateHeaders [ FDirName kernel util ] ;
+
+KernelMergeObject kernel_util.o :
+	AVLTreeBase.cpp
+	kernel_cpp.cpp
+	khash.cpp
+	list.cpp
+	queue.cpp
+	ring_buffer.cpp
+	RadixBitmap.cpp
+
+	: $(TARGET_KERNEL_PIC_CCFLAGS) -DUSING_LIBGCC
+;

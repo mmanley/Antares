@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src add-ons input_server devices keyboard ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders input interface shared tracker ;
+UsePrivateSystemHeaders ;
+
+Addon <input>keyboard :
+	KeyboardInputDevice.cpp
+	Keymap.cpp
+
+	TeamMonitorWindow.cpp
+	TeamListItem.cpp
+
+	: input_server be $(TARGET_LIBSUPC++) ;
+
+Package antares-inputkit-cvs :
+	<input>keyboard :
+	boot home config add-ons input_server devices ;

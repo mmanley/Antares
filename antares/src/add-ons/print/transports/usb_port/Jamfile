@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons print transports usb_port ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders print ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src kits print ] ;
+
+Addon USB\ Port :
+	USBTransport.cpp
+	PrintTransportAddOn.cpp
+	: be $(TARGET_LIBSUPC++)
+;
+
+Package antares-printingkit-cvs :
+	USB\ Port :
+	boot home config add-ons Print transport ;
+

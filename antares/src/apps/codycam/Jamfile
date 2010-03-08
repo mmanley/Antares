@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src apps codycam ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Application CodyCam :
+	CodyCam.cpp
+	FileUploadClient.cpp
+	SpawningUploadClient.cpp
+	FtpClient.cpp
+	SftpClient.cpp
+	Settings.cpp
+	SettingsHandler.cpp
+	VideoConsumer.cpp
+	: be media translation $(TARGET_NETAPI_LIB) $(TARGET_LIBSTDC++)
+	: CodyCam.rdef
+;
+

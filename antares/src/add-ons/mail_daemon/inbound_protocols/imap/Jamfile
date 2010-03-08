@@ -1,0 +1,41 @@
+SubDir ANTARES_TOP src add-ons mail_daemon inbound_protocols imap ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePublicHeaders [ FDirName add-ons mail_daemon ] ;
+UsePrivateHeaders mail ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers os add-ons mail_daemon ] ;
+
+local sources =
+	imap_client.cpp
+	imap_config.cpp
+	NestedString.cpp
+;
+
+# use OpenSSL, if enabled
+if $(ANTARES_OPENSSL_ENABLED) {
+	SubDirC++Flags -DUSE_SSL ;
+	SubDirSysHdrs $(ANTARES_OPENSSL_HEADERS) ;
+	Includes [ FGristFiles $(sources) ] : $(ANTARES_OPENSSL_HEADERS_DEPENDENCY) ;
+		# Dependency needed to trigger downloading/unzipping the package before
+		# compiling the files.
+	SetupFeatureObjectsDir ssl ;
+} else {
+	SetupFeatureObjectsDir no-ssl ;
+}
+
+Addon IMAP
+	: $(sources)
+	: be libmail.so $(TARGET_NETWORK_LIBS) $(ANTARES_OPENSSL_LIBS) 
+		$(TARGET_LIBSUPC++)
+;
+
+Package antares-maildaemon-cvs :
+	IMAP :
+	boot home config add-ons mail_daemon inbound_protocols
+;

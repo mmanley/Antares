@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tests system libroot ;
+
+SubInclude ANTARES_TOP src tests system libroot os ;
+SubInclude ANTARES_TOP src tests system libroot posix ;

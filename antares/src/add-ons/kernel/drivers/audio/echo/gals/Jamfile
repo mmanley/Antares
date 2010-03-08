@@ -1,0 +1,92 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio echo gals ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os drivers ] : true ;
+	# We need the public pcmcia headers also when not compiling for Antares.
+}
+
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo generic ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo generic DSP ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel drivers audio echo generic ASIC ;
+
+UsePrivateHeaders [ FDirName kernel ] 			# For kernel_cpp.cpp
+	media ;
+
+# set some additional defines
+SubDirCcFlags -DECHO_BEOS -DECHOGALS_FAMILY ;
+SubDirC++Flags -DECHO_BEOS -DECHOGALS_FAMILY -fno-rtti -DAUTO_DUCK_ALLOCATE ;
+
+local echo_files =
+	CChannelMask.cpp
+	CDaffyDuck.cpp
+	CDarla.cpp
+	CDarla24.cpp
+	CDarla24DspCommObject.cpp
+	CDarlaDspCommObject.cpp
+	CDspCommObject.cpp
+	CEchoGals.cpp
+	CEchoGals_info.cpp
+	CEchoGals_midi.cpp
+	CEchoGals_mixer.cpp
+	CEchoGals_power.cpp
+	CEchoGals_transport.cpp
+	CEchoGalsMTC.cpp
+	CGdDspCommObject.cpp
+	CGina.cpp
+	CGinaDspCommObject.cpp
+	CLayla.cpp
+	CLaylaDspCommObject.cpp
+	CLineLevel.cpp
+	CMidiInQ.cpp
+	CMonitorCtrl.cpp
+	CMtcSync.cpp
+	CPipeOutCtrl.cpp
+	;
+
+KernelAddon echogals :
+	kernel_cpp.cpp
+	debug.c
+	echo.cpp
+	midi.cpp
+	multi.cpp
+	util.c
+	$(echo_files)
+	OsSupportBeOS.cpp
+;
+
+# suppress warnings on some files including the echo headers which provoke ugly warnings
+ObjectC++Flags $(echo_files) : -w ;
+ObjectC++Flags echo.cpp : -w ;
+
+SEARCH on [ FGristFiles
+	$(echo_files)
+	OsSupportBeOS.cpp
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel drivers audio echo generic ] ;
+
+SEARCH on [ FGristFiles
+		kernel_cpp.cpp 
+	] = [ FDirName $(ANTARES_TOP) src system kernel util ] ;
+
+SEARCH on [ FGristFiles
+		debug.c
+		echo.cpp
+		midi.cpp
+		multi.cpp
+		util.c
+	] = [ FDirName $(ANTARES_TOP) src add-ons kernel drivers audio echo ] ;
+
+Package antares-echogals-cvs
+	:
+	echogals
+	:
+	boot home config add-ons kernel drivers bin ;
+
+PackageDriverSymLink antares-echogals-cvs : audio hmulti echogals ;
+PackageDriverSymLink antares-echogals-cvs : midi echogals ;
+
+Package antares-echogals-cvs : <echo!driver>echo.settings
+	: boot home config settings kernel drivers ;
+

@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src libs icu ;
+
+ANTARES_ICU_API_VERSION = 4.2 ;
+
+SubInclude ANTARES_TOP src libs icu source common ;
+SubInclude ANTARES_TOP src libs icu source data ;
+SubInclude ANTARES_TOP src libs icu source i18n ;
+SubInclude ANTARES_TOP src libs icu source stubdata ;
+SubInclude ANTARES_TOP src libs icu source tools toolutil ;
+
+# Pseudo target to build all ICU-libs
+NotFile ICU_Libs ;
+Depends ICU_Libs
+	:
+	libicu-common.so
+	libicu-i18n.so
+	libicu-toolutil.so
+	;
+

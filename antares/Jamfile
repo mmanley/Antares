@@ -1,0 +1,208 @@
+SubDir ANTARES_TOP ;
+
+NotFile alltests ;
+Depends alltests : r5tests obostests ;
+
+NotFile doc_files ;
+Depends files : doc_files ;
+
+# Pseudo-target to build the mail kit only
+NotFile MailKit ;
+Depends MailKit :
+	libmail.so
+	mail_daemon
+	E-mail
+	BeMail
+
+	# mail_daemon addons
+	Inbox
+	Outbox
+	Message\ Parser
+	New\ Mail\ Notification
+	Match\ Header
+	R5\ Daemon\ Filter
+	IMAP
+	POP3
+	SMTP
+	Fortune
+	Spam\ Filter
+	spamdbm
+;
+
+# Pseudo-target to build the network kit only
+NotFile NetworkingKit ;
+Depends NetworkingKit :
+	net_stack_driver net_server_driver
+	core
+	ethernet loopback ppp
+	raw route ipv4 icmp udp tcp
+	libnet.so libnetapi.so libbind.so libsocket.so
+	ping ifconfig <bin>route traceroute arp pppconfig
+
+	# network drivers:
+	sis900 rtl8139 rtl8169 via-rhine ipro1000 wb840 bcm440x bcm570x
+
+	# PPP devices:
+	modem pppoe
+	# PPP protocols:
+	ipcp
+	# PPP authenticators:
+	pap
+;
+
+# Pseudo-target to build the media stuffs only
+NotFile MediaKit ;
+Depends MediaKit :
+	libmedia.so
+	libgame.so
+
+	# Servers
+	media_addon_server
+	media_server
+
+	# Preference
+	Sounds
+	Media
+
+	# Deskbar replicant
+	desklink
+
+	# add-ons
+	mixer.media_addon
+	tone_producer_demo.media_addon
+	video_producer_demo.media_addon
+	legacy.media_addon
+	multi_audio.media_addon
+#	reader.media_addon
+#	writer.media_addon
+#	demultiplexer.media_addon
+
+	# codecs
+	ac3_decoder
+	aiff_reader
+	au_reader
+	avcodec
+	avi_reader
+	matroska
+	mp3_decoder
+	mp3_reader
+	musepack
+	ogg
+	raw_decoder
+	speex
+	vorbis
+	wav_reader
+	mov_reader
+;
+
+# Pseudo-target to build the input kit only
+NotFile InputKit ;
+Depends InputKit :
+	# Servers
+	input_server
+
+	# Addons
+	<input>keyboard
+	<input>mouse
+
+	# Apps
+	keymap
+
+	# Preferences
+	Keymap
+	Keyboard
+	Mouse
+;
+
+# Pseudo-target to build the OpenGL kit only
+NotFile OpenGLKit ;
+Depends OpenGLKit :
+	libGL.so
+	GLTeapot
+	GLInfo
+;
+
+# Pseudo-target to build the screensaver kit only
+NotFile ScreenSaverKit ;
+Depends ScreenSaverKit :
+	libscreensaver.so
+	screen_saver
+	screen_blanker
+	ScreenSaver
+	Antares
+;
+
+# Pseudo-target to build the locale kit only
+NotFile LocaleKit ;
+Depends LocaleKit :
+	liblocale.so
+	Locale
+
+	# binaries for building localized software on antares
+	collectcatkeys
+	dumpcatalog
+	linkcatkeys
+
+	# addons
+	LocaleKitCollatorAddons
+	LocaleKitCatalogAddons
+
+	# tests
+	LocaleKitTests
+;
+
+# Add optional packages given via ANTARES_ADD_OPTIONAL_PACKAGES.
+if $(ANTARES_ADD_OPTIONAL_PACKAGES) {
+	AddOptionalAntaresImagePackages
+		[ FSplitString $(ANTARES_ADD_OPTIONAL_PACKAGES) : / ] ;
+}
+
+# Evaluate optional package dependencies and prepare the optional build
+# features before parsing the Jamfile tree.
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) OptionalPackageDependencies ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) OptionalBuildFeatures ] ;
+
+# Optionally we allow not to include the "src" subdirectory.
+if $(ANTARES_DONT_INCLUDE_SRC) {
+	# Don't include "src", but at least include the stuff needed for the
+	# build.
+	SubInclude ANTARES_TOP src build ;
+	SubInclude ANTARES_TOP src tools ;
+} else {
+	SubInclude ANTARES_TOP src ;
+}
+if $(ANTARES_INCLUDE_3RDPARTY) {
+	SubInclude ANTARES_TOP 3rdparty ;
+}
+
+# Perform deferred SubIncludes.
+ExecuteDeferredSubIncludes ;
+
+# reset subdir
+SubDir ANTARES_TOP ;
+
+# Execute post-build-target user config rules.
+UserBuildConfigRulePostBuildTargets	;
+
+# specify the Antares image and network boot archive contents
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) AntaresImage ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) NetBootArchive ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) FloppyBootImage ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) CDBootImage ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) CDBootPPCImage ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) AntaresCD ] ;
+include [ FDirName $(ANTARES_BUILD_RULES_DIR) AnybootImage ] ;
+
+# Check whether all requested optional packages do actually exist.
+local package ;
+local packageError ;
+for package in $(ANTARES_ADDED_OPTIONAL_PACKAGES) {
+	if ! [ on $(package) return $(ANTARES_OPTIONAL_PACKAGE_EXISTS) ] {
+		Echo "ERROR: Requested optional package \"$(package)\" does not"
+			"exist." ;
+		packageError = 1 ;
+	}
+}
+if $(packageError) {
+	Exit ;
+}

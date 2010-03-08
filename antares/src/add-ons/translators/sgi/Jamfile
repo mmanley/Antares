@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons translators sgi ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator SGITranslator :
+	SGIImage.cpp
+	SGIMain.cpp
+	SGITranslator.cpp
+	SGIView.cpp
+
+	: be translation libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	SGITranslator :
+	boot home config add-ons Translators ;
+

@@ -1,0 +1,30 @@
+SubDir ANTARES_TOP src bin network ifconfig ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers posix ] : true ;
+		# We need the public network headers also when not compiling for Antares.
+		# Unfortunately we get more than we want, namely all POSIX headers.
+}
+
+UseHeaders [ FDirName $(ANTARES_TOP) src servers net ] : true ;
+
+BinCommand ifconfig :
+	ifconfig.cpp
+	: be network
+;
+
+# Installation -- in the test directory for the time being
+AntaresInstall install-networking
+	: [ FDirName $(ANTARES_TEST_DIR) kits net ]
+	: ifconfig ;
+
+AntaresInstall install-userland-networking
+	: [ FDirName $(ANTARES_TEST_DIR) kits net userland ]
+	: ifconfig
+	: installed-userland-networking
+;
+
+Package antares-networkingkit-cvs :
+	ifconfig :
+#	boot home config bin ;
+	boot home Desktop antares-networkingkit ;

@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src preferences time ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared ;
+UsePrivateSystemHeaders ;
+
+Preference Time : 
+	AnalogClock.cpp 
+	BaseView.cpp 
+	Bitmaps.cpp 
+	DateTimeEdit.cpp 
+	SectionEdit.cpp 
+	DateTimeView.cpp 
+	Time.cpp 
+	TimeSettings.cpp 
+	TimeWindow.cpp
+	TZDisplay.cpp 
+	ZoneView.cpp 
+	: be libshared.a $(TARGET_LIBSUPC++)
+	: Time.rdef
+	;
+

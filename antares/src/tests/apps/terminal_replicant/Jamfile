@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src tests apps terminal_replicant ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) src apps terminal ] ;
+
+Application RepliTerminal : 
+	main.cpp	
+	: be $(TARGET_LIBSUPC++)
+	;
+
+

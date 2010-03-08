@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src add-ons kernel drivers power ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers power acpi_battery ;
+SubInclude ANTARES_TOP src add-ons kernel drivers power acpi_button ;
+SubInclude ANTARES_TOP src add-ons kernel drivers power acpi_embedded_controller ;
+SubInclude ANTARES_TOP src add-ons kernel drivers power acpi_lid ;
+SubInclude ANTARES_TOP src add-ons kernel drivers power acpi_thermal ;
+SubInclude ANTARES_TOP src add-ons kernel drivers power enhanced_speedstep ;

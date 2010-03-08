@@ -1,0 +1,38 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network etherpci ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network ipro1000 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network pegasus ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network rtl8139 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network rtl8169 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network sis900 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network usb_asix ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network usb_davicom ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network usb_ecm ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network via_rhine ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network vlance ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network wb840 ;
+
+# FreeBSD 7 drivers
+SubInclude ANTARES_TOP src add-ons kernel drivers network 3com ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network broadcom440x ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network broadcom570x ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network ipro100 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network jmicron2x0 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network marvell_yukon ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network nforce ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network pcnet ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network syskonnect ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network attansic_l1 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network attansic_l2 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network ar81xx ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network rtl81xx ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network vt612x ;
+
+SubIncludeGPL ANTARES_TOP src add-ons kernel drivers network bcm440x ;
+SubIncludeGPL ANTARES_TOP src add-ons kernel drivers network bcm570x ;
+
+# FreeBSD 8 drivers
+SubInclude ANTARES_TOP src add-ons kernel drivers network atheros813x ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network wlan ;

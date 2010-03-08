@@ -1,0 +1,13 @@
+resource app_version {
+	major  = 1,
+	middle = 0,
+	minor  = 0,
+
+	variety = B_APPV_ALPHA,
+
+	internal = 3,
+
+	short_info = "Walter",
+	long_info = "©2001-2005 Antares Inc."
+};
+

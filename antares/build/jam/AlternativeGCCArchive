@@ -1,0 +1,57 @@
+# This file defines what ends up in the alternative GCC archive and it executes
+# the rules building the archive. Included by AntaresImage.
+
+
+#pragma mark - Build The Archive
+
+
+# archive target
+ANTARES_ALTERNATIVE_GCC_ARCHIVE = alternative_system_libs.zip ;
+MakeLocate $(ANTARES_ALTERNATIVE_GCC_ARCHIVE) : $(ANTARES_OUTPUT_DIR) ;
+
+# the pseudo target all archive contents is attached to
+NotFile $(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME) ;
+
+# prepare the script that initializes the shell variables
+local initVarsScript = <AlternativeGCCArchive>antares-alternative-gcc-init-vars ;
+local script = $(initVarsScript) ;
+MakeLocate $(script) : $(ANTARES_OUTPUT_DIR) ;
+Always $(script) ;
+
+AddVariableToScript $(script) : tmpDir : $(ANTARES_TMP_DIR) ;
+AddVariableToScript $(script) : addBuildCompatibilityLibDir
+	: $(HOST_ADD_BUILD_COMPATIBILITY_LIB_DIR) ;
+AddTargetVariableToScript $(script) : <build>copyattr ;
+AddTargetVariableToScript $(script) : <build>zip ;
+if $(HOST_RM_ATTRS_TARGET) {
+	AddTargetVariableToScript $(script) : $(HOST_RM_ATTRS_TARGET) : rmAttrs ;
+} else {
+	AddVariableToScript $(script) : rmAttrs : rm ;
+}
+
+# create the other scripts
+local makeDirsScript = <AlternativeGCCArchive>antares-alternative-gcc-make-dirs ;
+local copyFilesScript
+	= <AlternativeGCCArchive>antares-alternative-gcc-copy-files ;
+MakeLocate $(makeDirsScript) $(copyFilesScript) : $(ANTARES_OUTPUT_DIR) ;
+
+CreateAlternativeGCCArchiveMakeDirectoriesScript $(makeDirsScript) ;
+CreateAlternativeGCCArchiveCopyFilesScript $(copyFilesScript) ;
+
+# build the archive
+
+BuildAlternativeGCCArchive $(ANTARES_ALTERNATIVE_GCC_ARCHIVE) :
+	$(initVarsScript)
+	$(makeDirsScript)
+	$(copyFilesScript)
+;
+
+# remove the scripts we have generated
+RmTemps $(ANTARES_ALTERNATIVE_GCC_ARCHIVE) :
+	$(initVarsScript)
+	$(makeDirsScript)
+	$(copyFilesScript)
+;
+
+NotFile antares-alternative-gcc-archive ;
+Depends antares-alternative-gcc-archive : $(ANTARES_ALTERNATIVE_GCC_ARCHIVE) ;

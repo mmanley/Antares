@@ -1,0 +1,18 @@
+rule BuildAntaresCD antaresCD : bootFloppy : scripts
+{
+	# BuildAntaresCD <antares cd> : <bootFloppy> : <scripts> ;
+
+	local mainScript = build_antares_cd ;
+	SEARCH on $(mainScript) = [ FDirName $(ANTARES_TOP) build scripts ] ;
+
+	Depends $(antaresCD) : $(mainScript) $(scripts) ;
+	Depends $(antaresCD) : $(bootFloppy) ;
+	BuildAntaresCD1 $(antaresCD) : $(bootFloppy) $(mainScript) $(scripts) ;
+}
+
+actions BuildAntaresCD1
+{
+	export cdImagePath="$(1)"
+	export cdBootFloppy="$(2[1])"
+	$(2[2]) $(2[3-])
+}

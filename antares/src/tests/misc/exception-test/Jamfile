@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src tests misc exception-test ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SharedLibrary libexceptiontest.so
+	: exceptions.cpp
+	: $(TARGET_LIBSUPC++)
+;
+
+SimpleTest exception-test
+	: exception-test.cpp
+	: libexceptiontest.so $(TARGET_LIBSTDC++)
+;

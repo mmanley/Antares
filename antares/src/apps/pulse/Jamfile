@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src apps pulse ;
+
+UsePrivateSystemHeaders ;
+UsePrivateHeaders shared interface app ;
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os kernel ] : true ;
+}
+
+if $(TARGET_PLATFORM) = r5 {
+	SubDirC++Flags -DR5_COMPATIBLE ;
+}
+
+Application Pulse :
+	ConfigView.cpp
+	CPUButton.cpp
+	DeskbarPulseView.cpp
+	MiniPulseView.cpp
+	NormalPulseView.cpp
+	Prefs.cpp
+	PrefsWindow.cpp
+	ProgressBar.cpp
+	PulseApp.cpp
+	PulseView.cpp
+	PulseWindow.cpp
+
+	: be $(TARGET_LIBSUPC++)
+	: Pulse.rdef
+;

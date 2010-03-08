@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src documentation shell_tools ;
+
+Doc2HTML 
+	Shell_Tools-Guide.xml
+	: index.html
+	: http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl
+	: Shell_Tools 
+	: [ FDirName $(ANTARES_DOCUMENTATION_OBJECT_DIR) Shell_Tools ]
+	  [ FDirName $(ANTARES_TOP) src bin coreutils man ] 
+	: -stringparam use.id.as.filename 1
+	;
+
+Includes [ FGristFiles Shell_Tools-Guide.xml ] : <src!bin!coreutils!man>coreutils.xml <src!documentation>license.xml ;
+SEARCH on <src!bin!coreutils!man>coreutils.xml = [ FDirName $(ANTARES_TOP) src bin coreutils man ] ;
+

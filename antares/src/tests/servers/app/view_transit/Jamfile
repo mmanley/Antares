@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src tests servers app view_transit ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseHeaders [ FDirName os app ] ;
+UseHeaders [ FDirName os interface ] ;
+
+Application ViewTransit :
+	ViewTransit.cpp
+	: be $(TARGET_LIBSUPC++)
+;
+

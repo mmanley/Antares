@@ -1,0 +1,47 @@
+rule BuildAnybootMBR binary : source {
+	Depends $(binary) : $(source) ;
+
+	MBR_SOURCE on $(binary) = $(source) ;
+
+	BuildAnybootMBR1 $(binary) ;
+}
+
+actions BuildAnybootMBR1 {
+	$(RM) $(1)
+	$(TARGET_CC) $(MBR_SOURCE) -o $(1) -nostdlib -Xlinker --oformat=binary -Xlinker -S -Xlinker -N -Xlinker "-e start" -Xlinker "-Ttext=0x600"
+}
+
+local baseMBR = base_mbr.bin ;
+local mbrSource = [ FDirName $(ANTARES_TOP) src bin writembr mbr.S ] ;
+
+BuildAnybootMBR $(baseMBR) : $(mbrSource) ;
+
+MakeLocate $(baseMBR) : $(ANTARES_OUTPUT_DIR) ;
+
+
+rule BuildAnybootImage anybootImage : mbrPart : isoPart : imageFile {
+	local anyboot = <build>anyboot ;
+
+	Depends $(anybootImage) : $(anyboot) ;
+	Depends $(anybootImage) : $(isoPart) ;
+	Depends $(anybootImage) : $(mbrPart) ;
+	Depends $(anybootImage) : $(imageFile) ;
+
+	BuildAnybootImage1 $(anybootImage) : $(anyboot) $(isoPart) $(mbrPart) $(imageFile) ;
+}
+
+actions BuildAnybootImage1 {
+	$(2[1]) $(1) $(2[2]) $(2[3]) $(2[4])
+}
+
+ANTARES_ANYBOOT_IMAGE = antares-anyboot.image ;
+MakeLocate $(ANTARES_ANYBOOT_IMAGE) : $(ANTARES_OUTPUT_DIR) ;
+
+BuildAnybootImage $(ANTARES_ANYBOOT_IMAGE) : $(baseMBR) : $(ANTARES_CD_BOOT_IMAGE)
+	: $(ANTARES_IMAGE_NAME) ;
+
+# TODO: this one seems to cause the build to fail each other run (caching?)
+#RmTemps $(ANTARES_ANYBOOT_IMAGE) : $(baseMBR) ;
+
+NotFile antares-anyboot-image ;
+Depends antares-anyboot-image : $(ANTARES_ANYBOOT_IMAGE) ;

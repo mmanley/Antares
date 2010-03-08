@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons translators bmp ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator BMPTranslator :
+	BMPMain.cpp
+	BMPTranslator.cpp
+	BMPView.cpp
+
+	: be translation libtranslatorsutils.a $(TARGET_LIBSUPC++)
+	: true
+;
+
+Package antares-translationkit-cvs :
+	BMPTranslator :
+	boot home config add-ons Translators ;
+
+

@@ -1,0 +1,694 @@
+#!/bin/bash
+#
+# Copyright (c) 2009-2010 Antares Inc. All rights reserved.
+# Distributed under the terms of the MIT License.
+#
+# Authors:
+#		Matt Madia, mattmadia@gmail.com
+#
+# Synopsis: 
+#	Provides a controlled mechanism for end-users to install certain pre-built 
+#	OptionalPackages. The script will determine the host information: the 
+#	default GCC, availability of secondary GCC libs, and revision. Using this 
+#	information, the user will be limited to the appropriate OptionalPackages
+#	that were available for that specific revision.
+#
+# Disclaimer:
+#   This is a temporary solution for installing OptionalPackages.
+#   In time, there will be an official package manager.
+#   See these URL's for info on the in-development package manager.
+#     http://dev.antares-os.org/wiki/PackageManagerIdeas
+#     http://dev.antares-os.org/wiki/PackageFormat
+#
+# Usage: ./installoptionalpackage [-l] [-a "<pkg> [<pkg> ...]"]
+# -l      List installable packages
+# -a      Add one or more packages and all dependencies
+
+
+declare -A availablePackages
+declare availablePackagesKeys=""
+# Some Packages cannot be installed,
+# as they require either the source code or compiled binaries
+declare packageIgnoreList='Bluetooth Development DevelopmentMin \
+DevelopmentBase P7zip UserlandFS Welcome Wifi-ipw2100+fw Wifi-iprowifi2200+fw \
+WifiFirmwareScriptData'
+
+
+function CreateInstallerScript()
+{
+	# This function will create a secondary script, containing all of the
+	# information needed to install the optional package and its dependencies
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	cat << EOF > ${tmpDir}/install-optpkg.sh
+#!/bin/bash
+
+tmpDir=${tmpDir}
+ANTARES_GCC_VERSION[1]=${ANTARES_GCC_VERSION[1]}
+isHybridBuild=${isHybridBuild}
+TARGET_ARCH=${TARGET_ARCH}
+ANTARES_IMAGE_HOST_NAME=`uname -n`
+$urlLine
+$sslPkgLine
+$sslUrlLine
+declare -a functionArgs
+
+
+function ParseFunctionArguments()
+{
+	# ParseFunctionArguments <args>
+	# Parse arguments for Jam wrapper functions into an array.
+	IN="\$@"
+ 	OIFS=\$IFS
+ 	IFS=":"
+ 	
+ 	local count=0
+	functionArgs=( )
+	for x in \$IN
+	do
+		functionArgs[\${count}]="\${x}"
+		((count++))
+	done
+ 	IFS=\$OIFS
+}
+
+
+function TrimLeadingSpace()
+{
+	# TrimLeadingSpace <variable name>
+	eval local text='\$'"\$1"
+	local _outvar="\$1"
+
+ 	local length=\${#text}
+ 	((length--))
+ 	if [ "\${text:0:1}" == ' ' ] ; then
+ 		text=\${text#' '}
+ 	fi
+
+	eval \$_outvar="'\$text'"
+}
+
+
+function TrimEndingSpace()
+{
+	# TrimEndingSpace <variable name>
+	eval local text='\$'"\$1"
+	local _outvar="\$1"
+
+ 	local length=\${#text}
+ 	((length--))
+ 	if [ "\${text:\$length}" == ' ' ] ; then
+ 		text=\${text%' '}
+ 	fi
+
+	eval \$_outvar="'\$text'"
+}
+
+
+function Exit()
+{
+	# Exit <message>
+	# Wrapper for Jam rule
+	echo "\$@"
+	exit 1
+}
+
+
+function InstallOptionalAntaresImagePackage()
+{
+	# InstallOptionalAntaresImagePackage package : url : dirTokens : isCDPackage
+	# Wrapper for Jam rule
+	echo "Installing \$1 ..."
+	cd \$tmpDir
+	
+	archiveFile=\`echo \$3 | sed -s "s/http.*\///"\`
+	if ! [ -f \$archiveFile ] ; then
+		echo "Downloading \$3 ..."
+		wget -nv \$3
+	fi
+	
+	local dirTokens='/boot'
+	local count=4
+	local i=0
+	for possibleToken in "\$@" ; do
+		if [ \$i -lt \$count ] ; then
+			((i++))
+		else
+			((i++))
+			if [ "\$possibleToken" != ':' ] ; then			
+				dirTokens=\${dirTokens}/\$possibleToken
+			else
+				break
+			fi
+		fi
+	done
+	echo "Extracting \$archiveFile ..."
+	extractDir="\${dirTokens}"
+	
+	case "\$archiveFile" in
+		*.zip)
+			unzip -q -o -d "\$extractDir" "\$archiveFile"
+			;;
+		*.tgz|*.tar.gz)
+			tar -C "\$extractDir" -xf "\$archiveFile"
+			;;
+		*)
+			echo "Unhandled archive extension in InstallOptionalAntaresImagePackage()"
+			exit 1
+			;;
+	esac
+	
+	if [ -f '/boot/.OptionalPackageDescription' ] ; then
+		rm '/boot/.OptionalPackageDescription'
+	fi
+	rm "\$archiveFile"
+}
+
+
+function AddSymlinkToAntaresImage()
+{
+	# AddSymlinkToAntaresImage <dir tokens> : <link target> [ : <link name> ] 
+	# Wrapper for Jam rule
+ 	ParseFunctionArguments "\$@"
+ 	
+ 	local dirTokens="/boot/\${functionArgs[0]}"
+ 	TrimLeadingSpace dirTokens
+	TrimEndingSpace dirTokens
+ 	dirTokens=\${dirTokens//' '/\/}
+ 	
+ 	local linkTarget="\${functionArgs[1]}"
+ 	TrimLeadingSpace linkTarget
+	TrimEndingSpace linkTarget
+ 	
+ 	local linkName="\${functionArgs[2]}"
+ 	TrimLeadingSpace linkName
+	TrimEndingSpace linkName
+	
+	mkdir -p "\${dirTokens}"
+	
+	if [ "\${linkName}" == '' ] ; then
+		ln -sf "\${linkTarget}" -t "\${dirTokens}"
+	else
+		ln -sf "\${linkTarget}" "\${dirTokens}/\${linkName}"
+	fi
+}
+
+
+function AddUserToAntaresImage()
+{
+	# AddUserToAntaresImage user : uid : gid : home : shell : realName
+	# Wrapper for Jam rule	
+	ParseFunctionArguments "\$@"
+	
+	local user=\${functionArgs[0]}
+ 	local uid=\${functionArgs[1]}
+ 	local gid=\${functionArgs[2]}
+ 	local home=\${functionArgs[3]}
+ 	local shell=\${functionArgs[4]}
+ 	local realName=\${functionArgs[5]}
+ 	
+ 	passwdLine="\${user}:x:\${uid}:\${gid}:\${realName}:\${home}:\${shell}"
+ 	passwdLine=\${passwdLine//' :'/':'}
+ 	passwdLine=\${passwdLine//': '/':'}
+ 	
+ 	local length=\${#passwdLine}
+ 	((length--))
+ 	if [ "\${passwdLine:\$length}" == ' ' ] ; then
+ 		passwdLine=\${passwdLine%' '}
+ 	fi
+ 	
+ 	passwdFile="\`finddir B_COMMON_ETC_DIRECTORY\`/passwd"
+ 	touch \${passwdFile}
+ 	
+ 	local userExists=1
+ 	while read line ; do
+		if [ "\${passwdLine}" == "\${line}" ] ; then
+			userExists=0
+		fi
+	done < \${passwdFile}
+	
+	if [ \$userExists -ge 1 ] ; then
+		echo "\${passwdLine}" >> \${passwdFile}
+	fi
+}
+
+
+EOF
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	cat ${tmpDir}/optpkg.stage2 >> ${tmpDir}/install-optpkg.sh
+	rm ${tmpDir}/optpkg.stage2
+}
+
+
+function ContainsSubstring()
+{
+	# ContainsSubstring <stringToLookIn> <stringToLookFor>
+	local string="$1"
+	local substring="$2"
+	local newString=${string/${substring}/''}
+	if [ ${#string} -eq `expr ${#newString} + ${#substring}` ] ; then
+		return 0
+	fi
+	return 1
+}
+
+
+function ErrorExit()
+{
+	echo $1
+	exit 1
+}
+
+
+function Init()
+{
+	
+	# Set up some directory paths
+	baseDir=`finddir B_COMMON_DATA_DIRECTORY`/optional-packages
+	tmpDir=`finddir B_COMMON_TEMP_DIRECTORY`
+	libDir=`finddir B_SYSTEM_LIB_DIRECTORY`
+
+	# Make sure these files are empty.
+	echo "" > ${tmpDir}/optpkg.jam
+	echo "" > ${tmpDir}/optpkg.stage1
+	
+	if ! [ -d ${baseDir} ] ; then
+		mkdir -p ${baseDir}
+	fi
+	
+	# Retreive the necessary jam files from svn.
+	local buildFiles="OptionalPackages OptionalPackageDependencies \
+		OptionalBuildFeatures"
+	for file in ${buildFiles} ; do
+		GetBuildFile ${file}
+	done
+
+	DetectSystemConfiguration
+	ReadPackageNamesIntoMemory
+}
+
+
+function GetBuildFile()
+{
+	# GetBuildFile <file>
+	# Downloads files from Antares's svn
+	local buildfile="$1"
+	if ! [ -f ${baseDir}/${buildfile} ] ; then
+		echo "Fetching ${buildfile} ..."
+		cd ${baseDir}
+		local baseURL=http://dev.antares-os.org/export/
+		local revision=`uname -v | awk '{print $1}' | sed -e 's/r//'`
+		local url="${baseURL}${revision}/antares/trunk/build/jam/${buildfile}"
+		wget -q ${url} || ErrorExit "...failed to download $buildfile"
+	fi 
+}
+
+
+function DetectSystemConfiguration()
+{
+	# Determine which GCC we're running and if we're a hybrid
+	if [ -d "$libDir"/gcc4 ] ; then
+		ANTARES_GCC_VERSION[1]=2
+		isHybridBuild=1
+	elif [ -d "$libDir"/gcc2 ] ; then
+		ANTARES_GCC_VERSION[1]=4
+		isHybridBuild=1
+	elif [ -f "$libDir"/libsupc++.so ] ; then
+		ANTARES_GCC_VERSION[1]=4
+		isHybridBuild=""
+	else
+		ANTARES_GCC_VERSION[1]=2
+		isHybridBuild=""
+	fi
+
+	# Determine the Architecture.
+	if [ `uname -m` == "BePC" ] ; then
+		TARGET_ARCH='x86'
+	fi
+}
+
+
+function ReadPackageNamesIntoMemory()
+{
+	local file="${baseDir}/OptionalPackageNames"
+	if ! [ -f ${file} ] ; then
+		GeneratePackageNames
+	fi
+	
+	# read list into associative array
+	while read line ; do
+		local pkg=`echo ${line} | awk '{print $1}'`
+		local pkgDeps=${line/':'/}
+		availablePackages[${pkg}]="${pkgDeps}"
+		availablePackagesKeys="${availablePackagesKeys} ${pkg}"
+	done < ${file}
+}
+
+
+function GeneratePackageNames()
+{
+	# GeneratePackageNames
+	# Creates a file containing available package names
+	# Each line shows a pakage and all of its recrusive dependencies
+	# "<pkg> : <dep1> <dep2> ..."
+	echo "Generating a list of Package Names ..."
+	
+	local file="${baseDir}/OptionalPackageNames"
+	touch ${file}
+	
+	local regExp='/^if\ \[\ IsOptionalAntaresImagePackageAdded/p'
+	sed -n -e "$regExp" ${baseDir}/OptionalPackages > ${file}.temp
+	while read line ; do
+		# in each non-filtered line, the 4th word is the optional package
+		local pkg=`echo ${line} | awk '{print $4}'`
+		
+		nonRepeatingDeps=""
+		GetPackageDependencies "$pkg"
+		if IsPackageAndDepsOkToInstall ${pkg} ; then
+			echo "${pkg} : ${nonRepeatingDeps}"  >> ${file}
+		fi
+		
+	done < ${file}.temp
+	rm ${file}.temp
+}
+
+
+function GetPackageDependencies()
+{
+	# GetPackageDependencies <pkg>
+	
+	# parse OptionalPackageDependencies for the single line that defines 
+	# this optional package's dependencies.
+	local regExp="^OptionalPackageDependencies\ ${1}\ \:"
+	local inputFile="${baseDir}/OptionalPackageDependencies"
+	
+	# print that single line
+	sed -n -e "/${regExp}\ /p" ${inputFile} > ${tmpDir}/optpkg.temp
+	
+	# strip out "OptionalPackageDependencies PackageName :"
+	# this leaves "<dep1> .... ;"
+	tempDeps=`sed -e "s/${regExp}\ //" ${tmpDir}/optpkg.temp`
+	
+	for foo in ${tempDeps%' ;'} ; do
+		# Prevent duplicate entries of the same dependency package.
+		if ! ContainsSubstring "${nonRepeatingDeps} " "${foo} " ; then
+			nonRepeatingDeps="$foo $nonRepeatingDeps "
+			nonRepeatingDeps="${nonRepeatingDeps//  / }"
+		fi 
+	done 
+	
+	# Recursively get the dependencies of these dependencies.
+	for dep in ${tempDeps%' ;'} ; do
+		GetPackageDependencies "$dep"
+	done
+	
+}
+
+
+function IsPackageAndDepsOkToInstall()
+{
+	# IsPackageAndDepsOkToInstall <pkg>
+	if ContainsSubstring "${packageIgnoreList}" "${1}"; then
+		echo "...warning: ${1} cannot be installed"
+		return 1
+	fi
+	for foo in ${nonRepeatingDeps} ; do
+		if ContainsSubstring "${packageIgnoreList}" "${foo}"; then
+			echo "...warning: ${1} cannot be installed because of ${foo}"
+			return 1
+		fi
+	done
+	return 0
+}
+
+
+function AddPackage()
+{
+	# AddPackage <name>
+	packagesToInstall=""
+	proceedWithInstallation=false
+	
+	for desiredPackage in ${1}; do
+		if IsPackageNameValid $desiredPackage  ; then
+			for item in ${availablePackages[${desiredPackage}]} ; do
+				if ! ContainsSubstring "${packagesToInstall}" "${item}" ; then
+					packagesToInstall="${packagesToInstall} ${item}"
+				fi
+			done
+			proceedWithInstallation=true
+		fi
+	done
+	
+	# If one or more packages can be installed, do it.
+	if $proceedWithInstallation  ; then
+		echo "To be installed: ${packagesToInstall}"
+		
+		for package in ${packagesToInstall} ; do
+			# output the "if [ IsOptionalAntaresImagePackageAdded..." code block
+			local regExp="if\ \[\ IsOptionalAntaresImagePackageAdded\ ${package}"
+			local inputFile="${baseDir}/OptionalPackages"
+			sed -n "/^$regExp/,/^\}/p" ${inputFile} >> ${tmpDir}/optpkg.jam
+		done
+		
+		ConvertJamToBash "${tmpDir}/optpkg.jam"
+		rm "${tmpDir}/optpkg.jam"
+	CreateInstallerScript
+	sh ${tmpDir}/install-optpkg.sh
+	rm ${tmpDir}/install-optpkg.sh
+	fi
+}
+
+
+function IsPackageNameValid()
+{
+	# IsPackageNameValid <name>
+	for name in ${availablePackagesKeys} ; do
+		if [ "$1" == "$name" ] ; then
+			return 0
+		fi
+	done
+	return 1
+}
+
+
+function ConvertJamToBash()
+{
+	# ConvertJamToBash <input file>
+	# The main Jam-to-Bash conversion function.
+	local inputFile=$1
+	declare -a generatedBash
+	countGenBashLine=0
+	
+	# Parse out some variable declarations
+	local regExp='/^ANTARES_OPENSSL_PACKAGE/p'
+	sslPkgLine=`sed -n -e "$regExp" ${baseDir}/OptionalBuildFeatures`
+	ConvertVariableDeclarationLines "$regExp" 'sslPkgLine'
+		
+	local regExp='/^ANTARES_OPENSSL_URL/p'
+	sslUrlLine=`sed -n -e "$regExp" ${baseDir}/OptionalBuildFeatures`
+	ConvertVariableDeclarationLines "$regExp" 'sslUrlLine'
+	
+	local regExp='/^local\ baseURL/p'
+	urlLine=`sed -n -e "$regExp" ${baseDir}/OptionalPackages`
+	urlLine=${urlLine/local\ /''}
+	ConvertVariableDeclarationLines "$regExp" 'urlLine'
+	
+	# Convert the easy bits.
+	while read line ; do
+		line=${line/'Echo'/'echo'}
+		
+		ConvertIfStatements "$line"
+		ConvertVariables "$line"
+		ReplaceComparators "$line"
+		
+		line=${line/"IsOptionalAntaresImagePackageAdded"/'"SomeText" !='}
+		generatedBash[$countGenBashLine]=${line}
+		((countGenBashLine++))
+	done < ${tmpDir}/optpkg.jam
+	
+	# output stage 1 generated code
+	local i=0
+	while [ $i -lt $countGenBashLine ] ; do
+		echo ${generatedBash[$i]} >> ${tmpDir}/optpkg.stage1
+		((i++))
+	done
+	
+	# This converts multi-line jam statements into a single line.
+	# --- Start awk ---
+	awk '
+		/InstallOptionalAntaresImagePackage/,/\;/{
+			isRule=1;
+			if($0~/\;/) ORS="\n"; 
+			else ORS=" "; print 
+		} 
+		/AddSymlinkToAntaresImage/,/\;/{
+			isRule=1;
+			if($0~/\;/) ORS="\n";
+			else ORS=" "; print 
+		} 
+		/AddUserToAntaresImage/,/\;/{ 
+			isRule=1; 
+			if($0~/\;/) ORS="\n"; 
+			else ORS=" "; print 
+		}
+		/Exit/,/\;/{
+			isRule=1;
+			if($0~/\;/) ORS="\n"; 
+			else ORS=" "; print
+		} 		
+		{
+			if($1!='InstallOptionalAntaresImagePackage' && isRule!=1 && $1!="\;")
+		 	print $0
+		}
+		{ isRule=0; }
+		' ${tmpDir}/optpkg.stage1 > ${tmpDir}/optpkg.stage2 2>/dev/null
+	# --- End awk ---
+	rm ${tmpDir}/optpkg.stage1
+}
+
+
+function ConvertVariableDeclarationLines()
+{
+	# ConvertVariableDeclarationLines <regex> <variable>
+	# One of the Jam-to-Bash conversion functions.
+	# Jam lines that define variables need to be parsed differently.
+	eval local input='$'"$2"
+	local regex="$1"
+	local _outvar="$2"
+	
+	input=${input/\ =\ /=}
+	input=${input/\;/''}
+	input=${input//\(/'{'}
+	input=${input//\)/'}'}
+	
+	eval $_outvar="'$input'"
+}
+
+
+function ConvertIfStatements()
+{
+	# ConvertIfStatements <line>	
+	# One of the Jam-to-Bash conversion functions.
+	line=${line//'} else {'/'else '}
+	line=${line//'} else if '/'elif '}
+	if ContainsSubstring "$line" "if " ; then
+		if ! ContainsSubstring "$line" "if [" ; then
+			line=${line/'if '/'if [ '}
+		fi
+		
+		if ContainsSubstring "$line" '] {' ; then
+			line=${line/'{'/' ; then'}
+		elif ContainsSubstring "$line" '{' ; then
+			line=${line/'{'/' ] ; then'}
+		fi
+		
+		for compound in '&&' '||' ; do
+			if ContainsSubstring "$line" "$compound" ; then
+				line=${line/"$compound"/"] $compound ["}
+			fi
+		done
+	fi
+	# Assume all remaining closing braces are part of if statements
+	line=${line/'}'/'fi'}
+}
+
+
+function ConvertVariables()
+{
+	# ConvertVariables
+	# One of the Jam-to-Bash conversion functions.
+	
+	# NOTE: jam's variables are normally '$(VARIABLE)'. \n
+	# 		The issue is with '(' and ')', so let's replace them globally.
+	if ContainsSubstring "$line" '$(' ; then
+		line=${line//'('/'{'}
+		line=${line//')'/'}'}
+	fi
+}
+
+
+function ReplaceComparators()
+{
+	# ReplaceComparators <line>
+	# One of the Jam-to-Bash conversion functions.
+	
+	# Preserve string comparators for TARGET_ARCH.
+	if ! ContainsSubstring "$line" 'TARGET_ARCH' ; then
+		line=${line//'>='/'-ge'}
+		line=${line//'<='/'-le'}
+		line=${line//'>'/'-gt'}
+		line=${line//'<'/'-lt'}
+		line=${line//'!='/'-ne'}
+	fi
+}
+
+
+function DisplayUsage()
+{
+	cat << EOF
+
+Disclaimer:
+  This is a temporary solution for installing OptionalPackages.
+  In time, there will be an official package manager.
+  See these URL's for information on the in-development package manager.
+    http://dev.antares-os.org/wiki/PackageManagerIdeas
+    http://dev.antares-os.org/wiki/PackageFormat
+
+Usage: ./installoptionalpackage [-l] [-a "<pkg> [<pkg> ...]"]
+-l      List installable packages
+-a      Add one or more packages and all dependencies
+
+EOF
+}
+
+
+function ListPackages()
+{
+	# ListPackages
+	echo ""
+	echo ""
+	echo "Available Optional Packages:"
+	
+	# single line:
+	echo ${availablePackagesKeys}
+	
+	# one per line:
+	#for package in ${availablePackagesKeys} ; do
+	#	echo ${package}
+	#done
+}
+
+
+# If no arguments were passed to the script, display its usage and exit.
+if [ "$#" -lt 1 ] ; then
+	DisplayUsage
+	exit 0
+else
+	Init
+fi
+
+# Parse the arguments given to the script.
+while getopts "a:lh" opt; do
+	case $opt in
+		a)
+			AddPackage "$OPTARG"
+			exit 0
+			;;
+		h)
+			DisplayUsage
+			exit 0
+			;;
+		l)
+			ListPackages
+			exit 0
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+		:)
+			echo "Option -$OPTARG requires an argument." >&2
+			exit 1
+			;;
+	esac
+done

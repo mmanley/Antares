@@ -1,0 +1,38 @@
+SubDir ANTARES_TOP src tests system boot loader file_systems tarfs ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders [ FDirName kernel disk_device_manager ] ;
+UsePrivateHeaders kernel shared storage ;
+SubDirSysHdrs $(ANTARES_TOP) src tests system boot loader ;
+SubDirSysHdrs $(ANTARES_TOP) headers libs zlib ;
+SubDirHdrs $(ANTARES_TOP) src system boot loader file_systems tarfs ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders drivers ;	# disk_device_manager.h
+	UsePublicHeaders storage ;	# DiskDeviceDefs.h
+
+	ObjectDefines tarfs.cpp : B_BUFFER_OVERFLOW=B_BAD_VALUE ;
+}
+
+ObjectDefines 
+	tarfs.cpp
+	:
+	read_pos=boot_read_pos fstat=boot_fstat open=boot_open close=boot_close _BOOT_MODE
+	;
+
+#SubDirCcFlags -DGUNZIP=1 ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src libs zlib ] ;
+
+KernelStaticLibrary boottest_tarfs :
+	tarfs.cpp
+	inflate.c
+	: #-fcheck-memory-usage -D_NO_INLINE_ASM
+	;
+
+# Tell Jam where to find the sources
+
+SEARCH on [ FGristFiles
+		tarfs.cpp
+	] = [ FDirName $(ANTARES_TOP) src system boot loader file_systems tarfs ] ;

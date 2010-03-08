@@ -1,0 +1,26 @@
+SubDir ANTARES_TOP src add-ons kernel drivers misc ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders drivers ;
+
+
+KernelAddon <driver>config :
+	config.c
+	;
+
+KernelAddon <driver>kdl :
+	kdl.c
+	;
+
+KernelAddon <driver>mem :
+	mem.c
+	;
+
+KernelAddon <driver>poke :
+	poke.c
+	;
+
+KernelAddon <driver>test :
+	test.c
+	;

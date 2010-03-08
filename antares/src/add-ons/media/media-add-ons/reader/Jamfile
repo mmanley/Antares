@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons reader ;
+
+UsePrivateHeaders media ;
+
+SEARCH_SOURCE += [ FDirName $(ANTARES_TOP) src add-ons media media-add-ons ] ;
+
+Application reader.media_addon :
+	AbstractFileInterfaceNode.cpp
+	AbstractFileInterfaceAddOn.cpp
+	MediaReader.cpp
+	MediaReaderAddOn.cpp
+	misc.cpp
+	: be media $(TARGET_LIBSUPC++)
+;

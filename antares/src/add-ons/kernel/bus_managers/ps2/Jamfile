@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers ps2 ;
+
+UsePrivateHeaders input ;
+UsePrivateHeaders kernel ;
+
+KernelAddon ps2 :
+	packet_buffer.cpp
+	ps2_common.c
+	ps2_dev.c
+	ps2_keyboard.c
+	ps2_module.c
+	ps2_standard_mouse.c
+	ps2_synaptics.c
+	ps2_trackpoint.c
+	ps2_service.c
+	movement_maker.c
+	;

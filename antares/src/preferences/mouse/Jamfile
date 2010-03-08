@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src preferences mouse ;
+
+UsePrivateHeaders input ;
+
+Preference Mouse : 
+	Mouse.cpp 
+	MouseSettings.cpp 
+	MouseWindow.cpp
+	MouseView.cpp 
+	SettingsView.cpp
+	: translation be $(TARGET_LIBSUPC++) liblocale.so
+	: Mouse.rdef
+	;
+
+DoCatalogs Mouse :
+	x-vnd.Antares-Mouse
+	:
+	Mouse.cpp
+	MouseWindow.cpp
+	SettingsView.cpp
+	: en.catalog
+	:
+	bg.catkeys eo.catkeys fr.catkeys hu.catkeys lt.catkeys pl.catkeys
+	pt.catkeys ru.catkeys sv.catkeys uk.catkeys
+	;

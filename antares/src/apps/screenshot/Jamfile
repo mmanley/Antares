@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src apps screenshot ;
+
+UseLibraryHeaders zlib ;
+UsePrivateHeaders interface ;
+
+Application Screenshot :
+	main.cpp
+	PreviewView.cpp
+	Screenshot.cpp
+	ScreenshotWindow.cpp
+	: be tracker translation libz.so liblocale.so $(TARGET_LIBSUPC++)
+	: Screenshot.rdef
+;
+
+DoCatalogs Screenshot :
+	x-vnd.Antares-Screenshot
+	:
+		ScreenshotWindow.cpp
+	: en.catalog
+	: pt.catkeys pt_br.catkeys
+	;

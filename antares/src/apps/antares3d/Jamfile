@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src apps antares3d ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) mesh ] ;
+SEARCH_SOURCE += [ FDirName $(SUBDIR) texture ] ;
+
+UsePrivateHeaders shared ;
+
+Application Antares3d :
+	App.cpp
+	Camera.cpp
+	MainWindow.cpp
+	MathUtils.cpp
+	Mesh.cpp
+	MeshInstance.cpp
+	RenderView.cpp
+	Texture.cpp
+
+	# mesh
+	StaticMesh.cpp
+
+	# texture
+	BitmapTexture.cpp
+	VideoFileTexture.cpp
+
+	: be game GL media translation $(TARGET_LIBSUPC++)
+	: Antares3d.rdef
+;

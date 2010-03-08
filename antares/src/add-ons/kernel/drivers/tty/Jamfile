@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src add-ons kernel drivers tty ;
+
+UsePrivateKernelHeaders ;
+UsePrivateHeaders drivers ;
+
+KernelAddon <driver>tty :
+	driver.cpp
+	tty.cpp
+	line_buffer.cpp
+	master.cpp
+	slave.cpp
+;
+

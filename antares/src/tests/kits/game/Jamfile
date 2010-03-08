@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src tests kits game ;
+
+SubInclude ANTARES_TOP src tests kits game chart ;
+SubInclude ANTARES_TOP src tests kits game direct_window_test ;
+SubInclude ANTARES_TOP src tests kits game direct_window_info_test ;
+SubInclude ANTARES_TOP src tests kits game file_game_sound_test ;
+SubInclude ANTARES_TOP src tests kits game push_game_sound_test ;
+SubInclude ANTARES_TOP src tests kits game set_mouse_position_test ;
+SubInclude ANTARES_TOP src tests kits game simple_game_sound_test ;
+SubInclude ANTARES_TOP src tests kits game page_flipper ;
+SubInclude ANTARES_TOP src tests kits game ParticlesII ;
+

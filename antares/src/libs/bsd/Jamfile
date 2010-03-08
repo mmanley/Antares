@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src libs bsd ;
+
+SetSubDirSupportedPlatforms $(ANTARES_BONE_COMPATIBLE_PLATFORMS) ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers compatibility bsd ] : true ;
+
+SharedLibrary libbsd.so :
+	daemon.c
+	err.c
+	fgetln.c
+	getpass.c
+	issetugid.c
+	progname.c
+	pty.cpp
+	signal.c
+	string.cpp
+	stringlist.c
+	unvis.c
+	usershell.c
+	vis.c
+	wait.c
+;

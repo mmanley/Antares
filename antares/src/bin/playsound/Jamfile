@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src bin playsound ;
+
+BinCommand playfile :
+	playfile.cpp
+	: be media $(TARGET_LIBSUPC++)
+;
+
+BinCommand playsound :
+	playsound.cpp
+	: be media game
+;
+
+BinCommand playwav :
+	playwav.cpp
+	: be media $(TARGET_LIBSUPC++)
+;

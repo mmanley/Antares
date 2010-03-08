@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons kernel drivers disk virtual ;
+
+#SubInclude ANTARES_TOP src add-ons kernel drivers disk virtual fmap ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk virtual nbd ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk virtual remote_disk ;

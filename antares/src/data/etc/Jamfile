@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src data etc ;
+
+# generate /etc/sysless
+actions LessKey
+{
+	lesskey -o $(1) $(2)
+}
+
+local syslessIn = <etc>sysless.in ;
+SEARCH on $(syslessIn) = $(SUBDIR) ;
+local sysless = <etc>sysless ;
+MakeLocateArch $(sysless) ;
+Depends $(sysless) : $(syslessIn) ;
+LessKey $(sysless) : $(syslessIn) ;

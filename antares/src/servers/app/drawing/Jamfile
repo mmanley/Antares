@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src servers app drawing ;
+
+UseLibraryHeaders agg ;
+UsePrivateHeaders app graphics interface kernel shared ;
+UsePrivateHeaders [ FDirName graphics common ] ;
+UsePrivateSystemHeaders ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter drawing_modes ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter font_support ] ;
+UseFreeTypeHeaders ;
+
+StaticLibrary libasdrawing.a :
+	AccelerantBuffer.cpp
+	AccelerantHWInterface.cpp
+	BitmapBuffer.cpp
+	drawing_support.cpp
+	DrawingEngine.cpp
+	MallocBuffer.cpp
+	UpdateQueue.cpp
+	PatternHandler.cpp
+	Overlay.cpp
+
+	BitmapHWInterface.cpp
+	BBitmapBuffer.cpp
+	HWInterface.cpp
+;
+
+SubInclude ANTARES_TOP src servers app drawing Painter ;
+SubInclude ANTARES_TOP src servers app drawing remote ;

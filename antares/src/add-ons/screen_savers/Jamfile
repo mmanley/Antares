@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons screen_savers ;
+
+SubInclude ANTARES_TOP src add-ons screen_savers debugnow ;
+SubInclude ANTARES_TOP src add-ons screen_savers flurry ;
+SubInclude ANTARES_TOP src add-ons screen_savers antares ;
+SubInclude ANTARES_TOP src add-ons screen_savers icons ;
+SubInclude ANTARES_TOP src add-ons screen_savers ifs ;
+SubInclude ANTARES_TOP src add-ons screen_savers message ;
+SubInclude ANTARES_TOP src add-ons screen_savers simpleclock ;
+SubInclude ANTARES_TOP src add-ons screen_savers slideshowsaver ;
+SubInclude ANTARES_TOP src add-ons screen_savers spider ;

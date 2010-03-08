@@ -1,0 +1,127 @@
+SubDir ANTARES_TOP src system kernel lib ;
+
+UsePrivateHeaders shared ;
+
+# kernel libroot os files
+
+KernelMergeObject kernel_os_main.o :
+	driver_settings.c
+	find_directory.c
+	fs_info.c
+	wait_for_objects.cpp
+	: $(TARGET_KERNEL_PIC_CCFLAGS)
+;
+
+SEARCH on [ FGristFiles
+	driver_settings.c
+	find_directory.c
+	fs_info.c
+	wait_for_objects.cpp
+	] = [ FDirName $(ANTARES_TOP) src system libroot os ] ;
+
+# kernel libroot posix files
+
+local librootSources = [ FDirName $(ANTARES_TOP) src system libroot ] ;
+local posixSources = [ FDirName $(librootSources) posix ] ;
+
+SEARCH_SOURCE += [ FDirName $(posixSources) ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) locale ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) stdio ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) stdlib ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) string ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) sys ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) time ] ;
+SEARCH_SOURCE += [ FDirName $(posixSources) unistd ] ;
+
+KernelMergeObject kernel_lib_posix.o :
+	# main
+ 	kernel_errno.cpp
+ 	dirent.c
+	fcntl.cpp
+ 	poll.c
+ 	utime.c
+ 	# locale
+	ctype.c
+	localeconv.c
+	# stdio (this subdir)
+	kernel_vsprintf.cpp
+	# stdlib
+	abs.c
+	atoi.c
+	bsearch.c
+	merge.c
+	qsort.c
+	rand.c
+	random.c
+	strtod.c
+	strtol.c
+	strtoll.c
+	strtoul.c
+	strtoull.c
+	# sys
+	chmod.c
+	stat.c
+	mkdir.c
+	select.c
+	gettimeofday.c
+ 	uio.c
+	# time
+	time.c
+	# unistd
+	access.c
+	chown.c
+	close.c
+	#conf.c
+	directory.c
+	dup.c
+	ioctl.c
+	link.c
+	lseek.c
+	mount.c
+	read.c
+	sync.c
+	truncate.c
+	usergroup.cpp
+	write.c
+	# string
+	memchr.c
+	memcmp.c
+	memmove.c
+	strcasecmp.c
+	strcasestr.c
+	strcat.c
+	strchr.c
+	strcmp.c
+	strcpy.c
+	strcspn.c
+	strdup.c
+	strerror.c
+	strlcat.c
+	strlcpy.c
+	strlen.c
+	strncat.c
+	strncmp.c
+	strncpy.c
+	strndup.cpp
+	strnlen.c
+	strpbrk.c
+	strrchr.c
+	strspn.c
+	strstr.c
+	strtok.c
+	strupr.c
+
+	: $(TARGET_KERNEL_PIC_CCFLAGS)
+;
+
+# misc
+
+SEARCH_SOURCE = [ FDirName $(ANTARES_TOP) src kits support ] ;
+
+KernelMergeObject kernel_misc.o :
+	Referenceable.cpp
+
+	: $(TARGET_KERNEL_PIC_CCFLAGS)
+;
+
+AntaresSubInclude arch $(TARGET_ARCH) ;

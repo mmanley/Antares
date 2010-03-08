@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src add-ons kernel network ppp ;
+
+SubInclude ANTARES_TOP src add-ons kernel network ppp ipcp ;
+SubInclude ANTARES_TOP src add-ons kernel network ppp modem ;
+SubInclude ANTARES_TOP src add-ons kernel network ppp pap ;
+SubInclude ANTARES_TOP src add-ons kernel network ppp pppoe ;
+SubInclude ANTARES_TOP src add-ons kernel network ppp shared ;

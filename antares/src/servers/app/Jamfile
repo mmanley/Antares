@@ -1,0 +1,73 @@
+SubDir ANTARES_TOP src servers app ;
+
+UseLibraryHeaders agg ;
+UsePrivateHeaders app graphics input interface kernel shared storage ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing ] ;
+UseHeaders [ FDirName $(ANTARES_TOP) src servers app drawing Painter ] ;
+UseFreeTypeHeaders ;
+
+
+Server app_server :
+	Angle.cpp
+	AppServer.cpp
+	#BitfieldRegion.cpp
+	BitmapDrawingEngine.cpp
+	BitmapManager.cpp
+	ClientMemoryAllocator.cpp
+	CursorData.cpp
+	CursorManager.cpp
+	CursorSet.cpp
+	DecorManager.cpp
+	Decorator.cpp
+	DefaultDecorator.cpp
+	Desktop.cpp
+	DesktopSettings.cpp
+	DirectWindowInfo.cpp
+	DrawState.cpp
+	EventDispatcher.cpp
+	EventStream.cpp
+	FontCache.cpp
+	FontCacheEntry.cpp
+	FontEngine.cpp
+	FontFamily.cpp
+	FontManager.cpp
+	FontStyle.cpp
+	HashTable.cpp
+	InputManager.cpp
+	IntPoint.cpp
+	IntRect.cpp
+	MessageLooper.cpp
+	MultiLocker.cpp
+	OffscreenServerWindow.cpp
+	OffscreenWindow.cpp
+	ProfileMessageSupport.cpp
+	RGBColor.cpp
+	RegionPool.cpp
+	Screen.cpp
+	ScreenConfigurations.cpp
+	ScreenManager.cpp
+	ServerApp.cpp
+	ServerBitmap.cpp
+	ServerCursor.cpp
+	ServerFont.cpp
+	ServerPicture.cpp
+	ServerWindow.cpp
+	SystemPalette.cpp
+	View.cpp
+	VirtualScreen.cpp
+	Window.cpp
+	WindowList.cpp
+	Workspace.cpp
+	WorkspacesView.cpp
+
+	# libraries
+	:
+	libtranslation.so libbe.so libbnetapi.so
+	libasdrawing.a libasremote.a libpainter.a libagg.a libfreetype.so
+	libtextencoding.so libshared.a $(TARGET_LIBSTDC++)
+
+	: app_server.rdef
+;
+
+SubInclude ANTARES_TOP src servers app drawing ;

@@ -1,0 +1,91 @@
+SubDir ANTARES_TOP src kits ;
+
+# If defined allows to run applications without the registrar
+# -- for development only, of course.
+if $(RUN_WITHOUT_REGISTRAR) {
+	local defines = [ FDefines RUN_WITHOUT_REGISTRAR ] ;
+	SubDirCcFlags $(defines) ;
+	SubDirC++Flags $(defines) ;
+}
+
+# If defined allows to run applications without the app server
+# -- needed until the app server runs on our kernel.
+RUN_WITHOUT_APP_SERVER ?= 0 ;
+if $(RUN_WITHOUT_APP_SERVER) != 0 {
+	local defines = [ FDefines RUN_WITHOUT_APP_SERVER ] ;
+	SubDirCcFlags $(defines) ;
+	SubDirC++Flags $(defines) ;
+}
+
+UsePrivateHeaders [ FDirName kernel ] ;  # For KMessage.h
+#UsePrivateHeaders syslog_daemon ;		# For syslog.cpp
+
+# Build our libbe.so
+
+AddResources libbe.so : libbe_version.rdef ;
+
+SetVersionScript libbe.so : libbe_versions ;
+
+SharedLibrary libbe.so :
+	:
+	<libbe>app_kit.o
+	<libbe>interface_kit.o
+	<libbe>storage_kit.o
+	<libbe>support_kit.o
+
+	libicon.a
+	libagg.a
+
+	libroot.so	# make sure it links against our libroot.so
+	$(TARGET_LIBSTDC++)
+;
+
+# Build libbe_test.so
+
+SetSupportedPlatformsForTarget libbe_test.so : libbe_test ;
+
+SetVersionScript libbe_test.so : libbe_test_versions ;
+
+SharedLibrary libbe_test.so :
+	:
+	<libbe>app_kit.o
+	<libbe>interface_kit.o
+	<libbe>storage_kit.o
+	<libbe>support_kit.o
+
+	libicon.a
+	libagg.a
+
+	$(TARGET_LIBSTDC++)
+;
+
+#SEARCH on [ FGristFiles KMessage.cpp ]
+#	= [ FDirName $(ANTARES_TOP) src system kernel messaging ] ;
+#
+#SEARCH on [ FGristFiles syslog.cpp ]
+#	= [ FDirName $(ANTARES_TOP) src system libroot posix ] ;
+
+
+SubInclude ANTARES_TOP src kits app ;
+SubInclude ANTARES_TOP src kits bluetooth ;
+SubInclude ANTARES_TOP src kits coredata ;
+SubInclude ANTARES_TOP src kits debug ;
+SubInclude ANTARES_TOP src kits device ;
+SubInclude ANTARES_TOP src kits game ;
+SubInclude ANTARES_TOP src kits interface ;
+SubInclude ANTARES_TOP src kits locale ;
+SubInclude ANTARES_TOP src kits mail ;
+SubInclude ANTARES_TOP src kits media ;
+SubInclude ANTARES_TOP src kits midi ;
+SubInclude ANTARES_TOP src kits midi2 ;
+SubInclude ANTARES_TOP src kits network ;
+SubInclude ANTARES_TOP src kits opengl ;
+SubInclude ANTARES_TOP src kits print ;
+SubInclude ANTARES_TOP src kits registry ;
+SubInclude ANTARES_TOP src kits screensaver ;
+SubInclude ANTARES_TOP src kits shared ;
+SubInclude ANTARES_TOP src kits storage ;
+SubInclude ANTARES_TOP src kits support ;
+SubInclude ANTARES_TOP src kits textencoding ;
+SubInclude ANTARES_TOP src kits tracker ;
+SubInclude ANTARES_TOP src kits translation ;

@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src preferences touchpad ;
+
+UsePrivateHeaders input ;
+
+Preference Touchpad :
+	TouchpadPref.cpp
+	TouchpadPrefView.cpp
+	main.cpp
+	: be $(TARGET_LIBSUPC++) liblocale.so
+	: Touchpad.rdef
+	;
+
+DoCatalogs Touchpad :
+	x-vnd.Antares-Touchpad
+	:
+	TouchpadPrefView.cpp
+	main.cpp
+	: en.catalog
+	: fr.catkeys hu.catkeys it.catkeys lt.catkeys pl.catkeys pt.catkeys
+	  uk.catkeys
+	;

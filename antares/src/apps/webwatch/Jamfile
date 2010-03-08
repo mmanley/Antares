@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src apps webwatch ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+#UsePrivateHeaders app ;
+#UsePrivateHeaders shared ;
+#UsePrivateHeaders tracker ;
+#SubDirHdrs $(ANTARES_TOP) src kits tracker ;
+
+Application WebWatch :
+	WatchApp.cpp
+	WatchView.cpp
+	: be $(TARGET_LIBSUPC++)
+	: WebWatch.rdef
+;
+

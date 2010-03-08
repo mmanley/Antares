@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src preferences locale ;
+
+UseLibraryHeaders icu ;
+UsePrivateHeaders locale ;
+UsePrivateHeaders shared ;
+
+Preference Locale :
+	Locale.cpp
+	LocaleWindow.cpp
+	TimeFormatSettingsView.cpp
+	: be liblocale.so $(TARGET_LIBSTDC++) $(TARGET_LIBSUPC++) libicu-common.so
+		libicu-data.so libshared.a
+	: Locale.rdef
+	;
+
+DoCatalogs Locale		# application name
+	: x-vnd.Antares-Locale # app MIME signature
+	:					# sources to extract the keys from
+	Locale.cpp
+	LocaleWindow.cpp
+	TimeFormatSettingsView.cpp
+	: en.catalog		# default catalog generated from sourcecode
+	:					# translations
+	de.catkeys eo.catkeys fi.catkeys fr.catkeys hu.catkeys lt.catkeys pt.catkeys
+	ru.catkeys sv.catkeys uk.catkeys pl.catkeys
+	;
+

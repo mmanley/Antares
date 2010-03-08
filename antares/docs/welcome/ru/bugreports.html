@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US"> 
+<head>
+<!-- 
+ *
+ * Copyright 2008-2009, Antares. All rights reserved.
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Niels Reedijk and Matt Madia who wrote http://dev.antares-os.org/wiki 
+ *		Humdinger <humdingerb@gmail.com>
+ * Translators:
+ *		michael_s
+ *
+-->
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="robots" content="all" />
+	<title>Отчёт об ошибках (багах)</title>
+	<link rel="stylesheet" type="text/css" href="../Antares-doc.css" />
+</head>
+<body>
+
+<div id="banner">
+<div><span>User guide</span></div>
+</div>
+
+<div class="nav">
+<div class="inner">
+<ul class="lang-menu">
+<li class="now"><img src="../images/flags/ru.png" alt="" /> Русский</li>
+<li><a href="../fr/bugreports.html"><img src="../images/flags/fr.png" alt="" />Français</a></li>
+<li><a href="../de/bugreports.html"><img src="../images/flags/de.png" alt="" />Deutsch</a></li>
+<li><a href="../it/bugreports.html"><img src="../images/flags/it.png" alt="" />Italiano</a></li>
+<li><a href="../es/bugreports.html"><img src="../images/flags/es.png" alt="" />Español</a></li>
+<li><a href="../sv_SE/bugreports.html"><img src="../images/flags/sv_SE.png" alt="" />Svensk</a></li>
+<li><a href="../jp/bugreports.html"><img src="../images/flags/jp.png" alt="" />日本語</a></li>
+<li><a href="../en/bugreports.html"><img src="../images/flags/gb.png" alt="" />English</a></li>
+</ul>
+<span>
+    <a href="../welcome_ru.html" class="uplink">Welcome</a>
+</span></div>
+</div>
+
+<div id="content">
+<div>
+
+<h1>Отчёт об ошибках (багах)</h1>
+
+<p>Так как наши разработчики не в состоянии проверить все комбинации компьютерных комплектующих и программных средств при их работе в Antares, то мы полагаемся на пользователей, надеясь, что вы сообщите нам об обнаруженных ошибках, которых, ввиду молодости Antares, может быть немало. Мы будем благодарны вам за потраченное на составление отчёта время, только вместе мы сможем сделать Antares лучше.</p>
+<p>Для продуктивной работы c системой отслеживания ошибок (багтрекером) важно соблюдать принятый в нём <a href="http://dev.antares-os.org/wiki/BugTrackerEtiquette">этикет</a>.</p>
+
+<h2>Получение аккаунта в Trac</h2>
+<p>Чтобы создать новый багрепорт, у вас должен быть заведён аккаунт в <a href="http://dev.antares-os.org/register" title="Регистрация в багтрекере Antares">багтрекере Antares</a>.<br />
+Создавая новый аккаунт <b>обязательно введите адрес электронной почты</b>, так как на него будут приходить все сведения, связанные с изменением багрепорта. Убедитесь, что приходящие с багтрекера письма <b>не помечаются как спам,</b> так как это вполне возможно.</p>
+
+<h2>Создание отчёта об ошибках</h2>
+<p>Прежде чем сообщать об ошибке, пожалуйста, <a href="http://dev.antares-os.org/query?status=new&amp;status=assigned&amp;status=reopened&amp;status=closed&amp;summary=%7Eтекст,+который+вы+ищите&amp;order=priority">убедитесь</a>, что аналогичного багрепорта ещё не существует. Для этого также можно воспользоваться функцией <a href="http://dev.antares-os.org/search?q=&amp;noquickjump=1&amp;ticket=on">поиска</a>.<br />
+После того как вы установили, что подобных багрепортов не имеется, то оформите вашу информацию как можно точнее:</p>
+<ul>
+	<li><p>Включите информацию о том как вы тестируете Antares (на реальном компьютере, в эмуляторе VMWare, QEMU, и т. д.).</p></li>
+	<li><p>Укажите какую <acronym title="Subversion - система управления версиями, используемая нами">SVN</acronym> ревизию Antares вы используете. Эту информацию можно найти в '<i>Сведениях о системе (About This System)...</i>' в меню Deskbar.</p></li>
+	<li><p>Опишите проблему, с которой вы столкнулись, попытайтесь описать её наиболее точно: как именно она проявилась, и как правильно должен бы был действовать проблемный объект при её отсутствии.</p></li>
+	<li><p>Расскажите какие шаги нужно выполнить для её возникновения, что поможет разработчикам воспроизвести эту ошибку.</p></li>
+	<li><p>Прикрепите всю имеющуюся информацию. Если это ошибка графического интерфейса или баг в каком-либо приложении, то попытайтесь сделать скриншот (клавиша <span class="key">PrintScreen</span> сохраняет PNG изображение в папке <span class="path">/boot/home/</span>).</p></li>
+</ul>
+	
+<h3>Программные ошибки</h3>
+<p>Когда приложение аварийно завершилось, вы должны использовать автоматически открывающийся отладчик. Введя в окне терминала с дебагером <span class="cli">bt</span>, вы создаёте "трассировку", которую необходимо скопировать в ваш багрепорт.</p>
+
+<h3>Аппаратные ошибки</h3>
+<p>Если вы столкнулись с ошибкой работы аппаратных средств и/или их драйвера, то вы должны приложить следующую информацию:</p>
+<ul>
+<li><span class="cli">listdev</span> - подробный список оборудования, включающий ID поставщиков и отдельных устройств, схожа с командами Linux <span class="cli">lshw</span> и <span class="cli">lspci</span>.</li>
+<li><span class="cli">listusb -v</span> - при ошибке, связанной с USB, аналогична команде <span class="cli">lsusb</span>.</li>
+<li><span class="cli">open /var/log/syslog</span> - основной системный лог используемый Antares, сродни выводимой на экран отладочной информации при загрузке в соответствующем режиме. С командой <span class="cli">open</span> можно вырезать нужную часть лога в текстовом редакторе.</li>
+<li><span class="cli">listimage | grep drivers/</span> - список всех задействованных драйверов.</li>
+<li><span class="cli">ints</span> - доступна только в режиме <i>Царства отладки ядра (Kernel Debugging Land - KDL)</i> (см. ниже), отображает используемые прерывания. Не должно быть слишком много устройств, использующих одно прерывание.</li>
+</ul>
+<p>Все эти команды вводитятся в терминале, если не указано иное. Если добавить <span class="cli"> &gt; output.txt</span> после команды, то результат её работы сохранится в текстовый файл "output.txt", который можно прикрепить к своему сообщению об ошибках или отправить по электронной почте.</p>
+
+<h3>Царство отладки ядра - KDL</h3>
+<p>Когда какой-либо системный низкоуровневый компонент вызывает фатальную ошибку, то вы, с большой долей вероятности, окажетесь в отладчике ядра. Также он может быть вызван намеренно при нажатии на клавиши <span class="key">ALT</span>+<span class="key">SysReq</span>+<span class="key">D</span> (клавиша <span class="key">SysReq</span> называется <span class="key">PrintScreen</span> на большинстве клавиатур).</p>
+<ul>
+<li><span class="cli">co</span> - выведет систему из KDL и продолжит нормальную работу Antares, если это возможно.</li>
+<li><span class="cli">int</span> - отобразит используемые прерывания (как описано выше).</li>
+<li><span class="cli">bt</span> - покажет трассировку, уточняющую где именно произошла ошибка.</li>
+</ul>
+
+<h2>Что дальше?</h2>
+<p>После того как багрепорт отправлен, разработчик рассмотрит вашу ошибку и попытаться классифицировать ее. Помните, что мы все добровольцы, и  иногда багрепорт может оставаться без ответа некоторое время. Добавление новой информации об ошибке помогает исправить её быстрее, но не пытайтесь увеличить её значимость, добавляя не относящиеся к делу комментарии.</p>
+<p>Помните, что отправка багрепорта, на который вы потратили некоторое время - это ещё полдела, и желательно чтобы вы следили за его состоянием. Только в этом случае вы внесёте ощутимую часть в процесс развития Antares. У разработчиков могут возникнуть вопросы, относящиеся к багу во время его исправления, пожалуйста, не игнорируйте их, постаравшись как можно подробней ответить. Считайте свое участие законченным, только когда ошибка пиобритёт статус "исправлено (fixed)".</p>
+
+</div>
+</div>
+
+<div class="nav">
+<div class="inner"><span>
+    <a href="../welcome_ru.html" class="uplink">Welcome</a>
+</span></div>
+</div>
+
+</body>
+</html>

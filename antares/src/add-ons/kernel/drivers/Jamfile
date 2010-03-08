@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons kernel drivers ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers arch ;
+SubInclude ANTARES_TOP src add-ons kernel drivers bluetooth ;
+SubInclude ANTARES_TOP src add-ons kernel drivers bus ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ;
+SubInclude ANTARES_TOP src add-ons kernel drivers common ;
+SubInclude ANTARES_TOP src add-ons kernel drivers disk ;
+SubInclude ANTARES_TOP src add-ons kernel drivers dvb ;
+SubInclude ANTARES_TOP src add-ons kernel drivers input ;
+SubInclude ANTARES_TOP src add-ons kernel drivers graphics ;
+SubInclude ANTARES_TOP src add-ons kernel drivers midi ;
+SubInclude ANTARES_TOP src add-ons kernel drivers misc ;
+SubInclude ANTARES_TOP src add-ons kernel drivers network ;
+SubInclude ANTARES_TOP src add-ons kernel drivers ports ;
+SubInclude ANTARES_TOP src add-ons kernel drivers power ;
+SubInclude ANTARES_TOP src add-ons kernel drivers printer ;
+SubInclude ANTARES_TOP src add-ons kernel drivers random ;
+SubInclude ANTARES_TOP src add-ons kernel drivers tty ;
+SubInclude ANTARES_TOP src add-ons kernel drivers video ;

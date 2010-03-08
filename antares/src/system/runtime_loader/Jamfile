@@ -1,0 +1,98 @@
+SubDir ANTARES_TOP src system runtime_loader ;
+
+UsePrivateHeaders runtime_loader shared ;
+UsePrivateHeaders kernel ;
+	# for <util/KMessage.h>
+UsePrivateSystemHeaders ;
+
+# Don't let gcc inject built-in function code. This will cause dependencies
+# to libroot, which we don't link against.
+SubDirCcFlags -fno-builtin ;
+SubDirC++Flags -fno-builtin -fno-exceptions ;
+
+DEFINES +=
+	KMESSAGE_CONTAINER_ONLY
+	_LOADER_MODE
+	USING_LIBGCC=1
+;
+
+AddResources runtime_loader : runtime_loader.rdef ;
+
+# needed for "runtime_loader" only
+StaticLibrary libruntime_loader.a :
+	kernel_vsprintf.cpp
+	kernel_cpp.cpp
+	KMessage.cpp
+	:
+	<src!system!libroot!os>mutex.o
+	<src!system!libroot!os>recursive_lock.o
+	<src!system!libroot!os>syscalls.o
+	<src!system!libroot!os>sem.o
+
+	<src!system!libroot!posix>errno.o
+  	<src!system!libroot!posix>fcntl.o
+
+ 	<src!system!libroot!posix!glibc!ctype>ctype-info.o
+	<src!system!libroot!posix!glibc!locale>C-ctype.o
+	<src!system!libroot!posix!glibc!locale>C_name.o
+
+	<src!system!libroot!posix!string>memchr.o
+	<src!system!libroot!posix!string>memcmp.o
+	<src!system!libroot!posix!string>memmove.o
+	<src!system!libroot!posix!string>strcasecmp.o
+	<src!system!libroot!posix!string>strcat.o
+	<src!system!libroot!posix!string>strchr.o
+	<src!system!libroot!posix!string>strcmp.o
+	<src!system!libroot!posix!string>strcpy.o
+	<src!system!libroot!posix!string>strcspn.o
+	<src!system!libroot!posix!string>strdup.o
+	<src!system!libroot!posix!string>strerror.o
+	<src!system!libroot!posix!string>strlcat.o
+	<src!system!libroot!posix!string>strlcpy.o
+	<src!system!kernel!lib>strlen.o
+	<src!system!libroot!posix!string>strncmp.o
+	<src!system!libroot!posix!string>strnlen.o
+	<src!system!libroot!posix!string>strpbrk.o
+	<src!system!libroot!posix!string>strrchr.o
+	<src!system!libroot!posix!string>strspn.o
+	<src!system!libroot!posix!string>strstr.o
+
+	[ FGristFiles kernel_vsprintf.o ]
+;
+
+SEARCH on [ FGristFiles kernel_cpp.cpp ]
+	= [ FDirName $(ANTARES_TOP) src system kernel util ] ;
+SEARCH on [ FGristFiles kernel_vsprintf.cpp ]
+	= [ FDirName $(ANTARES_TOP) src system kernel lib ] ;
+SEARCH on [ FGristFiles KMessage.cpp ]
+	= [ FDirName $(ANTARES_TOP) src system kernel messaging ] ;
+
+
+local sources =
+	add_ons.cpp
+	elf.cpp
+	elf_antares_version.cpp
+	elf_load_image.cpp
+	elf_symbol_lookup.cpp
+	elf_versioning.cpp
+	errors.cpp
+	export.cpp
+	heap.cpp
+	images.cpp
+	runtime_loader.cpp
+	utility.cpp
+;
+
+Objects $(sources) ;
+
+Ld runtime_loader :
+	[ FGristFiles $(sources:S=$(SUFOBJ)) ]
+	libruntime_loader.a
+	libruntime_loader_$(TARGET_ARCH).a
+	$(TARGET_STATIC_LIBSUPC++)
+	$(TARGET_GCC_LIBGCC)
+	: $(ANTARES_TOP)/src/system/ldscripts/$(TARGET_ARCH)/runtime_loader.ld
+	: --no-undefined
+;
+
+AntaresSubInclude arch $(TARGET_ARCH) ;

@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src tests add-ons opengl fake_renderer ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM) != antares {
+	UseHeaders [ FDirName $(ANTARES_TOP) headers os opengl ] : true ;
+		# We need our public GL headers also when not compiling for Antares.
+}
+
+UsePrivateHeaders interface opengl ;
+
+
+Addon fake_renderer :
+	FakeRenderer.cpp
+	: libGL.so be
+;
+
+Package antares-opengl-cvs : 
+	fake_renderer :  
+	boot home config add-ons opengl 
+;
+ 

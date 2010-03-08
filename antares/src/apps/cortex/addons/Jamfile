@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src apps cortex addons ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubInclude ANTARES_TOP src apps cortex addons AudioAdapter ;
+SubInclude ANTARES_TOP src apps cortex addons Flanger ;
+SubInclude ANTARES_TOP src apps cortex addons LoggingConsumer ;
+

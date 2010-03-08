@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons kernel drivers input ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers input ps2_hid ;
+SubInclude ANTARES_TOP src add-ons kernel drivers input usb_hid ;
+SubInclude ANTARES_TOP src add-ons kernel drivers input wacom ;

@@ -1,0 +1,14 @@
+SubDir ANTARES_TOP src add-ons input_server filters screen_saver ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders screen_saver ;
+
+Addon screen_saver : 
+	ScreenSaverFilter.cpp 
+	: be libscreensaver.so input_server $(TARGET_LIBSUPC++) ;
+
+Package antares-screensaverkit-cvs :
+	screen_saver :
+	boot home config add-ons input_server filters
+;

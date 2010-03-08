@@ -1,0 +1,49 @@
+/*
+ * Copyright 2007, Haiku, Inc. All Rights Reserved.
+ * Distributed under the terms of the MIT License.
+ *
+ * Documentation by:
+ *  Niels Sascha Reedijk <niels.reedijk@gmail.com>
+ */
+
+/*!
+  \page support_intro Introduction to the Support Kit
+
+  The Support Kit provides a handy set of functions and classes that you can
+  use in your applications. Have a look at the overview, or go straight to
+  the complete \link support list of components \endlink of this kit. 
+
+  \section Overview
+  - Threading utility classes:
+    - BLocker
+    - BAutolock
+    - \ref TLS.h "Thread Local Storage"
+  - Archiving and IO:
+    - BArchivable
+    - BFlattenable
+    - BDataIO
+      - BPositionIO
+        - BBufferIO
+        - BMemoryIO
+        - BMallocIO
+  - Container classes:
+    - BBlockCache
+    - BList
+    - BString
+  - BStopWatch
+  - \ref support_globals "Global functions"
+  - \ref TypeConstants.h "Common types and constants"
+  - Error codes for all kits
+*/
+
+// Short listing of documents that belong to this module so that people can
+// find these from the module overview. 
+// This should become standardized in Doxygen though. There is an item on
+// the todo list on this.
+
+/*!
+  \addtogroup support
+
+  For a better overview, have a look at \ref support_intro .
+*/
+

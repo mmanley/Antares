@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons locale collators ;
+
+UsePublicHeaders locale ;
+
+# Pseudo target to build all collator addons
+NotFile LocaleKitCollatorAddons ;
+Depends LocaleKitCollatorAddons
+	:
+	<collator-addon>GermanDIN-2
+	<collator-addon>French
+	;
+
+Addon <collator-addon>GermanDIN-2
+	: GermanDIN-2.cpp
+	: be liblocale.so $(TARGET_LIBSUPC++)
+	;
+
+Addon <collator-addon>French
+	: French.cpp
+	: be liblocale.so $(TARGET_LIBSUPC++)
+	;
+

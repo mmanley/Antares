@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics neomagic ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics neomagic ] ;
+
+KernelAddon neomagic :
+	driver.c
+;
+
+Package antares-neomagic-cvs :
+	README.html UPDATE.html ;
+Package antares-neomagic-cvs :
+	neomagic : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-neomagic-cvs : graphics neomagic ;
+Package antares-neomagic-cvs :
+	neomagic.settings :
+	boot home config settings kernel drivers ;
+

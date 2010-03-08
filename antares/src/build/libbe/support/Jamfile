@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src build libbe support ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private shared ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) headers build private app ] : true ;
+
+USES_BE_API on <libbe_build>support_kit.o = true ;
+
+BuildPlatformMergeObjectPIC <libbe_build>support_kit.o :
+	Archivable.cpp
+	BlockCache.cpp
+	ByteOrder.cpp
+	DataIO.cpp
+	Flattenable.cpp
+	List.cpp
+	Locker.cpp
+	String.cpp
+;

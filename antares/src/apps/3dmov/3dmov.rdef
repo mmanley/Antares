@@ -1,0 +1,11 @@
+/* 
+ * Copyright 2009, Antares Inc. All rights reserved.
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Zenja Solaja
+ */
+
+resource app_signature "application/x-vnd.Antares-3DMov";
+
+resource(1, "instructions.png") #'PNG ' import "instructions.png";

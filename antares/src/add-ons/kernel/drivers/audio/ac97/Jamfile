@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ac97 ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 ali5451 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 auich ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 auvia ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 es1370 ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 geode ;
+SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 ich ;
+# SubInclude ANTARES_TOP src add-ons kernel drivers audio ac97 ichaudio ;

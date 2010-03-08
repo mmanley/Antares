@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons kernel debugger ;
+
+SubInclude ANTARES_TOP src add-ons kernel debugger auto_stack_trace ;
+SubInclude ANTARES_TOP src add-ons kernel debugger bochs ;
+SubInclude ANTARES_TOP src add-ons kernel debugger demangle ;
+SubInclude ANTARES_TOP src add-ons kernel debugger disasm ;
+SubInclude ANTARES_TOP src add-ons kernel debugger hangman ;
+SubInclude ANTARES_TOP src add-ons kernel debugger invalidate_on_exit ;
+SubInclude ANTARES_TOP src add-ons kernel debugger laplinkll ;
+SubInclude ANTARES_TOP src add-ons kernel debugger run_on_exit ;
+SubInclude ANTARES_TOP src add-ons kernel debugger usb_keyboard ;

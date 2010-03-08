@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src apps terminal ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) src kits tracker ] ;
+
+Application Terminal : 
+	AppearPrefView.cpp
+	Arguments.cpp
+	BasicTerminalBuffer.cpp
+	Encoding.cpp
+	FindWindow.cpp
+	Globals.cpp
+	HistoryBuffer.cpp
+	InlineInput.cpp
+	PrefHandler.cpp
+	PrefWindow.cpp
+	Shell.cpp
+	SmartTabView.cpp
+	TermApp.cpp
+	TerminalBuffer.cpp
+	TerminalCharClassifier.cpp
+	TermParse.cpp
+	TermScrollView.cpp
+	TermView.cpp
+	TermWindow.cpp
+	VTKeyTbl.c
+	VTPrsTbl.c
+	: be tracker textencoding $(TARGET_LIBSUPC++)
+	: Terminal.rdef
+;

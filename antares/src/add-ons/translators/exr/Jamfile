@@ -1,0 +1,25 @@
+SubDir ANTARES_TOP src add-ons translators exr ;
+
+SubDirSysHdrs [ FDirName $(SUBDIR) openexr half ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) openexr iex ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) openexr ilmimf ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) openexr imath ] ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) shared ] ;
+
+Translator EXRTranslator :
+	main.cpp
+	ConfigView.cpp
+	EXRGamma.cpp
+	EXRTranslator.cpp
+	IStreamWrapper.cpp
+	: be translation libilmimf.so $(TARGET_LIBSTDC++) libtranslatorsutils.a
+	: true
+;
+
+Package antares-translationkit-cvs :
+	EXRTranslator :
+	boot home config add-ons Translators ;
+
+SubInclude ANTARES_TOP src add-ons translators exr openexr ;
+

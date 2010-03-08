@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src libs stdc++ current ;
+
+
+rule CreateSharedC++LibraryFromArchive sharedLib : staticLib
+{
+	LINKFLAGS on $(sharedLib) = [ on $(sharedLib) return $(LINKFLAGS) ]
+		-Xlinker --strip-debug -Xlinker --whole-archive ;
+
+	SharedLibraryFromObjects $(sharedLib) : : $(staticLib) ;
+}
+
+
+# create libstdc++.so from the libstdc++.a built with the compiler
+if $(ANTARES_BUILD_SHARED_LIBSTDC++) {
+	CreateSharedC++LibraryFromArchive $(ANTARES_SHARED_LIBSTDC++)
+		: $(ANTARES_STATIC_LIBSTDC++) ;
+}
+
+# create libsupc++.so from the libsupc++.a build with the compiler
+if $(ANTARES_BUILD_SHARED_LIBSUPC++) {
+	CreateSharedC++LibraryFromArchive $(ANTARES_SHARED_LIBSUPC++)
+		: $(ANTARES_STATIC_LIBSUPC++) ;
+}

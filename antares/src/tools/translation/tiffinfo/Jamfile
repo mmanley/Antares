@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tools translation tiffinfo ;
+
+BinCommand tiffinfo : tiffinfo.cpp : be ;
+

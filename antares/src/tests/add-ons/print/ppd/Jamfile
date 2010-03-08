@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tests add-ons print ppd ;
+
+SubInclude ANTARES_TOP src tests add-ons print ppd model ;
+SubInclude ANTARES_TOP src tests add-ons print ppd parser ;
+SubInclude ANTARES_TOP src tests add-ons print ppd ui ;
+SubInclude ANTARES_TOP src tests add-ons print ppd test ;

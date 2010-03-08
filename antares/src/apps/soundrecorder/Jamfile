@@ -1,0 +1,26 @@
+SubDir ANTARES_TOP src apps soundrecorder ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared ;
+UseLibraryHeaders icon ;
+
+Application SoundRecorder :
+	DrawButton.cpp
+	DrawingTidbits.cpp
+	FileUtils.cpp
+	RecorderApp.cpp
+	RecorderWindow.cpp
+	ScopeView.cpp
+	SoundConsumer.cpp
+	SoundListView.cpp
+	SoundUtils.cpp
+	TrackSlider.cpp
+	TransportButton.cpp
+	UpDownButton.cpp
+	VUView.cpp
+	VolumeSlider.cpp
+	: be media tracker $(TARGET_LIBSTDC++)
+	: SoundRecorder.rdef
+;
+

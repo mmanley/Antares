@@ -1,0 +1,102 @@
+SubDir ANTARES_TOP src add-ons media plugins ffmpeg ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media shared ;
+
+SubDirHdrs [ FDirName $(SUBDIR) libavcodec ] ;
+SubDirHdrs [ FDirName $(SUBDIR) libavformat ] ;
+SubDirHdrs [ FDirName $(SUBDIR) libavutil ] ;
+SubDirHdrs [ FDirName $(SUBDIR) libswscale ] ;
+
+Addon ffmpeg :
+ 	AVCodecDecoder.cpp
+ 	AVCodecEncoder.cpp
+ 	AVFormatReader.cpp
+ 	AVFormatWriter.cpp
+ 	CodecTable.cpp
+	DemuxerTable.cpp
+	EncoderTable.cpp
+	FFmpegPlugin.cpp
+	MuxerTable.cpp
+	CpuCapabilities.cpp
+
+	gfx_conv_c.cpp
+	gfx_conv_c_lookup.cpp
+	gfx_conv_mmx.cpp
+ 	gfx_util.cpp
+ 	yuvrgb.nasm
+	:
+	libavformat.a
+	libavcodec.a
+	libavcodec_$(TARGET_ARCH).a
+	libavutil.a
+	libswscale.a
+	be
+	libmedia.so
+	libz.a
+	$(TARGET_LIBSUPC++)
+;
+
+# FFmpeg libs configuration is in the config.h header. Architecture specific
+# defines have been commented out there and are being defined here instead.
+# NOTE: These are intentionally global variables, so we can re-use them in
+# sub-folders.
+ANTARES_FFMPEG_DEFINES = HAVE_AV_CONFIG_H _FILE_OFFSET_BITS=64
+	_LARGEFILE_SOURCE ;
+ANTARES_FFMPEG_USE_MMX = 1 ;
+ANTARES_FFMPEG_USE_MMX2 = 1 ;
+ANTARES_FFMPEG_USE_SSE = 0 ;
+ANTARES_FFMPEG_USE_SSSE3 = 1 ;
+ANTARES_FFMPEG_USE_AMD3DNOW = 0 ;
+ANTARES_FFMPEG_USE_AMD3DNOWEXT = 0 ;
+ANTARES_FFMPEG_GCC_EXTRA_FLAGS = ;
+if $(ANTARES_GCC_VERSION[1]) >= 3 {
+	ANTARES_FFMPEG_GCC_EXTRA_FLAGS = -fomit-frame-pointer -fno-pic ;
+} else {
+	ANTARES_FFMPEG_GCC_EXTRA_FLAGS = -fomit-frame-pointer -DPIC ;
+}
+
+if $(TARGET_ARCH) = x86 {
+	ANTARES_FFMPEG_DEFINES += ARCH_X86=1 ARCH_X86_32=1 ;
+	ANTARES_FFMPEG_DEFINES += ARCH_PPC=0 ;
+	ANTARES_FFMPEG_DEFINES += ARCH_SPARC=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_AMD3DNOW=$(ANTARES_FFMPEG_USE_AMD3DNOW) ;
+	ANTARES_FFMPEG_DEFINES += HAVE_AMD3DNOWEXT=$(ANTARES_FFMPEG_USE_AMD3DNOWEXT) ;
+	ANTARES_FFMPEG_DEFINES += HAVE_MMX=$(ANTARES_FFMPEG_USE_MMX) ;
+	ANTARES_FFMPEG_DEFINES += HAVE_MMX2=$(ANTARES_FFMPEG_USE_MMX2) ;
+	ANTARES_FFMPEG_DEFINES += HAVE_SSE=$(ANTARES_FFMPEG_USE_SSE) ;
+	ANTARES_FFMPEG_DEFINES += HAVE_SSSE3=$(ANTARES_FFMPEG_USE_SSSE3) ;
+	ANTARES_FFMPEG_DEFINES += HAVE_ALTIVEC=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_VIS=0 ;
+} else if $(TARGET_ARCH) = ppc {
+	ANTARES_FFMPEG_DEFINES += ARCH_X86=0 ARCH_X86_32=0 ;
+	ANTARES_FFMPEG_DEFINES += ARCH_PPC=1 ;
+	ANTARES_FFMPEG_DEFINES += ARCH_SPARC=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_AMD3DNOW=0 HAVE_AMD3DNOWEXT=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_MMX=0 HAVE_MMX2=0 HAVE_SSE=0 HAVE_SSSE3=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_ALTIVEC=1 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_VIS=0 ;
+} else if $(TARGET_ARCH) = sparc {
+	ANTARES_FFMPEG_DEFINES += ARCH_X86=0 ARCH_X86_32=0 ;
+	ANTARES_FFMPEG_DEFINES += ARCH_PPC=0 ;
+	ANTARES_FFMPEG_DEFINES += ARCH_SPARC=1 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_AMD3DNOW=0 HAVE_AMD3DNOWEXT=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_MMX=0 HAVE_MMX2=0 HAVE_SSE=0 HAVE_SSSE3=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_ALTIVEC=0 ;
+	ANTARES_FFMPEG_DEFINES += HAVE_VIS=1 ;
+}
+
+if $(ANTARES_INCLUDE_GPL_ADDONS) = 1 {
+	ANTARES_FFMPEG_DEFINES += CONFIG_GPL=1 ;
+} else {
+	ANTARES_FFMPEG_DEFINES += CONFIG_GPL=0 ;
+}
+
+
+ANTARES_FFMPEG_DEFINES = [ FDefines $(ANTARES_FFMPEG_DEFINES) ] ;
+
+SubInclude ANTARES_TOP src add-ons media plugins ffmpeg libavcodec ;
+SubInclude ANTARES_TOP src add-ons media plugins ffmpeg libavformat ;
+SubInclude ANTARES_TOP src add-ons media plugins ffmpeg libavutil ;
+SubInclude ANTARES_TOP src add-ons media plugins ffmpeg libswscale ;

@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src add-ons mail_daemon ;
+
+SubInclude ANTARES_TOP src add-ons mail_daemon inbound_protocols ;
+SubInclude ANTARES_TOP src add-ons mail_daemon inbound_filters ;
+SubInclude ANTARES_TOP src add-ons mail_daemon outbound_protocols ;
+SubInclude ANTARES_TOP src add-ons mail_daemon outbound_filters ;
+SubInclude ANTARES_TOP src add-ons mail_daemon system_filters ;
+

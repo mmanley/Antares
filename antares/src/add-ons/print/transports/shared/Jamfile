@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src add-ons print transports shared ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if $(TARGET_PLATFORM_BONE_COMPATIBLE) {
+	ObjectC++Flags Socket.cpp : -DHAVE_ARPA_INET -Dclosesocket=close ;
+} else {
+	ObjectC++Flags Socket.cpp : -DHAVE_ARPA_INET -DBUILDING_R5_LIBNET ;
+}
+
+Objects
+	DbgMsg.cpp
+	Socket.cpp
+	SocketStream.cpp
+;

@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tests kits shared ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+SubInclude ANTARES_TOP src tests kits shared shake_filter ;

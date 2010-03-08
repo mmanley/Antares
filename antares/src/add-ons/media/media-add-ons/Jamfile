@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons ;
+
+# SubInclude ANTARES_TOP src add-ons media media-add-ons demultiplexer ;
+# SubInclude ANTARES_TOP src add-ons media media-add-ons writer ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons dvb ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons esound_sink ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons firewire_dv ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons legacy ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons mixer ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons multi_audio ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons opensound ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons radeon ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons reader ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons tone_producer_demo ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons usb_vision ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons usb_webcam ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons video_producer_demo ;
+SubInclude ANTARES_TOP src add-ons media media-add-ons videowindow ;
+

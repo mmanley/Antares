@@ -1,0 +1,22 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers ide ;
+
+UsePrivateHeaders drivers ;
+UsePrivateKernelHeaders ;
+
+KernelAddon ide :
+	ata.c
+	atapi.c
+	basic_protocol.c
+	channels.c
+	devices.c
+	dma.c
+	emulation.c
+	ide.c
+	ide_sim.c
+	pio.c
+	queuing.c
+	scsi2ata.c
+	sync.c
+	virtual_memory.c
+	;
+

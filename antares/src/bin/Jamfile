@@ -1,0 +1,251 @@
+SubDir ANTARES_TOP src bin ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders app shared storage support usb ;
+UsePrivateSystemHeaders ;
+SubDirHdrs $(ANTARES_TOP) src add-ons kernel file_cache ;
+UseLibraryHeaders ncurses ;
+UseLibraryHeaders termcap ;
+
+local antares-utils_rsrc = [ FGristFiles antares-utils.rsrc ] ;
+
+ResComp $(antares-utils_rsrc) : [ FGristFiles antares-utils.rdef ] ;
+
+AddResources fortune : fortune.rdef ;
+AddResources hey : hey.rdef ;
+AddResources mimeset : mimeset.rdef ;
+AddResources mountvolume : mountvolume.rdef ;
+AddResources urlwrapper : urlwrapper.rdef ;
+AddResources checkitout : checkitout.rdef ;
+
+# standard commands that don't need any additional library
+StdBinCommands
+	badblocks.c
+	cal.c
+	chop.c
+	clear.c
+	clockconfig.c
+#	csplit.c
+	driveinfo.c
+#	echo.c
+	eject.c
+	error.c
+	fortune.c
+	finddir.c
+	hd.c
+	idestatus.c
+	listarea.c
+	listimage.c
+	listport.c
+	listsem.c
+	logger.cpp
+	lsindex.cpp
+	prio.c
+	ps.c
+	release.c
+	renice.c
+	rescan.c
+	sysinfo.c
+	unchop.c
+	uptime.cpp
+	vmstat.cpp
+#	whoami.c
+	: : $(antares-utils_rsrc) ;
+
+# Commands which don't need another library that depend on
+# Antares-specific code
+if $(TARGET_PLATFORM) = antares {
+StdBinCommands
+	boot_process_done.cpp
+	fdinfo.cpp
+	mount.c
+	rmattr.cpp
+	rmindex.cpp
+	safemode.c
+	unmount.c
+	: : $(antares-utils_rsrc) ;
+}
+
+# standard commands that need libtermcap.a
+StdBinCommands
+	top.c
+	tput.c
+	: libtermcap.a : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so
+StdBinCommands
+	beep.cpp
+	catattr.cpp
+	checkfs.cpp
+	clipboard.cpp
+	df.cpp
+	diskimage.cpp
+	dpms.cpp
+	draggers.cpp
+#	factor.cpp
+	ffm.cpp
+	iroster.cpp
+	listattr.cpp
+	listfont.cpp
+	listres.cpp
+	mimeset.cpp
+	mkindex.cpp
+	message.cpp
+	modifiers.cpp
+	open.cpp
+	play.cpp
+	query.cpp
+	quit.cpp
+	roster.cpp
+	setdecor.cpp
+	setversion.cpp
+	trash.cpp
+	version.cpp
+	waitfor.cpp
+	WindowShade.cpp
+#	yes.cpp
+	: be : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so and libsupc++.so
+StdBinCommands
+	alert.cpp
+	dstcheck.cpp
+	hey.cpp
+	reindex.cpp
+	resattr.cpp
+	settype.cpp
+	spybmessage.cpp
+	urlwrapper.cpp
+	: be $(TARGET_LIBSUPC++) : $(antares-utils_rsrc) ;
+
+# Antares-specific apps which need libbe.so
+if $(TARGET_PLATFORM) = antares {
+StdBinCommands
+	isvolume.cpp
+	shutdown.cpp
+	: be : $(antares-utils_rsrc) ;
+}
+
+# standard commands that need libbe.so, libstdc++.so
+StdBinCommands
+	copyattr.cpp
+	xres.cpp
+	: be $(TARGET_LIBSTDC++) : $(antares-utils_rsrc) ;
+
+# Antares-specific apps which need libbe.so, libstdc++.so
+if $(TARGET_PLATFORM) = antares {
+StdBinCommands
+	mountvolume.cpp
+	: be $(TARGET_LIBSTDC++) : $(antares-utils_rsrc) ;
+}
+
+# commands that need libstdc++ only
+StdBinCommands
+	diff_zip.cpp
+	: $(TARGET_LIBSTDC++) : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so, libtranslation.so, libsupc++.so
+StdBinCommands
+	translate.cpp
+	: be translation $(TARGET_LIBSUPC++) : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so, libmedia.so
+StdBinCommands
+	installsound.cpp
+	: be libmedia.so : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so, libmedia.so, libsupc++.so
+StdBinCommands
+	setvolume.cpp
+	: be libmedia.so $(TARGET_LIBSUPC++) : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so, libmail.so
+StdBinCommands
+	mail.cpp
+	: be libmail.so : $(antares-utils_rsrc) ;
+
+# standard commands that need libbe.so, libdevice.so
+StdBinCommands
+	listusb.cpp
+	setusbconfig.cpp
+	: be libdevice.so : $(antares-utils_rsrc) ;
+
+# standard commands that need libbluetooth.so, due the Bluetooth Kit
+StdBinCommands
+	bt_dev_info.cpp
+	: be libbluetooth.so : $(antares-utils_rsrc) ;
+
+StdBinCommands
+	bt_discovery.cpp
+	: be libbluetooth.so $(TARGET_LIBSUPC++) : $(antares-utils_rsrc) ;
+
+
+# standard commands that need libbe.so, libtracker.so
+StdBinCommands
+	checkitout.cpp
+	filepanel.cpp
+	: be tracker $(TARGET_LIBSUPC++) : $(antares-utils_rsrc) ;
+
+# standard commands that need libncurses.a
+StdBinCommands
+	watch.c
+	: libncurses.a : $(antares-utils_rsrc) ;
+
+SubInclude ANTARES_TOP src bin addattr ;
+SubInclude ANTARES_TOP src bin bash ;
+SubInclude ANTARES_TOP src bin bc ;
+SubInclude ANTARES_TOP src bin mail_utils ;
+SubInclude ANTARES_TOP src bin compress ;
+SubInclude ANTARES_TOP src bin coreutils ;
+SubInclude ANTARES_TOP src bin ctags ;
+SubInclude ANTARES_TOP src bin desklink ;
+SubInclude ANTARES_TOP src bin diffutils ;
+SubInclude ANTARES_TOP src bin findutils ;
+SubInclude ANTARES_TOP src bin fwcontrol ;
+SubInclude ANTARES_TOP src bin gawk ;
+SubInclude ANTARES_TOP src bin gdb ;
+SubInclude ANTARES_TOP src bin grep ;
+SubInclude ANTARES_TOP src bin hid_decode ;
+SubInclude ANTARES_TOP src bin iasl ;
+SubInclude ANTARES_TOP src bin ideinfo ;
+SubInclude ANTARES_TOP src bin keymap ;
+SubInclude ANTARES_TOP src bin less ;
+SubInclude ANTARES_TOP src bin listdev ;
+SubInclude ANTARES_TOP src bin locale ;
+SubInclude ANTARES_TOP src bin make ;
+SubInclude ANTARES_TOP src bin makebootable ;
+#SubInclude ANTARES_TOP src bin makeudfimage ;
+SubInclude ANTARES_TOP src bin mkdepend ;
+SubInclude ANTARES_TOP src bin mkdos ;
+SubInclude ANTARES_TOP src bin mkfs ;
+SubInclude ANTARES_TOP src bin multiuser ;
+SubInclude ANTARES_TOP src bin package ;
+SubInclude ANTARES_TOP src bin patch ;
+SubInclude ANTARES_TOP src bin pc ;
+SubInclude ANTARES_TOP src bin pcmcia-cs ;
+SubInclude ANTARES_TOP src bin playsound ;
+SubInclude ANTARES_TOP src bin rc ;
+SubInclude ANTARES_TOP src bin rmd160 ;
+SubInclude ANTARES_TOP src bin screen_blanker ;
+SubInclude ANTARES_TOP src bin screenmode ;
+SubInclude ANTARES_TOP src bin sharutils ;
+SubInclude ANTARES_TOP src bin unrar ;
+SubInclude ANTARES_TOP src bin vim ;
+SubInclude ANTARES_TOP src bin zic ;
+
+# RCS commands
+SubInclude ANTARES_TOP src bin rcs ;
+
+# debugging tools
+SubInclude ANTARES_TOP src bin debug ;
+
+# Network command line tools
+SubInclude ANTARES_TOP src bin network ;
+
+# Compression command line tools
+SubInclude ANTARES_TOP src bin unzip ;
+SubInclude ANTARES_TOP src bin zip ;
+SubInclude ANTARES_TOP src bin gzip ;
+SubInclude ANTARES_TOP src bin bzip2 ;
+SubInclude ANTARES_TOP src bin tar ;

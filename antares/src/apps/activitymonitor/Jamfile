@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src apps activitymonitor ;
+
+# XXX: Temporary only
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders shared system ;
+
+Application ActivityMonitor :
+	ActivityMonitor.cpp
+	ActivityView.cpp
+	ActivityWindow.cpp
+	DataSource.cpp
+	SettingsWindow.cpp
+	SystemInfo.cpp
+	SystemInfoHandler.cpp
+
+	: be tracker media $(TARGET_LIBSTDC++) $(TARGET_NETWORK_LIBS)
+	: ActivityMonitor.rdef
+	;

@@ -1,0 +1,10 @@
+resource app_version {
+	major = 7,
+	middle = 6,
+	minor = 0,
+	variety = B_APPV_FINAL,
+	internal = 0,
+	short_info = "coreutils", 
+	long_info  = "coreutils ©2009 The Free Software Foundation"
+};
+

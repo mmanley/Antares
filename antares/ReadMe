@@ -1,0 +1,165 @@
+Building on BeOS
+================
+
+For building on BeOS you need the development tools from:
+
+  http://antares-os.org/downloads
+
+Please always use the most recent versions. They are required to build Antares.
+
+
+Building on a non-BeOS platform
+===============================
+
+Please read the file 'ReadMe.cross-compile' before continuing. It describes
+how to build the cross-compilation tools and configure the build system for
+building Antares. After following the instructions you can directly continue
+with the section Building.
+
+
+Configuring on BeOS
+===================
+
+Open a Terminal and change to your Antares trunk folder. To configure the build
+you can run configure like this:
+
+  ./configure --target=TARGET
+
+Where "TARGET" is the target platform that the compiled code should run on:
+  * antares (default)
+  * r5
+  * bone
+  * dano (also for Zeta)
+
+The configure script generates a file named "BuildConfig" in the
+"generated/build" directory. As long as configure is not modified (!), there
+is no need to call it again. That is for re-building you only need to invoke
+jam (see below). If you don't update the source tree very frequently, you may
+want to execute 'configure' after each update just to be on the safe side.
+
+
+Building
+========
+
+Antares can be built in either of two ways, as disk image file (e.g. for use
+with emulators) or as installation in a directory.
+
+Image File
+----------
+
+  jam -q antares-image
+
+This generates an image file named 'antares.image' in your output directory
+under 'generated/'.
+
+VMware Image File
+-----------------
+
+  jam -q antares-vmware-image
+
+This generates an image file named 'antares.vmdk' in your output
+directory under 'generated/'.
+
+Directory Installation
+----------------------
+
+  ANTARES_INSTALL_DIR=/Antares jam -q install-antares
+
+Installs all Antares components into the volume mounted at "/Antares" and
+automatically marks it as bootable. To create a partition in the first place
+use DriveSetup and initialize it to BFS.
+
+Note that installing Antares in a directory only works as expected under BeOS,
+but it is not yet supported under Linux and other non-BeOS platforms.
+
+Bootable CD-ROM Image
+---------------------
+
+This _requires_ having the mkisofs tool installed.
+On Debian GNU/Linux for example you can install it with:
+  apt-get install mkisofs
+On BeOS you can get it from http://bebits.com/app/3964 along with cdrecord.
+
+This creates a bootable 'antares-cd.iso' in your 'generated/' folder:
+
+  jam -q antares-cd
+
+Under Unix/Linux, and BeOS you can use cdrecord to create a CD with:
+
+  cdrecord dev=x,y,z -v -eject -dao -data generated/antares-cd.iso
+
+Here x,y,z is the device number as found with cdrecord -scanbus, it can also
+be a device path on Linux.
+
+Building Components
+-------------------
+
+If you don't want to build the complete Antares, but only a certain
+app/driver/etc. you can specify it as argument to jam, e.g.:
+
+  jam Pulse
+
+Alternatively, you can 'cd' to the directory of the component you want to
+build and run 'jam' from there.
+
+You can also force rebuilding of a component by using the "-a" parameter:
+
+  jam -a Pulse
+
+
+Running
+=======
+
+Generally there are two ways of running Antares. On real hardware using a
+partition and on emulated hardware using an emulator like Bochs or QEmu.
+
+On Real Hardware
+----------------
+
+If you have installed Antares to its own partition you can include this
+partition in your bootmanager and try to boot Antares like any other OS you
+have installed. To include a new partition in the BeOS bootmanager run this
+in a Terminal:
+
+  bootman
+
+On Emulated Hardware
+--------------------
+
+For emulated hardware you should build disk image (see above). How to setup
+this image depends on your emulater. A tutorial for Bochs on BeOS is below.
+If you use QEmu, you can usually just provide the path to the image as
+command line argument to the "qemu" executable.
+
+Bochs
+-----
+
+Version 2.2 of Bochs for BeOS (BeBochs) can be downloaded from BeBits:
+
+  http://www.bebits.com/app/3324
+
+The package installs to: /boot/apps/BeBochs2.2
+
+You have to set up a configuration for Bochs. You should edit the ".bochsrc" to
+include the following:
+
+ata0-master: type=disk, path="/path/to/antares.image", cylinders=122, heads=16, spt=63
+boot: disk
+
+Now you can start Bochs:
+
+  $ cd /boot/apps/BeBochs2.2
+  $ ./bochs
+
+Answer with RETURN and with some patience you will see Antares booting.
+If booting into the graphical evironment fails you can try to hit "space" at the
+very beginning of the boot process. The Antares bootloader should then come up and
+you can select some safe mode options.
+
+
+Docbook documentation
+=====================
+
+Our documentation can be found in 'src/documentation/'. You can build it by
+running 'jam' in that folder. The results will be stored in the 'generated/'
+folder.

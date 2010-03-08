@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src add-ons kernel drivers audio ac97 ich distro ;
+
+Package antares-ich-ac97-cvs :
+	README.html install.sh uninstall.sh ;

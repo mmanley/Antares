@@ -1,0 +1,1418 @@
+rule FSameTargetWithPrependedGrist
+{
+	# SameTargetWithPrependedGrist <target> : <grist to prepend> ;
+	#
+	local target = $(1) ;
+	local gristToPrepend = $(2) ;
+	local grist = $(target:G) ;
+
+	if $(grist) {
+		grist = $(gristToPrepend)!$(grist) ;
+	} else {
+		grist = $(gristToPrepend) ;
+	}
+
+	return $(target:G=$(grist)) ;
+}
+
+rule InitScript
+{
+	# Note: The script must have been LOCATEd before.
+	local script = $(1) ;
+	local initScript
+		= [ FSameTargetWithPrependedGrist $(script) : init-script ] ;
+
+	if ! [ on $(script) return $(__is_initialized) ] {
+		__is_initialized on $(script) = true ;
+
+		MakeLocate $(initScript) : [ on $(script) return $(LOCATE) ] ;
+		Always $(initScript) ;
+		Depends $(script) : $(initScript) ;
+
+		InitScript1 $(initScript) ;
+	}
+
+	return $(initScript) ;
+}
+
+actions InitScript1
+{
+	$(RM) $(1)
+	touch $(1)
+}
+
+rule AddVariableToScript script : variable : value
+{
+	# AddVariableToScript <script> : <variable> : <value> ;
+
+	# interpret an empty variable value as empty string
+	if ! $(value) {
+		value = "" ;
+	}
+
+	InitScript $(script) ;
+
+	VARIABLE_DEFS on $(script) += "echo $(variable)=\\\"$(value[1])\\\" >> " ;
+
+	# if the value is an array, add the other array elements
+	value = $(value[2-]) ;
+	while $(value) {
+		VARIABLE_DEFS on $(script)
+			+= "echo $(variable)=\\\" \\\$$(variable) $(value[1])\\\" >> " ;
+		value = $(value[2-]) ;
+	}
+
+	AddVariableToScript1 $(script) ;
+}
+
+actions together AddVariableToScript1
+{
+	$(VARIABLE_DEFS)$(1);
+}
+
+rule AddTargetVariableToScript
+{
+	# AddTargetVariableToScript <script> : <target> [ : <variable> ] ;
+	#
+	local script = $(1) ;
+	local target = $(2) ;
+	local variable = $(3:E=$(target:BS)) ;
+
+	InitScript $(script) ;
+
+	# That's not completely save, if one has more than on target with the
+	# same base name. A unique pseudo target would have to be introduced
+	# to do it more correctly.
+	VARIABLE_NAME($(target:BS)) on $(script) = $(variable) ;
+
+	Depends $(script) : $(target) ;
+	AddTargetVariableToScript1 $(script) : $(target) ;
+}
+
+actions AddTargetVariableToScript1
+{
+	echo "$(VARIABLE_NAME($(2:BS)))=\"$(2)\"" >> $(1)
+}
+
+
+#pragma mark -
+
+rule AddDirectoryToContainer container : directoryTokens
+{
+	# AddDirectoryToContainer <container> : <directoryTokens>
+
+	local containerGrist = [ on $(container) return $(ANTARES_CONTAINER_GRIST) ] ;
+	local directory = [ FDirName $(directoryTokens) ] ;
+	directory = $(directory:G=$(containerGrist)) ;
+
+	if ! [ on $(directory) return $(__is_on_image) ] {
+		ANTARES_INSTALL_DIRECTORIES on $(container) += $(directory) ;
+		__is_on_image on $(directory) = true ;
+		DIRECTORY_TOKENS on $(directory) = $(directoryTokens) ;
+		NotFile $(directory) ;
+
+		# mark the parent dir as not to be created
+		local parent = [ FReverse $(directoryTokens) ] ;
+		parent = [ FReverse $(parent[2-]) ] ;
+		if $(parent) {
+			parent = [ FDirName $(parent) ] ;
+			parent = $(parent:G=$(containerGrist)) ;
+			DONT_CREATE on $(parent) = true ;
+		}
+	}
+
+	return $(directory) ;
+}
+
+rule FilterContainerUpdateTargets targets : filterVariable
+{
+	# FilterContainerUpdateTargets targets : filterVariable
+
+	local filteredTargets ;
+	local target ;
+	for target in $(targets) {
+		if [ on $(target) return $($(filterVariable)) ] {
+			filteredTargets += $(target) ;
+		}
+	}
+	return $(filteredTargets) ;
+}
+
+
+rule IncludeAllTargetsInContainer container
+{
+	local filterVar
+		= [ on $(container) return $(ANTARES_INCLUDE_IN_CONTAINER_VAR) ] ;
+	if $(filterVar) {
+		return $($(filterVar)) ;
+	}
+
+	return ;
+}
+
+
+rule AddFilesToContainer container : directoryTokens : targets : destName
+{
+	# AddFilesToContainer <container> : <directoryTokens> : <targets>
+	#	[ : dest name ]
+	#
+	local directory = [ AddDirectoryToContainer $(container)
+		: $(directoryTokens) ] ;
+	local containerGrist = [ on $(container) return $(ANTARES_CONTAINER_GRIST) ] ;
+
+	# If the image shall only be updated, we filter out all targets not marked
+	# accordingly.
+	if [ on $(container) return $(ANTARES_CONTAINER_UPDATE_ONLY) ]
+		&& ! [ IncludeAllTargetsInContainer $(container) ] {
+		local filterVar
+			= [ on $(container) return $(ANTARES_INCLUDE_IN_CONTAINER_VAR) ] ;
+		if $(filterVar) {
+			targets = [ FilterContainerUpdateTargets $(targets)
+				: $(filterVar) ] ;
+		}
+	}
+
+	# We create a unique dummy target per target to install.
+	local installTargetsVar
+		= [ on $(container) return $(ANTARES_INSTALL_TARGETS_VAR) ] ;
+	local target ;
+	for target in $(targets) {
+		local name ;
+		if $(destName) {
+			name = $(destName) ;
+		} else {
+			name = $(target:G=:D=) ;
+		}
+
+		local destTarget = $(name:G=$(containerGrist)__$(directory:G=)) ;
+		TARGET on $(destTarget) = $(target) ;
+		INSTALL_DIR on $(destTarget) = $(directory) ;
+		$(installTargetsVar) on $(target) += $(destTarget) ;
+		TARGETS_TO_INSTALL on $(directory) += $(destTarget) ;
+	}
+}
+
+rule FFilesInContainerDirectory container : directoryTokens
+{
+	local containerGrist = [ on $(container) return $(ANTARES_CONTAINER_GRIST) ] ;
+	local directory = [ FDirName $(directoryTokens) ] ;
+	directory = $(directory:G=$(containerGrist)) ;
+
+	if [ on $(directory) return $(__is_on_image) ] {
+		on $(directory) return $(TARGETS_TO_INSTALL) ;
+	}
+
+	return ;
+}
+
+rule AddSymlinkToContainer container : directoryTokens : linkTarget : linkName
+{
+	# AddSymlinkToContainer <container> : <directory> : <link target>
+	#	[ : <link name> ] ;
+	#
+
+	# If the image shall only be updated, we don't add any symlinks.
+	if [ on $(container) return $(ANTARES_CONTAINER_UPDATE_ONLY) ]
+		&& ! [ IncludeAllTargetsInContainer $(container) ] {
+		return ;
+	}
+
+	local directory = [ AddDirectoryToContainer $(container)
+		: $(directoryTokens) ] ;
+
+	if ! $(linkName) {
+		local path = [ FReverse [ FSplitPath $(linkTarget) ] ] ;
+		linkName = $(path[1]) ;
+	}
+
+	local link = $(directory)/$(linkName) ;
+	SYMLINK_TARGET on $(link) = $(linkTarget) ;
+	SYMLINKS_TO_INSTALL on $(directory) += $(link) ;
+}
+
+rule FSymlinksInContainerDirectory container : directoryTokens
+{
+	local containerGrist = [ on $(container) return $(ANTARES_CONTAINER_GRIST) ] ;
+	local directory = [ FDirName $(directoryTokens) ] ;
+	directory = $(directory:G=$(containerGrist)) ;
+
+	if [ on $(directory) return $(__is_on_image) ] {
+		on $(directory) return $(SYMLINKS_TO_INSTALL) ;
+	}
+
+	return ;
+}
+
+rule CopyDirectoryToContainer container : directoryTokens : sourceDirectory
+	: targetDirectoryName : excludePatterns : alwaysUpdate
+{
+	# CopyDirectoryToContainer <container> : <directoryTokens>
+	#	: <sourceDirectory> : <targetDirectoryName> : <excludePatterns>
+	#	: <alwaysUpdate> ;
+	#
+
+	# If the image shall only be updated, we don't copy any directories
+	if [ on $(container) return $(ANTARES_CONTAINER_UPDATE_ONLY) ]
+			&& ! [ IncludeAllTargetsInContainer $(container) ]
+			&& ! $(alwaysUpdate) {
+		return ;
+	}
+
+	if ! $(targetDirectoryName) {
+		local path = [ FReverse [ FSplitPath $(sourceDirectory) ] ] ;
+		targetDirectoryName = $(path[1]) ;
+	}
+
+	local directory = [ AddDirectoryToContainer $(container)
+		: $(directoryTokens) $(targetDirectoryName) ] ;
+
+	local targetDir = $(directory)/-/$(sourceDirectory) ;
+	EXCLUDE_PATTERNS on $(targetDir) = $(excludePatterns) ;
+	SOURCE_DIRECTORY on $(targetDir) = $(sourceDirectory) ;
+	TARGET_DIRECTORY on $(targetDir) = $(directory) ;
+	DIRECTORIES_TO_INSTALL on $(directory) += $(targetDir) ;
+}
+
+rule ExtractArchiveToContainer container : directoryTokens : archiveFile
+	: extractedSubDir
+{
+	# ExtractArchiveToContainer <container> : <directory> : <archiveFile>
+	#	: <extractedSubDir> ;
+
+	local directory = [ AddDirectoryToContainer $(container)
+		: $(directoryTokens) ] ;
+
+	ARCHIVE_FILES_TO_INSTALL on $(directory) += $(archiveFile) ;
+	ARCHIVE_SUBDIR_TO_INSTALL_FROM on $(archiveFile) = $(extractedSubDir) ;
+}
+
+rule AddDriversToContainer container : relativeDirectoryTokens : targets
+{
+	# AddDriversToContainer <container> : <relative directory> : <targets> ;
+	#
+	local directoryTokens = system add-ons kernel drivers dev
+		$(relativeDirectoryTokens) ;
+
+	AddFilesToContainer $(container) : system add-ons kernel drivers bin
+		: $(targets) ;
+
+	# If the image shall only be updated, we don't add any symlinks.
+	if [ on $(container) return $(ANTARES_CONTAINER_UPDATE_ONLY) ]
+		&& ! [ IncludeAllTargetsInContainer $(container) ] {
+		return ;
+	}
+
+	# get the relative symlink path prefix
+	local linkPrefix = ;
+	for i in $(relativeDirectoryTokens) {
+		linkPrefix += .. ;
+	}
+	linkPrefix += .. bin ;
+
+	# add the symlinks
+	local name ;
+	for name in $(targets:BS) {
+		AddSymlinkToContainer $(container) : $(directoryTokens)
+			: [ FDirName $(linkPrefix) $(name) ] : $(name) ;
+	}
+}
+
+rule AddNewDriversToContainer container : relativeDirectoryTokens
+	: targets
+{
+	# AddNewDriversToContainer <container> : <directory> : <targets> ;
+	#
+	local directoryTokens = system add-ons kernel drivers
+		$(relativeDirectoryTokens) ;
+
+	AddFilesToContainer $(container) : $(directoryTokens)
+		: $(targets) ;
+}
+
+rule AddBootModuleSymlinksToContainer container : targets
+{
+	# AddBootModuleSymlinksToContainer <container> : <targets> ;
+	#
+
+	# If the image shall only be updated, we don't add any symlinks.
+	if [ on $(container) return $(ANTARES_CONTAINER_UPDATE_ONLY) ]
+		&& ! [ IncludeAllTargetsInContainer $(container) ] {
+		return ;
+	}
+
+	# add the symlinks
+	local installTargetsVar
+		= [ on $(container) return $(ANTARES_INSTALL_TARGETS_VAR) ] ;
+	local target ;
+	for target in $(targets) {
+		# Symlink to the first place where the target has been installed.
+		local destTarget = [ on $(target) return $($(installTargetsVar)[1]) ] ;
+		local installDir = [ on $(destTarget) return $(INSTALL_DIR) ] ;
+
+		if ! $(installDir) {
+			Echo "ERROR: AddBootModuleSymlinksToContainer: Can't create a "
+				"symlink to target" \"$(target)"\"." ;
+			Exit "ERROR: Add*ToContainer has not been invoked for it yet." ;
+		}
+
+		local name = $(target:BS) ;
+		local linkTarget = [ FDirName /boot $(installDir:G=) $(name) ] ;
+
+		AddSymlinkToContainer $(container) : system add-ons kernel boot
+			: $(linkTarget) : $(name) ;
+	}
+}
+
+
+rule CreateContainerMakeDirectoriesScript container : script
+{
+	MakeLocate $(script) : $(ANTARES_OUTPUT_DIR) ;
+	Always $(script) ;
+
+	local initScript = [ InitScript $(script) ] ;
+
+	local scriptBody
+		= [ FSameTargetWithPrependedGrist $(script) : script-body ] ;
+	LOCATE on $(scriptBody) = [ on $(script) return $(LOCATE) ] ;
+	Depends $(scriptBody) : $(initScript) ;
+	Depends $(script) : $(scriptBody) ;
+
+	# collect the directories to create
+	local dirsToCreate ;
+	local directories
+		= [ on $(container) return $(ANTARES_INSTALL_DIRECTORIES) ] ;
+	local dir ;
+	for dir in $(directories) {
+		if ! [ on $(dir) return $(DONT_CREATE) ] {
+			dirsToCreate += $(dir) ;
+		}
+	}
+
+	# If the image shall only be updated, we don't create directories.
+	if $(dirsToCreate)
+		&& ( ! [ on $(container) return $(ANTARES_CONTAINER_UPDATE_ONLY) ]
+			|| [ IncludeAllTargetsInContainer $(container) ] ) {
+		Depends $(scriptBody) : $(dirsToCreate) ;
+		CreateContainerMakeDirectoriesScript1 $(scriptBody) : $(dirsToCreate) ;
+
+		local serializationDependency = $(scriptBody) ;
+			# Used to create a dependency chain between the dummy targets.
+			# This forces jam to build them one after the other, thus preventing
+			# concurrent writes to the script file when building with multiple
+			# jobs.
+
+		# For directories with attributes, we convert those the specified
+		# resource files to files with attributes and add commands to the script
+		# adding the attributes to the directories.
+		for dir in $(directories) {
+			local resourceFiles = [ on $(dir) return $(ATTRIBUTE_FILES) ] ;
+			if $(resourceFiles) {
+				local dirTokens = [ on $(dir) return $(DIRECTORY_TOKENS) ] ;
+
+				# translate resources file to file with attributes
+				local attributeFile = $(script)-attributes-$(dirTokens:J=-) ;
+				ResAttr $(attributeFile) : $(resourceFiles) ;
+
+				# use a unique dummy target for this file, on which we
+				# can define the TARGET_DIR variable
+				local dummyTarget = $(script)-attributes-dummy-$(dir:G=) ;
+				NotFile $(dummyTarget) ;
+				TARGET_DIR on $(dummyTarget) = $(dir:G=) ;
+
+				Depends $(dummyTarget) : $(initScript) $(attributeFile)
+					$(serializationDependency) ;
+				Depends $(script) : $(dummyTarget) ;
+				serializationDependency = $(dummyTarget) ;
+
+				AppendToContainerMakeDirectoriesScriptAttributes $(dummyTarget)
+					: $(initScript) $(attributeFile) ;
+			}
+		}
+	}
+}
+
+actions piecemeal CreateContainerMakeDirectoriesScript1
+{
+	echo \$mkdir -p "\"\${tPrefix}$(2:G=)\"" >> $(1)
+}
+
+actions AppendToContainerMakeDirectoriesScriptAttributes
+{
+	echo \$copyAttrs "\"\${sPrefix}$(2[2])\"" \
+		"\"\${tPrefix}$(TARGET_DIR)\"" >> $(2[1])
+}
+
+rule CreateContainerCopyFilesScript container : script
+{
+	MakeLocate $(script) : $(ANTARES_OUTPUT_DIR) ;
+	Always $(script) ;
+
+	local initScript = [ InitScript $(script) ] ;
+
+	local scriptBody
+		= [ FSameTargetWithPrependedGrist $(script) : script-body ] ;
+	LOCATE on $(scriptBody) = [ on $(script) return $(LOCATE) ] ;
+	Depends $(scriptBody) : $(initScript) ;
+	Depends $(script) : $(scriptBody) ;
+
+	local serializationDependency = $(scriptBody) ;
+		# Used to create a dependency chain between the dummy targets.
+		# This forces jam to build them one after the other, thus preventing
+		# concurrent writes to the script file when building with multiple
+		# jobs.
+
+	local dir ;
+	for dir in [ on $(container) return $(ANTARES_INSTALL_DIRECTORIES) ] {
+		# filter the targets that shall be renamed; they have to be copied
+		# individually
+		local destTargets = [ on $(dir) return $(TARGETS_TO_INSTALL) ] ;
+		local remainingTargets ;
+		local destTarget ;
+		for destTarget in $(destTargets) {
+			local target = [ on $(destTarget) return $(TARGET) ] ;
+			local name = $(destTarget:BS) ;
+			if $(name) != $(target:BS) {
+				# use a unique dummy target for this file, on which we
+				# can define the TARGET_DIR variable
+				local dummyTarget = $(script)-dummy-$(dir:G=)-$(target) ;
+				NotFile $(dummyTarget) ;
+				TARGET_DIR on $(dummyTarget) = $(dir:G=) ;
+				INSTALL_TARGET_NAME on $(dummyTarget) = $(name) ;
+
+				Depends $(dummyTarget) : $(initScript) $(target)
+					$(serializationDependency) ;
+				Depends $(script) : $(dummyTarget) ;
+				serializationDependency = $(dummyTarget) ;
+
+				AppendToContainerCopyFilesScriptSingleFile $(dummyTarget)
+					: $(initScript) $(target) ;
+			} else {
+				remainingTargets += $(target) ;
+			}
+		}
+		targets = $(remainingTargets) ;
+
+		if $(targets) {
+			# use a unique dummy target for this directory, on which we
+			# can define the TARGET_DIR variable
+			local dummyTarget = $(script)-dummy-$(dir:G=) ;
+			NotFile $(dummyTarget) ;
+			TARGET_DIR on $(dummyTarget) = $(dir:G=) ;
+
+			Depends $(dummyTarget) : $(initScript) $(targets)
+				$(serializationDependency) ;
+			Depends $(script) : $(dummyTarget) ;
+			serializationDependency = $(dummyTarget) ;
+
+			OUTPUT_SCRIPT on $(dummyTarget) = $(initScript) ;
+			AppendToContainerCopyFilesScript $(dummyTarget) : $(targets) ;
+		}
+
+		local symlinks = [ on $(dir) return $(SYMLINKS_TO_INSTALL) ] ;
+		local symlink ;
+		for symlink in $(symlinks) {
+			NotFile $(symlink) ;
+
+			Depends $(script) : $(symlink) ;
+			Depends $(symlink) : $(initScript) $(serializationDependency) ;
+			serializationDependency = $(symlink) ;
+
+			AddSymlinkToContainerCopyFilesScript $(symlink) : $(initScript) ;
+		}
+
+		local targetDirs = [ on $(dir) return $(DIRECTORIES_TO_INSTALL) ] ;
+		local targetDir ;
+		for targetDir in $(targetDirs) {
+			NotFile $(targetDir) ;
+
+			Depends $(script) : $(targetDir) ;
+			Depends $(targetDir) : $(initScript) $(serializationDependency) ;
+			serializationDependency = $(targetDir) ;
+
+			AddDirectoryToContainerCopyFilesScript $(targetDir)
+				: $(initScript) ;
+		}
+	}
+}
+
+
+actions piecemeal AppendToContainerCopyFilesScript bind OUTPUT_SCRIPT
+{
+	echo \$cp "\"\${sPrefix}$(2)\"" "\"\${tPrefix}$(TARGET_DIR)\"" \
+		>> $(OUTPUT_SCRIPT)
+}
+
+
+actions AppendToContainerCopyFilesScriptSingleFile
+{
+	echo \$cp "\"\${sPrefix}$(2[2])\"" \
+		"\"\${tPrefix}$(TARGET_DIR)/$(INSTALL_TARGET_NAME)\"" >> $(2[1])
+}
+
+
+actions AddSymlinkToContainerCopyFilesScript
+{
+	echo \$ln -sfn "\"$(SYMLINK_TARGET)\"" "\"\${tPrefix}$(1:G=)\"" >> $(2[1])
+}
+
+
+actions AddDirectoryToContainerCopyFilesScript
+{
+	echo \$cp -r $(EXCLUDE_PATTERNS) "\"\${sPrefix}$(SOURCE_DIRECTORY)/.\"" \
+		"\"\${tPrefix}$(TARGET_DIRECTORY:G=)\"" >> $(2[1])
+}
+
+
+rule CreateContainerExtractFilesScript container : script
+{
+	MakeLocate $(script) : $(ANTARES_OUTPUT_DIR) ;
+	Always $(script) ;
+
+	local initScript = [ InitScript $(script) ] ;
+
+	local scriptBody
+		= [ FSameTargetWithPrependedGrist $(script) : script-body ] ;
+	LOCATE on $(scriptBody) = [ on $(script) return $(LOCATE) ] ;
+	Depends $(scriptBody) : $(initScript) ;
+	Depends $(script) : $(scriptBody) ;
+
+	local serializationDependency = $(scriptBody) ;
+		# Used to create a dependency chain between the dummy targets.
+		# This forces jam to build them one after the other, thus preventing
+		# concurrent writes to the script file when building with multiple
+		# jobs.
+
+	local dir ;
+	for dir in [ on $(container) return $(ANTARES_INSTALL_DIRECTORIES) ] {
+		local archiveFiles = [ on $(dir) return $(ARCHIVE_FILES_TO_INSTALL) ] ;
+		local archiveFile ;
+		for archiveFile in $(archiveFiles) {
+			# use a unique dummy target for this file, on which we
+			# can define the TARGET_DIR variable
+			local dummyTarget = $(script)-dummy-$(dir:G=)-$(archiveFile) ;
+			NotFile $(dummyTarget) ;
+			TARGET_DIR on $(dummyTarget) = $(dir:G=) ;
+
+			local extractedSubDir = [ on $(archiveFile)
+				return $(ARCHIVE_SUBDIR_TO_INSTALL_FROM) ] ;
+			NotFile $(extractedSubDir) ;
+
+			Depends $(dummyTarget) : $(initScript) $(archiveFile)
+				$(serializationDependency) ;
+			Depends $(script) : $(dummyTarget) ;
+			serializationDependency = $(dummyTarget) ;
+
+			AddExtractFileToContainerExtractFilesScript $(dummyTarget)
+				: $(initScript) $(archiveFile) $(extractedSubDir) ;
+		}
+	}
+}
+
+
+actions AddExtractFileToContainerExtractFilesScript
+{
+	echo extractFile "\"$(2[2])\"" "\"$(TARGET_DIR)\"" "\"$(2[3])\"" >> $(2[1])
+}
+
+
+#pragma mark - Antares Image rules
+
+rule SetUpdateAntaresImageOnly flag
+{
+	ANTARES_CONTAINER_UPDATE_ONLY on $(ANTARES_IMAGE_CONTAINER_NAME) = $(flag) ;
+}
+
+rule IsUpdateAntaresImageOnly
+{
+	on $(ANTARES_IMAGE_CONTAINER_NAME) return $(ANTARES_CONTAINER_UPDATE_ONLY) ;
+}
+
+rule AddDirectoryToAntaresImage directoryTokens : attributeFiles
+{
+	# AddDirectoryToAntaresImage <directoryTokens>
+
+	local dir = [ AddDirectoryToContainer $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(directoryTokens) ] ;
+
+	if $(attributeFiles) {
+		SEARCH on $(attributeFiles)
+			+= [ FDirName $(ANTARES_TOP) data image_directories ] ;
+		ATTRIBUTE_FILES on $(dir) += $(attributeFiles) ;
+	}
+
+	return $(dir) ;
+}
+
+rule AddFilesToAntaresImage directory : targets : destName
+{
+	# AddFilesToAntaresImage <directory> : <targets> [ : dest name ]
+
+	AddFilesToContainer $(ANTARES_IMAGE_CONTAINER_NAME) : $(directory)
+		: $(targets) : $(destName) ;
+}
+
+rule FFilesInAntaresImageDirectory directoryTokens
+{
+	return [ FFilesInContainerDirectory $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(directoryTokens) ] ;
+}
+
+rule AddSymlinkToAntaresImage directoryTokens : linkTarget : linkName
+{
+	# AddSymlinkToAntaresImage <directory> : <link target> [ : <link name> ] ;
+
+	AddSymlinkToContainer $(ANTARES_IMAGE_CONTAINER_NAME) : $(directoryTokens)
+		: $(linkTarget) : $(linkName) ;
+}
+
+rule FSymlinksInAntaresImageDirectory directoryTokens
+{
+	return [ FSymlinksInContainerDirectory $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(directoryTokens) ] ;
+}
+
+rule CopyDirectoryToAntaresImage directoryTokens : sourceDirectory
+	: targetDirectoryName : excludePatterns : alwaysUpdate
+{
+	CopyDirectoryToContainer $(ANTARES_IMAGE_CONTAINER_NAME) : $(directoryTokens)
+		: $(sourceDirectory) : $(targetDirectoryName) : $(excludePatterns)
+		: $(alwaysUpdate) ;
+}
+
+rule AddSourceDirectoryToAntaresImage dirTokens : alwaysUpdate
+{
+	# AddSourceDirectoryToAntaresImage <dirTokens> : <alwaysUpdate> ;
+
+	CopyDirectoryToAntaresImage home AntaresSources
+		: [ FDirName $(ANTARES_TOP) $(dirTokens) ]
+		: : -x .svn : $(alwaysUpdate) ;
+}
+
+rule AddHeaderDirectoryToAntaresImage dirTokens : dirName : alwaysUpdate
+{
+	# AddHeaderDirectoryToAntaresImage <dirTokens> : [ <dirName> ]
+	#	: <alwaysUpdate> ;
+
+	CopyDirectoryToAntaresImage develop headers
+		: [ FDirName $(ANTARES_TOP) headers $(dirTokens) ]
+		: $(dirName) : -x .svn : $(alwaysUpdate) ;
+}
+
+rule AddWifiFirmwareToAntaresImage driver : package : archive : extract
+{
+	#AddWifiFirmwareToAntaresImage <driver> : <package> : <archive> : <extract>
+
+	# complete location to wifi firmware archive
+	local firmwareArchive = [ FDirName
+		$(ANTARES_TOP) data system data firmware $(driver) $(archive) ] ;
+
+	local dirTokens = system data firmware $(driver) ;
+	if $(extract) = true || $(extract) = 1 {
+		ExtractArchiveToAntaresImage $(dirTokens) : $(firmwareArchive) :
+			: $(package) ;
+	} else {
+		AddFilesToAntaresImage $(dirTokens) : $(firmwareArchive)  ;
+	}
+}
+
+rule ExtractArchiveToAntaresImage dirTokens : archiveFile : alwaysUpdate
+	: extractedSubDir
+{
+	# ExtractArchiveToAntaresImage <dirTokens> : <archiveFile> : <alwaysUpdate>
+	#	: <extractedSubDir> ;
+
+	# If the image shall only be updated, we extract only, if explicitely
+	# requested.
+	if ! [ IsUpdateAntaresImageOnly ] || $(alwaysUpdate) {
+		ExtractArchiveToContainer $(ANTARES_IMAGE_CONTAINER_NAME) : $(dirTokens)
+			: $(archiveFile) : $(extractedSubDir) ;
+	}
+}
+
+rule AddDriversToAntaresImage relativeDirectoryTokens : targets
+{
+	# AddDriversToAntaresImage <relative directory> : <targets> ;
+
+	AddDriversToContainer $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(targets) ;
+}
+
+rule AddNewDriversToAntaresImage relativeDirectoryTokens : targets
+{
+	# AddNewDriversToAntaresImage <relative directory> : <targets> ;
+
+	AddNewDriversToContainer $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(targets) ;
+}
+
+rule AddBootModuleSymlinksToAntaresImage targets
+{
+	# AddBootModuleSymlinksToAntaresImage <targets> ;
+
+	AddBootModuleSymlinksToContainer $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(targets) ;
+}
+
+rule AddOptionalAntaresImagePackages packages
+{
+	local package ;
+	for package in $(packages) {
+		if ! [ on $(package) return $(ANTARES_OPTIONAL_PACKAGE_ADDED) ] {
+			ANTARES_OPTIONAL_PACKAGE_ADDED on $(package) = 1 ;
+			ANTARES_ADDED_OPTIONAL_PACKAGES += $(package) ;
+		}
+	}
+}
+
+rule IsOptionalAntaresImagePackageAdded package
+{
+	if ! [ on $(package) return $(ANTARES_OPTIONAL_PACKAGE_EXISTS) ] {
+		ANTARES_OPTIONAL_PACKAGE_EXISTS on $(package) = 1 ;
+		ANTARES_EXISTING_OPTIONAL_PACKAGES += $(package) ;
+	}
+
+	if [ on $(package) return $(ANTARES_OPTIONAL_PACKAGE_ADDED) ] {
+		return 1 ;
+	}
+
+	return ;
+}
+
+rule OptionalPackageDependencies package : dependencies
+{
+	if [ IsOptionalAntaresImagePackageAdded $(package) ] {
+		AddOptionalAntaresImagePackages $(dependencies) ;
+	}
+}
+
+rule InstallSourceArchive file : url
+{
+	if $(ANTARES_INCLUDE_SOURCES) = 1 {
+		# download archive file
+		local archiveFile = [ DownloadFile $(file) : $(url) ] ;
+
+		# copy directly into image
+		AddFilesToAntaresImage develop sources : $(archiveFile) ;
+	}
+}
+
+rule InstallOptionalAntaresImagePackage package : url : dirTokens : isCDPackage
+{
+	# download archive file
+	local archiveFile = [ DownloadFile $(package) : $(url) ] ;
+
+	if ( $(isCDPackage) = true || $(isCDPackage) = 1 ) && $(ANTARES_CD_NAME) {
+		# TODO: If ANTARES_CD_NAME is set, that doesn't mean we're building a CD
+		# image!
+		# copy onto image
+		AddFilesToAntaresImage _packages_ : $(archiveFile) ;
+	} else {
+		# extract onto image
+		ExtractArchiveToAntaresImage $(dirTokens) : $(archiveFile) ;
+	}
+}
+
+rule AddEntryToAntaresImageUserGroupFile file : entry
+{
+	local allEntries = [ on $(file) return $(ANTARES_IMAGE_USER_GROUP_ENTRIES) ] ;
+
+	if $(allEntries) {
+		allEntries = $(allEntries)|$(entry) ;
+	} else {
+		allEntries = $(entry) ;
+
+		Always $(file) ;
+		MakeLocate $(file) : $(ANTARES_COMMON_PLATFORM_OBJECT_DIR) ;
+		BuildAntaresImageUserGroupFile $(file) ;
+		AddFilesToAntaresImage common etc : $(file) ;
+	}
+
+	ANTARES_IMAGE_USER_GROUP_ENTRIES on $(file) = $(allEntries) ;
+}
+
+actions BuildAntaresImageUserGroupFile
+{
+	echo "$(ANTARES_IMAGE_USER_GROUP_ENTRIES)" | tr '|' '\n' > $(1)
+}
+
+rule AddUserToAntaresImage user : uid : gid : home : shell : realName
+{
+	if ! $(user) || ! $(uid) || ! $(gid) || ! $(home) {
+		Exit "Invalid antares user specification passed to AddUserToAntaresImage." ;
+	}
+
+	local entry
+		= $(user):x:$(uid):$(gid):$(realName:E=$(user)):$(home):$(shell:E="") ;
+
+	AddEntryToAntaresImageUserGroupFile <antares-image>passwd : $(entry) ;
+}
+
+rule AddGroupToAntaresImage group : gid : members
+{
+	if ! $(group) || ! $(gid) {
+		Exit "Invalid antares group specification passed to"
+			"AddGroupToAntaresImage." ;
+	}
+
+	local entry = $(group):x:$(gid):$(members:J=,:E) ;
+
+	AddEntryToAntaresImageUserGroupFile <antares-image>group : $(entry) ;
+}
+
+rule AddEntryToAntaresImageExpanderRuleFile file : entry
+{
+	local allEntries
+		= [ on $(file) return $(ANTARES_IMAGE_EXPANDER_RULES_ENTRIES) ] ;
+
+	if $(allEntries) {
+		allEntries = $(allEntries)!$(entry) ;
+	} else {
+		allEntries = $(entry) ;
+
+		Always $(file) ;
+		MakeLocate $(file) : $(ANTARES_COMMON_PLATFORM_OBJECT_DIR) ;
+		BuildAntaresImageExpanderRules $(file) ;
+		AddFilesToAntaresImage common data : $(file) ;
+	}
+
+	ANTARES_IMAGE_EXPANDER_RULES_ENTRIES on $(file) = $(allEntries) ;
+}
+
+actions BuildAntaresImageExpanderRules
+{
+	echo -e "$(ANTARES_IMAGE_EXPANDER_RULES_ENTRIES)" | tr '!' '\n' > $(1)
+}
+
+rule AddExpanderRuleToAntaresImage mimetype : extension : list : extract
+{
+	#AddExpanderRuleToAntaresImage <mimetype> : <extension> : <list> : <extract>
+
+	if ! $(mimetype) || ! $(extension) || ! $(list) || ! $(extract) {
+		Exit "Invalid expander rule specification passed to AddExpanderRule." ;
+	}
+
+	local entry = "\\\"$(mimetype)\\\"\\\t$(extension)\\\t\\\"$(list)\\\"\\\t\\\"$(extract)\\\"" ;
+	AddEntryToAntaresImageExpanderRuleFile <antares-image>expander.rules
+		: $(entry) ;
+}
+
+rule AddOptionalPackageDescriptionToAntaresImage file : searchPath
+{
+	if $(searchPath) {
+		SEARCH on $(file) = [ FDirName $(searchPath) ] ;
+	}
+
+	ANTARES_IMAGE_OPTIONAL_PACKAGE_DESCRIPTIONS += $(file) ;
+}
+
+rule AddLicenseToAntaresImage file : name : searchPath
+{
+	if $(searchPath) {
+		SEARCH on $(file) = [ FDirName $(searchPath) ] ;
+	}
+
+	if $(name) && $(file:BS) = $(name) {
+		name = ;
+	}
+
+	AddFilesToAntaresImage system data licenses : $(file) : $(name) ;
+}
+
+
+rule CreateAntaresImageMakeDirectoriesScript script
+{
+	CreateContainerMakeDirectoriesScript $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(script) ;
+}
+
+rule CreateAntaresImageCopyFilesScript script
+{
+	CreateContainerCopyFilesScript $(ANTARES_IMAGE_CONTAINER_NAME) : $(script) ;
+}
+
+rule CreateAntaresImageExtractFilesScript script
+{
+	CreateContainerExtractFilesScript $(ANTARES_IMAGE_CONTAINER_NAME)
+		: $(script) ;
+}
+
+rule BuildAntaresImage antaresImage : scripts : isImage : isVMwareImage
+{
+	# BuildAntaresImage <antares image> : <scripts> : <is image> : <isVMwareImage> ;
+
+	if $(isImage) = 1 || $(isImage) = true {
+		IS_IMAGE on $(antaresImage) = 1 ;
+	} else {
+		IS_IMAGE on $(antaresImage) = "" ;
+	}
+
+	if $(isVMwareImage) = 1 || $(isVMwareImage) = true {
+		IS_VMWARE_IMAGE on $(antaresImage) = 1 ;
+	} else {
+		IS_VMWARE_IMAGE on $(antaresImage) = "" ;
+	}
+
+	local mainScript = build_antares_image ;
+	SEARCH on $(mainScript) = [ FDirName $(ANTARES_TOP) build scripts ] ;
+
+	Depends $(antaresImage) : $(mainScript) $(scripts) ;
+	BuildAntaresImage1 $(antaresImage) : $(mainScript) $(scripts) ;
+}
+
+actions BuildAntaresImage1
+{
+	export imagePath="$(1)"
+	export isImage="$(IS_IMAGE)"
+	export isVMwareImage="$(IS_VMWARE_IMAGE)"
+	$(2[1]) $(2[2-])
+}
+
+rule BuildVMWareImage vmwareImage : plainImage : imageSize
+{
+	# BuildVMWareImage <vmware image> : <plain image> : <image size in MB>
+
+	IMAGE_SIZE on $(vmwareImage) = $(imageSize) ;
+
+	Depends $(vmwareImage) : <build>vmdkheader $(plainImage) ;
+	BuildVMWareImage1 $(vmwareImage) : <build>vmdkheader $(plainImage) ;
+}
+
+actions BuildVMWareImage1
+{
+	$(RM) $(1)
+	$(2[1]) -h 64k -i$(IMAGE_SIZE)M $(1) &&
+	cat $(2[2]) >> $(1)
+}
+
+
+#pragma mark - Network Boot Archive rules
+
+rule AddDirectoryToNetBootArchive directoryTokens
+{
+	# AddDirectoryToNetBootArchive <directoryTokens>
+
+	return [ AddDirectoryToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(directoryTokens) ] ;
+}
+
+rule AddFilesToNetBootArchive directory : targets : destName
+{
+	# AddFilesToNetBootArchive <directory> : <targets> [ : dest name ]
+
+	AddFilesToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME) : $(directory)
+		: $(targets) : $(destName) ;
+}
+
+rule AddSymlinkToNetBootArchive directoryTokens : linkTarget : linkName
+{
+	# AddSymlinkToNetBootArchive <directory> : <link target> [ : <link name> ] ;
+
+	AddSymlinkToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(directoryTokens) : $(linkTarget) : $(linkName) ;
+}
+
+rule AddDriversToNetBootArchive relativeDirectoryTokens : targets
+{
+	# AddDriversToNetBootArchive <relative directory> : <targets> ;
+
+	AddDriversToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(targets) ;
+}
+
+rule AddNewDriversToNetBootArchive relativeDirectoryTokens : targets
+{
+	# AddNewDriversToNetBootArchive <relative directory> : <targets> ;
+
+	AddNewDriversToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(targets) ;
+}
+
+rule AddDriverRegistrationToNetBootArchive relativeDirectoryTokens : target
+	: links
+{
+	# AddDriverRegistrationToNetBootArchive <directory> : <link target>
+	#	: <link names> ] ;
+
+	AddDriverRegistrationToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(target) : $(links) ;
+}
+
+rule AddBootModuleSymlinksToNetBootArchive targets
+{
+	# AddBootModuleSymlinksToNetBootArchive <targets> ;
+
+	AddBootModuleSymlinksToContainer $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(targets) ;
+}
+
+rule CreateNetBootArchiveMakeDirectoriesScript script
+{
+	CreateContainerMakeDirectoriesScript
+		$(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME) : $(script) ;
+}
+
+rule CreateNetBootArchiveCopyFilesScript script
+{
+	CreateContainerCopyFilesScript $(ANTARES_NET_BOOT_ARCHIVE_CONTAINER_NAME)
+		: $(script) ;
+}
+
+rule BuildNetBootArchive archive : scripts
+{
+	# BuildNetBootArchive <archive> : <scripts>  ;
+
+	local mainScript = build_tgz_archive ;
+	SEARCH on $(mainScript) = [ FDirName $(ANTARES_TOP) build scripts ] ;
+
+	Depends $(archive) : $(mainScript) $(scripts) ;
+	BuildNetBootArchive1 $(archive) : $(mainScript) $(scripts) ;
+}
+
+actions BuildNetBootArchive1
+{
+	$(2[1]) $(1) $(2[2-])
+}
+
+
+#pragma mark - Alternative GCC Archive rules
+
+
+rule AddDirectoryToAlternativeGCCArchive directoryTokens
+{
+	# AddDirectoryToAlternativeGCCArchive <directoryTokens>
+
+	return [ AddDirectoryToContainer
+		$(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME) : $(directoryTokens) ] ;
+}
+
+rule AddFilesToAlternativeGCCArchive directory : targets : destName
+{
+	# AddFilesToAlternativeGCCArchive <directory> : <targets> [ : dest name ]
+
+	AddFilesToContainer $(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME)
+		: $(directory) : $(targets) : $(destName) ;
+}
+
+rule AddSymlinkToAlternativeGCCArchive directoryTokens : linkTarget : linkName
+{
+	# AddSymlinkToAlternativeGCCArchive <directory> : <link target>
+	#	[ : <link name> ] ;
+
+	AddSymlinkToContainer $(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME)
+		: $(directoryTokens) : $(linkTarget) : $(linkName) ;
+}
+
+rule CopyDirectoryToAlternativeGCCArchive directoryTokens : sourceDirectory
+	: targetDirectoryName : excludePatterns : alwaysUpdate
+{
+	CopyDirectoryToContainer $(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME)
+		: $(directoryTokens) : $(sourceDirectory) : $(targetDirectoryName)
+		: $(excludePatterns) : $(alwaysUpdate) ;
+}
+
+rule CreateAlternativeGCCArchiveMakeDirectoriesScript script
+{
+	CreateContainerMakeDirectoriesScript
+		$(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME) : $(script) ;
+}
+
+rule CreateAlternativeGCCArchiveCopyFilesScript script
+{
+	CreateContainerCopyFilesScript
+		$(ANTARES_ALTERNATIVE_GCC_ARCHIVE_CONTAINER_NAME) : $(script) ;
+}
+
+rule BuildAlternativeGCCArchive archive : scripts
+{
+	# BuildAlternativeGCCArchive <archive> : <scripts>  ;
+
+	local mainScript = build_zip_archive ;
+	SEARCH on $(mainScript) = [ FDirName $(ANTARES_TOP) build scripts ] ;
+
+	Depends $(archive) : $(mainScript) $(scripts) ;
+	BuildAlternativeGCCArchive1 $(archive) : $(mainScript) $(scripts) ;
+}
+
+actions BuildAlternativeGCCArchive1
+{
+	$(2[1]) $(1) $(2[2-])
+}
+
+
+#pragma mark - Antares Hybrid Image rules
+
+
+rule AddFilesToAntaresHybridImage directory : targets : destName
+	: useABISubDir
+{
+	# AddFilesToAntaresHybridImage <directory> : <targets> : <destName>
+	#	: <useABISubDir>
+	#
+	# Convenience rule calling both AddFilesToAntaresImage and
+	# AddFilesToAlternativeGCCArchive.
+	#
+	# <useABISubDir>
+	#	if non-empty, specifies that an ABI subdirectory shall be appended to
+	#	<directory> for the alternative GCC archive.
+
+	local alternativeSubDir ;
+	if $(useABISubDir) {
+		alternativeSubDir = gcc$(ANTARES_GCC_VERSION[1]) ;
+	}
+
+	AddFilesToAntaresImage $(directory) : $(targets) : $(destName) ;
+	AddFilesToAlternativeGCCArchive $(directory) $(alternativeSubDir)
+		: $(targets) : $(destName) ;
+}
+
+rule AddSymlinkToAntaresHybridImage directoryTokens : linkTarget : linkName
+	: useSymlinkTargetABISubDir : useABISubDir
+{
+	# AddSymlinkToAntaresHybridImage <directoryTokens> : <linkTarget> : <linkName>
+	#	[ : <useSymlinkTargetABISubDir> [ :  <useABISubDir> ] ]
+	#
+	# Convenience rule calling both AddSymlinkToAntaresImage and
+	# AddSymlinkToAlternativeGCCArchive.
+	#
+	# <linkTarget>
+	#	Can be a list of components that will be joined to path inserting
+	#	"/"s inbetween.
+	# <useSymlinkTargetABISubDir>
+	#	If non-empty, specifies that an ABI subdirectory shall be inserted
+	#	into <linkTarget> (between the first and second component) for the
+	#	alternative GCC archive.
+	# <useABISubDir>
+	#	If non-empty, specifies that an ABI subdirectory part shall be appended
+	#	to the directory tokens for the alternative GCC archive.
+
+	local alternativeDirTokens = $(directoryTokens) ;
+	if $(useABISubDir) {
+		alternativeDirTokens += gcc$(ANTARES_GCC_VERSION[1]) ;
+	}
+
+	local alternativeLinkTarget = $(linkTarget) ;
+	if $(useSymlinkTargetABISubDir) {
+		alternativeLinkTarget = $(linkTarget[1]) gcc$(ANTARES_GCC_VERSION[1])
+			$(linkTarget[2-]) ;
+	}
+	linkTarget = $(linkTarget:J=/) ;
+	alternativeLinkTarget = $(alternativeLinkTarget:J=/) ;
+
+	AddSymlinkToAntaresImage $(directoryTokens) : $(linkTarget) : $(linkName) ;
+	AddSymlinkToAlternativeGCCArchive $(alternativeDirTokens)
+		: $(alternativeLinkTarget) : $(linkName) ;
+}
+
+rule AddLibrariesToAntaresHybridImage directory : libs
+{
+	# AddLibraryToAntaresHybridImage <directory> : <libs>
+	#
+	# Installs libraries with the appropriate links onto the image.
+	#
+
+	local lib ;
+	for lib in $(libs) {
+		local abiVersion = [ on $(lib) return $(ANTARES_LIB_ABI_VERSION) ] ;
+		if $(abiVersion) {
+			local abiVersionedLib = $(lib).$(abiVersion) ;
+			AddFilesToAntaresHybridImage $(directory)
+				: $(lib) : $(abiVersionedLib) : true ;
+			AddSymlinkToAntaresHybridImage $(directory)
+				: $(abiVersionedLib) : $(lib) : : true ;
+		} else {
+			AddFilesToAntaresHybridImage $(directory) : $(lib) : : true ;
+		}
+	}
+}
+
+
+#pragma mark - Floppy Boot Archive rules
+
+
+rule AddDirectoryToFloppyBootArchive directoryTokens
+{
+	# AddDirectoryToFloppyBootArchive <directoryTokens>
+
+	return [ AddDirectoryToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(directoryTokens) ] ;
+}
+
+rule AddFilesToFloppyBootArchive directory : targets : destName
+{
+	# AddFilesToFloppyBootArchive <directory> : <targets> [ : dest name ]
+
+	AddFilesToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME) : $(directory)
+		: $(targets) : $(destName) ;
+}
+
+rule AddSymlinkToFloppyBootArchive directoryTokens : linkTarget : linkName
+{
+	# AddSymlinkToFloppyBootArchive <directory> : <link target>
+	#	[ : <link name> ] ;
+
+	AddSymlinkToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(directoryTokens) : $(linkTarget) : $(linkName) ;
+}
+
+rule AddDriversToFloppyBootArchive relativeDirectoryTokens : targets
+{
+	# AddDriversToFloppyBootArchive <relative directory> : <targets> ;
+
+	AddDriversToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(targets) ;
+}
+
+rule AddNewDriversToFloppyBootArchive relativeDirectoryTokens : targets
+{
+	# AddNewDriversToFloppyBootArchive <relative directory> : <targets> ;
+
+	AddNewDriversToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(targets) ;
+}
+
+rule AddDriverRegistrationToFloppyBootArchive relativeDirectoryTokens : target
+	: links
+{
+	# AddDriverRegistrationToFloppyBootArchive <directory> : <link target>
+	#	: <link names> ] ;
+
+	AddDriverRegistrationToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(relativeDirectoryTokens) : $(target) : $(links) ;
+}
+
+rule AddBootModuleSymlinksToFloppyBootArchive targets
+{
+	# AddBootModuleSymlinksToFloppyBootArchive <targets> ;
+
+	AddBootModuleSymlinksToContainer $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(targets) ;
+}
+
+rule CreateFloppyBootArchiveMakeDirectoriesScript script
+{
+	CreateContainerMakeDirectoriesScript
+		$(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME) : $(script) ;
+}
+
+rule CreateFloppyBootArchiveCopyFilesScript script
+{
+	CreateContainerCopyFilesScript $(ANTARES_FLOPPY_BOOT_IMAGE_CONTAINER_NAME)
+		: $(script) ;
+}
+
+rule BuildFloppyBootArchive archive : scripts
+{
+	# BuildHFloppyBootArchive <archive> : <scripts>  ;
+
+	local mainScript = build_tgz_archive ;
+	SEARCH on $(mainScript) = [ FDirName $(ANTARES_TOP) build scripts ] ;
+
+	Depends $(archive) : $(mainScript) $(scripts) ;
+	BuildFloppyBootArchive1 $(archive) : $(mainScript) $(scripts) ;
+}
+
+actions BuildFloppyBootArchive1
+{
+	$(2[1]) $(1) $(2[2-])
+}
+
+# warning: that is quite x86 dependant...
+
+rule BuildFloppyBootImage image : antaresLoader : archive
+{
+	Depends $(image) : $(antaresLoader) ;
+	Depends $(image) : $(archive) ;
+	#MakeLocateDebug $(image) ;
+	FLOPPY_IMAGE_SIZE on $(image) = $(ANTARES_BOOT_FLOPPY_IMAGE_SIZE) ;
+	ARCHIVE_IMAGE_OFFSET on $(image) = $(ANTARES_BOOT_ARCHIVE_IMAGE_OFFSET) ;
+	BuildFloppyBootImage1 $(image) : $(antaresLoader) $(archive) ;
+	if $(ANTARES_BOOT_PLATFORM) = atari_m68k {
+		Depends $(image) : <build>fixup_tos_boot_checksum ;
+		BuildFloppyBootImageFixupM68K $(image)
+			: <build>fixup_tos_boot_checksum ;
+	}
+	if $(ANTARES_BOOT_PLATFORM) = amiga_m68k {
+		Depends $(image) : <build>fixup_amiga_boot_checksum ;
+		BuildFloppyBootImageFixupM68K $(image)
+			: <build>fixup_amiga_boot_checksum ;
+	}
+}
+
+actions BuildFloppyBootImage1
+{
+	$(RM) $(<)
+	# make an empty image
+	dd if=/dev/zero of=$(<) bs=1k count=$(FLOPPY_IMAGE_SIZE)
+	# add antares_loader
+	dd if=$(>[1]) of=$(<) conv=notrunc
+	# add the boot drivers tgz archive
+	dd if=$(>[2]) of=$(<) bs=$(ARCHIVE_IMAGE_OFFSET)k seek=1 conv=notrunc
+}
+
+actions BuildFloppyBootImageFixupM68K
+{
+	# fixup the boot sector checksum
+	$(>[1]) $(<)
+}
+
+#pragma mark - CD Boot Image rules
+
+rule BuildCDBootImage image : bootfloppy : extrafiles
+{
+	Depends $(image) : $(bootfloppy) ;
+	Depends $(image) : $(extrafiles) ;
+	BOOTIMG on $(image) = $(bootfloppy) ;
+
+	BuildCDBootImage1 $(image) : $(bootfloppy) $(extrafiles) ;
+}
+
+actions BuildCDBootImage1
+{
+	$(RM) $(<)
+	mkisofs -b $(BOOTIMG) -r -J -V bootimg -o $(<) $(>[1]) $(>[2-])
+}
+
+
+#pragma mark - CD Boot PPC Image rules
+
+rule BuildCDBootPPCImage image : hfsmaps : elfloader : coffloader : chrpscript
+	: extrafiles
+{
+	Depends $(image) : $(elfloader) ;
+	Depends $(image) : $(coffloader) ;
+	Depends $(image) : $(chrpscript) ;
+	Depends $(image) : $(extrafiles) ;
+	Depends $(image) : $(hfsmaps) ;
+	MAPS on $(image) = $(hfsmaps) ;
+
+	BuildCDBootPPCImage1 $(image) : $(elfloader) $(coffloader) $(chrpscript)
+		$(extrafiles) ;
+}
+
+actions BuildCDBootPPCImage1 bind MAPS
+{
+	$(RM) $(<)
+	mkdir -p $(ANTARES_OUTPUT_DIR)/cd/ppc
+	cp $(>) $(ANTARES_OUTPUT_DIR)/cd/ppc/
+	cp $(>[3]) $(ANTARES_OUTPUT_DIR)/cd/ppc/bootinfo.txt
+	cp $(>[1]) $(ANTARES_OUTPUT_DIR)/cd/ofwboot.elf
+	cp $(>[2]) $(ANTARES_OUTPUT_DIR)/cd/ofwboot.xcf
+	#mkisofs -r -U -chrp-boot -V bootimg -o $(<) $(>[1]) $(>[2-])
+	#mkisofs -hfs -r -U -chrp-boot -part -map $(MAPS) -no-desktop \
+	#	-hfs-volid bootimg -V bootimg -prep-boot $(>[1]:D=) -o $(<) $(>[1])
+	#	- $(>[2-])
+	#mkisofs -v -hfs -part -map $(MAPS) -no-desktop -hfs-volid bootimg \
+	#	-V bootimg -hfs-bless $(ANTARES_OUTPUT_DIR)/cd/ppc -r -o $(<) $(>[1]) \
+	#	$(>[2-]) $(ANTARES_OUTPUT_DIR)/cd
+	#mkisofs -r -U -chrp-boot -V bootimg -prep-boot $(>[1]:D=) -o $(<) $(>[1]) \
+	#	$(>[2-])
+	#mkisofs -r -U -V bootimg -prep-boot $(>[1]:D=) -o $(<) $(>[1]) $(>[2-])
+	# $(ANTARES_OUTPUT_DIR)/cd
+	# -hfs -hfs-bless .
+	mkisofs -v -hfs -part -map $(MAPS) -no-desktop -hfs-volid bootimg \
+		-V bootimg -hfs-bless $(ANTARES_OUTPUT_DIR)/cd/ppc -prep-boot \
+		ppc/$(>[2]:D=) -r -o $(<) $(ANTARES_OUTPUT_DIR)/cd
+	#$(RM) -R $(ANTARES_OUTPUT_DIR)/cd
+}
+
+

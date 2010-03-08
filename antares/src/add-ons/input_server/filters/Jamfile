@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src add-ons input_server filters ;
+
+SubInclude ANTARES_TOP src add-ons input_server filters screen_saver ;
+SubInclude ANTARES_TOP src add-ons input_server filters vmware_mouse ;
+SubInclude ANTARES_TOP src add-ons input_server filters shortcut_catcher ;

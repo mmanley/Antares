@@ -1,0 +1,38 @@
+SubDir ANTARES_TOP src add-ons media plugins ffmpeg libswscale ;
+
+SubDirHdrs [ FDirName $(SUBDIR) .. ] ;
+SubDirHdrs [ FDirName $(SUBDIR) ../libavutil ] ;
+SubDirHdrs [ FDirName $(SUBDIR) ../libavcodec ] ;
+
+# filter warnings we don't want here
+TARGET_WARNING_CCFLAGS = [ FFilter $(TARGET_WARNING_CCFLAGS)
+	: -Wall -Wmissing-prototypes -Wsign-compare -Wpointer-arith ] ;
+
+local archSources ;
+archSources = ;
+
+if $(TARGET_ARCH) = x86 {
+	if $(ANTARES_INCLUDE_GPL_ADDONS) = 1 {
+		archSources += yuv2rgb_mmx.c ;
+		SubDirHdrs [ FDirName $(SUBDIR) $(TARGET_ARCH) ] ;
+	}
+} else if $(TARGET_ARCH) = ppc {
+	archSources += swscale_altivec_template.c  yuv2rgb_altivec.c ;
+} else if $(TARGET_ARCH) = sparc {
+	archSources += yuv2rgb_vis.cyuv2rgb_vis.c ;
+}
+
+SubDirCcFlags $(ANTARES_FFMPEG_GCC_EXTRA_FLAGS) ;
+SubDirCcFlags $(ANTARES_FFMPEG_DEFINES) ;
+SubDirC++Flags $(ANTARES_FFMPEG_DEFINES) ;
+
+StaticLibrary libswscale.a :
+	options.c
+	rgb2rgb.c
+	swscale.c
+	yuv2rgb.c
+
+	$(archSources)
+;
+
+SEARCH on [ FGristFiles $(archSources) ] += [ FDirName $(SUBDIR) $(TARGET_ARCH) ] ;

@@ -1,0 +1,17 @@
+SubDir ANTARES_TOP src add-ons media plugins mp4_reader ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+SubDirHdrs [ FDirName $(SUBDIR) libMP4 ] ;
+
+Addon mp4_reader :
+	mp4_reader.cpp
+	:
+	libmp4reader.a
+	libz.a
+	be libmedia.so $(TARGET_LIBSTDC++)
+;
+
+SubInclude ANTARES_TOP src add-ons media plugins mp4_reader libMP4 ;

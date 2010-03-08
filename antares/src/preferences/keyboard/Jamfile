@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src preferences keyboard ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+        SubDirC++Flags -DCOMPILE_FOR_R5 ;
+#        SubDirC++Flags -fmultiple-symbol-spaces ;
+}
+
+UsePrivateHeaders input ;
+
+Preference Keyboard : 
+	Keyboard.cpp 
+	KeyboardSettings.cpp 
+	KeyboardView.cpp 
+	KeyboardWindow.cpp
+	: translation be $(TARGET_LIBSUPC++) liblocale.so
+	: Keyboard.rdef
+	;
+
+DoCatalogs Keyboard :
+	x-vnd.Antares-Keyboard
+	:
+	Keyboard.cpp
+	KeyboardWindow.cpp
+	KeyboardView.cpp
+	: en.catalog
+	:
+	bg.catkeys eo.catkeys fr.catkeys hu.catkeys ja.catkeys lt.catkeys
+	pl.catkeys pt.catkeys ru.catkeys sv.catkeys uk.catkeys
+	;

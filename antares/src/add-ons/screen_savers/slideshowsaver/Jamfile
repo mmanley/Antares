@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons screen_savers slideshowsaver ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+ScreenSaver SlideShowSaver :
+	# LiveSettings
+	LiveSetting.cpp
+	LiveSettings.cpp
+
+	# SlideShowSaver classes
+	SlideShowSaver.cpp
+	SlideShowConfigView.cpp ;
+
+LinkAgainst SlideShowSaver : be screensaver tracker translation ;
+
+Package antares-screensavers-cvs :
+	SlideShowSaver :
+	boot home config add-ons screen_savers ;
+
+

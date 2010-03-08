@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src apps debugger user_interface gui running_teams_window ;
+
+CCFLAGS +=  -Werror ;
+C++FLAGS += -Werror ;
+
+UsePrivateHeaders debug ;
+UsePrivateSystemHeaders ;
+
+Application hdb :
+	hdb.cpp 
+	RunningTeamsWindow.cpp 
+	TeamsListView.cpp 
+	TeamWindow.cpp
+
+	: be tracker translation libdebug.so $(TARGET_LIBSUPC++)
+;

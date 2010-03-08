@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src bin fwcontrol ;
+
+UseHeaders [ FDirName $(ANTARES_TOP) headers compatibility bsd ] : true ;
+UsePrivateHeaders firewire ;
+
+BinCommand fwcontrol :
+	eui64.c
+	fwcrom.c
+	fwdv.c
+	fwmpegts.c
+	fwcontrol.c
+	: libbsd.so
+;

@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src add-ons kernel drivers graphics via ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders graphics ;
+UsePrivateHeaders [ FDirName graphics via ] ;
+
+KernelAddon via :
+	driver.c
+;
+
+Package antares-via_gfx-cvs :
+	README.html UPDATE.html ;
+Package antares-via_gfx-cvs :
+	via : 
+	boot home config add-ons kernel drivers bin ;
+PackageDriverSymLink antares-via_gfx-cvs : graphics via ;
+Package antares-via_gfx-cvs :
+	via.settings :
+	boot home config settings kernel drivers ;
+

@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src bin tar ;
+
+# filter warnings we don't want here
+TARGET_WARNING_CCFLAGS = [ FFilter $(TARGET_WARNING_CCFLAGS)
+	: -Wall -Wmissing-prototypes -Wsign-compare ] ;
+
+SubInclude ANTARES_TOP src bin tar lib ;
+SubInclude ANTARES_TOP src bin tar rmt ;
+SubInclude ANTARES_TOP src bin tar src ;

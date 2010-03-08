@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src libs stdc++ ;
+
+if $(ANTARES_GCC_VERSION[1]) = 2 || $(isHybridBuild) {
+	SubInclude ANTARES_TOP src libs stdc++ legacy ;
+}
+
+if $(ANTARES_GCC_VERSION[1]) = 4 || $(isHybridBuild) {
+	SubInclude ANTARES_TOP src libs stdc++ current ;
+}

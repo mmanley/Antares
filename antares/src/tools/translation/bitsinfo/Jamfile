@@ -1,0 +1,4 @@
+SubDir ANTARES_TOP src tools translation bitsinfo ;
+
+BinCommand bitsinfo : bitsinfo.cpp : be $(TARGET_LIBSUPC++) ;
+

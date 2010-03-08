@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons kernel busses ;
+
+# HACK: remove this when the old ide code is removed!
+if $(ANTARES_ATA_STACK) = 1 {
+    SubInclude ANTARES_TOP src add-ons kernel busses ata ;
+} else {
+    SubInclude ANTARES_TOP src add-ons kernel busses ide ;
+}
+
+SubInclude ANTARES_TOP src add-ons kernel busses agp_gart ;
+SubInclude ANTARES_TOP src add-ons kernel busses scsi ;
+SubInclude ANTARES_TOP src add-ons kernel busses usb ;

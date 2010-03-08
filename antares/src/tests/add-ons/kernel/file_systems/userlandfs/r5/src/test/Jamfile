@@ -1,0 +1,8 @@
+SubDir ANTARES_TOP src tests add-ons kernel file_systems userlandfs r5 src test ;
+
+SubInclude ANTARES_TOP src tests add-ons kernel file_systems userlandfs r5 src
+	test netfs ;
+SubInclude ANTARES_TOP src tests add-ons kernel file_systems userlandfs r5 src
+	test ramfs ;
+SubInclude ANTARES_TOP src tests add-ons kernel file_systems userlandfs r5 src
+	test reiserfs ;

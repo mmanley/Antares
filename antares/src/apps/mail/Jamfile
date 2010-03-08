@@ -1,0 +1,56 @@
+SubDir ANTARES_TOP src apps mail ;
+
+if $(TARGET_PLATFORM) != antares {
+	UsePublicHeaders mail ;
+}
+
+UsePrivateHeaders interface ;
+UsePrivateHeaders mail ;
+UsePrivateHeaders textencoding ;
+UsePrivateHeaders shared ;
+UsePrivateHeaders storage ;
+
+AddResources Mail : pictures.rdef  ;
+
+Application Mail :
+	BmapButton.cpp
+	ButtonBar.cpp
+	ComboBox.cpp
+	Content.cpp
+	Enclosures.cpp
+	FindWindow.cpp
+	Header.cpp
+	MailApp.cpp
+	MailPopUpMenu.cpp
+	MailSupport.cpp
+	MailWindow.cpp
+	Prefs.cpp
+	QueryMenu.cpp
+	Signature.cpp
+	Status.cpp
+	Utilities.cpp
+	WIndex.cpp
+	Words.cpp
+	KUndoBuffer.cpp
+	: be tracker $(TARGET_LIBSTDC++) $(TARGET_LIBSUPC++) liblocale.so libmail.so
+		libtextencoding.so
+	: Mail.rdef
+;
+
+DoCatalogs Mail :
+	x-vnd.Be-MAIL
+	:
+	Content.cpp
+	Enclosures.cpp
+	FindWindow.cpp
+	Header.cpp
+	MailApp.cpp
+	MailPopUpMenu.cpp
+	MailWindow.cpp
+	Prefs.cpp
+	Signature.cpp
+	: en.catalog
+	: de.catkeys fr.catkeys hu.catkeys ja.catkeys pt.catkeys pt_br.catkeys
+	  uk.catkeys
+	;
+

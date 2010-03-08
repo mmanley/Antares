@@ -1,0 +1,33 @@
+SubDir ANTARES_TOP src apps drivesetup ;
+
+AddSubDirSupportedPlatforms libbe_test ;
+
+UsePrivateHeaders interface shared storage tracker ;
+
+Preference DriveSetup :
+	CreateParamsPanel.cpp
+	DiskView.cpp
+	DriveSetup.cpp
+	InitParamsPanel.cpp
+	MainWindow.cpp
+	PartitionList.cpp
+	Support.cpp
+
+	: be liblocale.so libcolumnlistview.a libshared.a $(TARGET_LIBSUPC++)
+	: DriveSetup.rdef
+;
+
+DoCatalogs DriveSetup :
+	x-vnd.Antares-DriveSetup
+	:
+	CreateParamsPanel.cpp
+	DiskView.cpp
+	InitParamsPanel.cpp
+	MainWindow.cpp
+	PartitionList.cpp
+	Support.cpp
+	: en.catalog
+	: de.catkeys hu.catkeys nl.catkeys pl.catkeys pt_br.catkeys ru.catkeys
+	  uk.catkeys
+	;
+

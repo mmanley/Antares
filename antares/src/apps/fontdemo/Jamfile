@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src apps fontdemo ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Application FontDemo :
+	ControlView.cpp
+	FontDemo.cpp
+	FontDemoView.cpp
+	: be $(TARGET_LIBSUPC++)
+	: FontDemo.rdef
+	;

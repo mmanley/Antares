@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src apps clock ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Application Clock : 
+	cl_view.cpp 
+	cl_wind.cpp 
+	clock.cpp 
+	: be $(TARGET_LIBSUPC++)
+	: Clock.rdef
+	;

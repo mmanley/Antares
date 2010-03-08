@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src add-ons kernel interrupt_controllers openpic ;
+
+UsePrivateHeaders kernel ;
+UsePrivateHeaders shared ;
+
+KernelAddon openpic : 
+	openpic.cpp ;

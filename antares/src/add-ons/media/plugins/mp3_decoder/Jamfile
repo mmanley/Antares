@@ -1,0 +1,18 @@
+SubDir ANTARES_TOP src add-ons media plugins mp3_decoder ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media ;
+
+SubDirHdrs [ FDirName $(SUBDIR) mpglib ] ;
+
+Addon mp3_decoder :
+	mp3DecoderPlugin.cpp
+	:  
+	libmpglib.a
+	be
+	libmedia.so
+	$(TARGET_LIBSUPC++)
+;
+
+SubInclude ANTARES_TOP src add-ons media plugins mp3_decoder mpglib ;

@@ -1,0 +1,20 @@
+SubDir ANTARES_TOP src add-ons media media-add-ons mixer ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+Addon mixer.media_addon :
+	AudioMixer.cpp
+	ByteSwap.cpp
+	MixerAddOn.cpp
+	MixerCore.cpp
+	MixerInput.cpp
+	MixerOutput.cpp
+	MixerSettings.cpp
+	MixerUtils.cpp
+	Resampler.cpp
+	: be media $(TARGET_LIBSUPC++)
+;
+
+Package antares-mixer-cvs
+	: mixer.media_addon
+	: boot home config add-ons media ;

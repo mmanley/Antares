@@ -1,0 +1,32 @@
+SubDir ANTARES_TOP src servers media ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders media shared storage ;
+UsePrivateSystemHeaders ;
+
+AddResources media_server : media_server.rdef ;
+
+Server media_server :
+	media_server.cpp
+	AddOnManager.cpp
+	AppManager.cpp
+	BufferManager.cpp
+	DefaultManager.cpp
+	FormatManager.cpp
+	MediaFilesManager.cpp
+	NodeManager.cpp
+	NotificationManager.cpp
+	Queue.cpp
+
+	# storage
+	AddOnMonitor.cpp
+	AddOnMonitorHandler.cpp
+	NodeMonitorHandler.cpp
+
+	: be libmedia.so $(TARGET_LIBSTDC++)
+;
+
+SEARCH on [ FGristFiles AddOnMonitor.cpp AddOnMonitorHandler.cpp
+		NodeMonitorHandler.cpp ]
+	+= [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) kits storage ] ;

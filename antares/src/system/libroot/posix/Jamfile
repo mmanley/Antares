@@ -1,0 +1,48 @@
+SubDir ANTARES_TOP src system libroot posix ;
+
+UsePrivateHeaders app shared [ FDirName syslog_daemon ] ;
+UsePrivateSystemHeaders ;
+UsePrivateHeaders kernel ;
+	# For util/KMessage.h
+UsePrivateHeaders libroot runtime_loader shared ;
+
+if $(ANTARES_MULTIUSER_QUERY) = 1 {
+	PWD_BACKEND = pwd_query.c ;
+} else {
+	PWD_BACKEND = pwd.cpp grp.cpp shadow.cpp user_group_common.cpp ;
+}
+MergeObject posix_main.o :
+ 	assert.c
+ 	dlfcn.c
+ 	dirent.c
+ 	errno.c
+	fcntl.cpp
+ 	fnmatch.c
+ 	glob.c
+ 	inttypes.c
+	libgen.cpp
+ 	poll.c
+ 	$(PWD_BACKEND)
+ 	scheduler.cpp
+	semaphore.cpp
+ 	syslog.cpp
+ 	termios.c
+ 	utime.c
+;
+
+SubInclude ANTARES_TOP src system libroot posix arch $(TARGET_ARCH) ;
+
+SubInclude ANTARES_TOP src system libroot posix crypt ;
+SubInclude ANTARES_TOP src system libroot posix locale ;
+SubInclude ANTARES_TOP src system libroot posix malloc ;
+SubInclude ANTARES_TOP src system libroot posix malloc_debug ;
+SubInclude ANTARES_TOP src system libroot posix pthread ;
+SubInclude ANTARES_TOP src system libroot posix signal ;
+SubInclude ANTARES_TOP src system libroot posix stdio ;
+SubInclude ANTARES_TOP src system libroot posix stdlib ;
+SubInclude ANTARES_TOP src system libroot posix string ;
+SubInclude ANTARES_TOP src system libroot posix sys ;
+SubInclude ANTARES_TOP src system libroot posix time ;
+SubInclude ANTARES_TOP src system libroot posix unistd ;
+
+SubInclude ANTARES_TOP src system libroot posix glibc ;

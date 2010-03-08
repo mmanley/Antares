@@ -1,0 +1,24 @@
+SubDir ANTARES_TOP src add-ons kernel drivers video usb_vision ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders usb_vision ;
+
+#local defines = [ FDefines DB_USB_USE_V2_MODULE ] ;
+#SubDirCcFlags $(defines) ;
+
+KernelAddon usb_vision :
+	usb_vision.c
+	tracing.c
+;
+
+# driver goes in dev/video
+
+Package antares-usb_vision-cvs
+	:
+	usb_vision
+	:
+	boot home config add-ons kernel drivers bin ;
+
+Package antares-usb_vision-cvs : <usb_vision!driver>usb_vision.settings.sample
+        : boot home config settings kernel drivers sample ;

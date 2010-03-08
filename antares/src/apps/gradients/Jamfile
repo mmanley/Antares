@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src apps gradients ;
+
+Application Gradients :
+	GradientsApp.cpp
+	GradientsWindow.cpp
+	GradientsView.cpp
+	: be $(TARGET_LIBSUPC++)
+	: Gradients.rdef
+;

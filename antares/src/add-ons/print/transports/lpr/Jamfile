@@ -1,0 +1,32 @@
+SubDir ANTARES_TOP src add-ons print transports lpr ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirHdrs [ FDirName $(ANTARES_TOP) headers libs print libprint ] ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) src add-ons print transports shared ] ;
+
+Addon LPR :
+	Lpr.cpp
+	LprSetupDlg.cpp
+	LprTransport.cpp
+	LpsClient.cpp
+
+	Socket.o
+	SocketStream.o
+	DbgMsg.o
+	: 
+	be 
+	libprint.a
+	$(TARGET_NETWORK_LIBS) 
+	$(TARGET_LIBSTDC++)
+;
+
+ObjectReferences
+	<src!add-ons!print!transports!shared>Socket.o
+	<src!add-ons!print!transports!shared>SocketStream.o
+	<src!add-ons!print!transports!shared>DbgMsg.o
+;
+
+Package antares-printingkit-cvs :
+	LPR :
+	boot home config add-ons Print transport ;

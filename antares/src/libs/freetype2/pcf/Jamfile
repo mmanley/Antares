@@ -1,0 +1,27 @@
+# FreeType 2 src/pcf Jamfile (c) 2001 David Turner
+#
+
+SubDir  ANTARES_TOP src libs freetype2 pcf ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+UseFreeTypeHeaders ;
+
+{
+  local  _sources ;
+
+  if $(FT2_MULTI)
+  {
+    _sources = pcfdrivr pcfread pcfutil ;
+  }
+  else
+  {
+    _sources = pcf ;
+  }
+
+  FT2_Library  $(FT2_LIB) : $(_sources).c ;
+}
+
+# end of src/pcf Jamfile
+

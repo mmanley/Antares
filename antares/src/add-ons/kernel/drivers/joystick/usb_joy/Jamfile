@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src add-ons kernel drivers joystick usb_joy ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+SubDirSysHdrs $(ANTARES_TOP) src add-ons kernel bus_managers usb ;
+
+KernelAddon usb_joy :
+	devlist.c
+	devmgmt.c
+	driver.c
+	hidparse.c
+;

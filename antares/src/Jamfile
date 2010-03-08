@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src ;
+
+SubInclude ANTARES_TOP src add-ons ;
+SubInclude ANTARES_TOP src apps ;
+SubInclude ANTARES_TOP src bin ;
+SubInclude ANTARES_TOP src build ;
+SubInclude ANTARES_TOP src data ;
+SubInclude ANTARES_TOP src documentation ;
+SubInclude ANTARES_TOP src kits ;
+SubInclude ANTARES_TOP src libs ;
+SubInclude ANTARES_TOP src preferences ;
+SubInclude ANTARES_TOP src servers ;
+SubInclude ANTARES_TOP src system ;
+SubInclude ANTARES_TOP src tests ;
+SubInclude ANTARES_TOP src tools ;

@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tools rman ;
+
+SubDirCcFlags -w ;
+
+BuildPlatformMain rman : rman.c : ;
+

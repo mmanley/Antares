@@ -1,0 +1,21 @@
+SubDir ANTARES_TOP src tests add-ons print pdf bezierbounds ;
+
+SubDirHdrs $(ANTARES_TOP) src add-ons print drivers pdf source ;
+
+AddResources BezierBounds : BBApp.rdef ;
+
+local sources =
+	BBApp.cpp
+	BBView.cpp
+	BezierBounds.cpp
+	SubPath.cpp
+;
+
+SimpleTest BezierBounds
+	: $(sources)
+	: be $(TARGET_LIBSUPC++) root
+;
+
+# Tell Jam where to find these sources:
+SEARCH on [ FGristFiles SubPath.cpp ]
+	= [ FDirName $(ANTARES_TOP) src add-ons print drivers pdf source ] ;

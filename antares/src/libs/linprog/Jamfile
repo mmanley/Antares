@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src libs linprog ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UseLibraryHeaders lp_solve linprog ;
+
+SharedLibrary liblinprog.so : 
+	Constraint.cpp
+	LinearSpec.cpp
+	Summand.cpp
+	PenaltyFunction.cpp
+	Variable.cpp
+	:
+	be liblpsolve55.so $(TARGET_LIBSUPC++)
+;
+

@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src system libroot posix stdlib ;
+
+UsePrivateHeaders drivers libroot runtime_loader shared ;
+UsePrivateSystemHeaders ;
+
+MergeObject posix_stdlib.o :
+	abs.c
+	atfork.c
+	atof.c
+	atoi.c
+	bsearch.c
+	div.c
+	env.cpp
+	exit.c
+	heapsort.c
+	merge.c
+	mktemp.c
+	pty.cpp
+	qsort.c
+	radixsort.c
+	rand.c
+	random.c
+	realpath.cpp
+	strtol.c
+	strtoll.c
+	strtoul.c
+	strtoull.c
+;

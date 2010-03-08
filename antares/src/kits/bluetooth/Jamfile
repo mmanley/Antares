@@ -1,0 +1,28 @@
+SubDir ANTARES_TOP src kits bluetooth ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+#if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+#       UseHeaders [ FDirName $(ANTARES_TOP) headers os ] : true ;
+#}
+
+UsePrivateHeaders shared bluetooth ;
+
+SubDirHdrs [ FDirName $(SUBDIR) UI ] ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) UI ] ;
+
+
+SharedLibrary libbluetooth.so :
+	LocalDevice.cpp
+	DiscoveryListener.cpp
+	DiscoveryAgent.cpp
+	RemoteDevice.cpp
+	CommandManager.cpp
+	KitSupport.cpp
+	DeviceClass.cpp
+	#UI
+	PincodeWindow.cpp
+	ConnectionIncoming.cpp
+	: be $(TARGET_LIBSTDC++)
+;

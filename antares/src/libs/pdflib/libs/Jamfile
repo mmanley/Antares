@@ -1,0 +1,7 @@
+SubDir ANTARES_TOP src libs pdflib libs ;
+
+SubInclude ANTARES_TOP src libs pdflib libs flate ;
+SubInclude ANTARES_TOP src libs pdflib libs pdcore ;
+SubInclude ANTARES_TOP src libs pdflib libs pdflib ;
+SubInclude ANTARES_TOP src libs pdflib libs png ;
+SubInclude ANTARES_TOP src libs pdflib libs tiff ;

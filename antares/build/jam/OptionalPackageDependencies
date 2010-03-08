@@ -1,0 +1,24 @@
+# package dependencies
+#
+# For transitive dependencies dependants should be listed before their
+# dependencies.
+
+OptionalPackageDependencies Subversion : APR-util Neon LibIconv LibXML2 OpenSSL SQLite ;
+OptionalPackageDependencies APR-util : APR Expat ;
+OptionalPackageDependencies Beam : LibIconv LibLayout OpenSSL PCRE ;
+OptionalPackageDependencies BeHappy : BeBook NetSurf ;
+OptionalPackageDependencies Development : DevelopmentBase Perl ;
+OptionalPackageDependencies DevelopmentBase : CDRecord DevelopmentMin Yasm ;
+OptionalPackageDependencies ICU-devel : Development ;
+OptionalPackageDependencies Firefox : BeZillaBrowser ;
+OptionalPackageDependencies LibLayout : DevelopmentBase ;
+OptionalPackageDependencies NetSurf : OpenSSL Curl LibXML2 LibIconv ;
+OptionalPackageDependencies OpenSSH : OpenSSL ;
+OptionalPackageDependencies Python : Bzip ;
+OptionalPackageDependencies Mercurial : Python ;
+OptionalPackageDependencies Git : Expat Curl OpenSSL ;
+OptionalPackageDependencies Curl : OpenSSL ;
+OptionalPackageDependencies NetFS : UserlandFS ;
+OptionalPackageDependencies Vim : LibIconv ;
+OptionalPackageDependencies XZ-Utils : Tar ;
+

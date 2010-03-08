@@ -1,0 +1,23 @@
+SubDir ANTARES_TOP src tests add-ons print pdf linepathbuilder ;
+
+SubDirHdrs $(ANTARES_TOP) src add-ons print drivers pdf source ;
+
+AddResources LinePathBuilder : LinePathBuilder.rdef ;
+
+local sources =
+	LPBApp.cpp
+	PathView.cpp
+	SubPath.cpp
+	LinePathBuilder.cpp
+;
+
+SimpleTest LinePathBuilder
+	: $(sources)
+	: be $(TARGET_LIBSUPC++) root
+;
+
+# Tell Jam where to find these sources:
+SEARCH on [ FGristFiles LinePathBuilder.cpp SubPath.cpp ]
+	= [ FDirName $(ANTARES_TOP) src add-ons print drivers pdf source ] ;
+
+

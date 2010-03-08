@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src add-ons translators exr openexr imath ;
+
+SubDirSysHdrs [ FDirName $(SUBDIR) ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) $(DOTDOT) half ] ;
+SubDirSysHdrs [ FDirName $(SUBDIR) $(DOTDOT) iex ] ;
+
+if $(ANTARES_LIBSTDC++) = libstdc++.r4.so {
+        SubDirC++Flags -Dios_base=ios -ftemplate-depth-24 ;
+}
+
+StaticLibrary libimath.a :
+ImathBox.cpp
+ImathColorAlgo.cpp
+ImathFun.cpp
+ImathMatrixAlgo.cpp
+ImathRandom.cpp
+ImathShear.cpp
+ImathVec.cpp
+;

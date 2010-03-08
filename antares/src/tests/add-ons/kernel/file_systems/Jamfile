@@ -1,0 +1,12 @@
+SubDir ANTARES_TOP src tests add-ons kernel file_systems ;
+
+AntaresSubInclude bfs ;
+AntaresSubInclude cdda ;
+AntaresSubInclude consistency_check ;
+AntaresSubInclude fs_shell ;
+AntaresSubInclude fragmenter ;
+AntaresSubInclude iso9660 ;
+AntaresSubInclude random_file_actions ;
+AntaresSubInclude random_read ;
+AntaresSubInclude udf ;
+AntaresSubInclude userlandfs ;

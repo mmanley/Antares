@@ -1,0 +1,16 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network nforce dev nfe ;
+
+UseHeaders [ FDirName $(SUBDIR) .. .. ] : true ;
+UseHeaders [ FDirName $(ANTARES_TOP) src libs compat freebsd_network compat ] : true ;
+
+UsePrivateHeaders net ;
+UsePrivateKernelHeaders ;
+
+SubDirCcFlags [ FDefines _KERNEL=1 FBSD_DRIVER=1 ] ;
+
+KernelAddon nforce :
+	if_nfe.c
+
+	glue.c
+	: libfreebsd_network.a nforce_mii.a
+	;

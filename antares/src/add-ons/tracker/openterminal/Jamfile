@@ -1,0 +1,11 @@
+SubDir ANTARES_TOP src add-ons tracker openterminal ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+AddResources Open\ Terminal-T : OpenTerminal.rdef ;
+
+Addon Open\ Terminal-T :
+	OpenTerminal.cpp
+
+	: be tracker $(TARGET_LIBSTDC++)
+;

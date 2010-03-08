@@ -1,0 +1,6 @@
+SubDir ANTARES_TOP src tests libs ;
+
+SubInclude ANTARES_TOP src tests libs lp_solve ;
+SubInclude ANTARES_TOP src tests libs linprog ;
+SubInclude ANTARES_TOP src tests libs alm ;
+

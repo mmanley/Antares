@@ -1,0 +1,13 @@
+SubDir ANTARES_TOP src add-ons input_server devices tablet ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+UsePrivateHeaders input ;
+
+Addon <input>tablet : 
+	TabletInputDevice.cpp 
+	: be input_server ;
+
+Package antares-inputkit-cvs :
+        <input>tablet :
+        boot home config add-ons input_server devices ;

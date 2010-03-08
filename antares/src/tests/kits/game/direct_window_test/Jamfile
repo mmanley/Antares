@@ -1,0 +1,15 @@
+SubDir ANTARES_TOP src tests kits game direct_window_test ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+AddSubDirSupportedPlatforms libbe_test ;
+
+SimpleTest DirectWindowStars
+	: Stars.cpp StarWindow.cpp
+	: game be $(TARGET_LIBSUPC++)
+;
+
+if ( $(TARGET_PLATFORM) = libbe_test ) {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR) : DirectWindowStars
+		: tests!apps ;
+}
+

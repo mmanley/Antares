@@ -1,0 +1,29 @@
+SubDir ANTARES_TOP src preferences media ;
+
+SetSubDirSupportedPlatformsBeOSCompatible ;
+
+if ! $(TARGET_PLATFORM_ANTARES_COMPATIBLE) {
+	SubDirC++Flags -fmultiple-symbol-spaces ;
+}
+
+UseLibraryHeaders icon ;
+UsePrivateHeaders media ;
+
+Preference Media :
+	Media.cpp
+	MediaWindow.cpp
+	MediaViews.cpp
+	MediaListItem.cpp
+	MediaAlert.cpp 
+	: media be liblocale.so $(TARGET_LIBSUPC++)
+	: media.rdef 
+	;
+
+DoCatalogs Media
+	: x-vnd.Antares-Media
+	: MediaViews.cpp
+	  MediaWindow.cpp
+	: en.catalog
+	: bg.catkeys eo.catkeys fr.catkeys hu.catkeys lt.catkeys pl.catkeys
+	  pt.catkeys pt_br.catkeys ru.catkeys sv.catkeys uk.catkeys
+	;

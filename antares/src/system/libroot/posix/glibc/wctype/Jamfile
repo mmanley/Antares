@@ -1,0 +1,19 @@
+SubDir ANTARES_TOP src system libroot posix glibc wctype ;
+
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc include arch
+	$(TARGET_ARCH) ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc include arch generic ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc include ;
+#SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc libio ;
+#SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc wcsmbs ;
+#SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc iconv ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc locale ;
+SubDirSysHdrs $(ANTARES_TOP) src system libroot posix glibc ;
+
+MergeObject posix_gnu_wctype.o :
+	iswctype.c
+	towctrans.c
+	wcfuncs.c
+	wctrans.c
+	wctype.c
+;

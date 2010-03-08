@@ -1,0 +1,3 @@
+SubDir ANTARES_TOP src add-ons kernel drivers network marvell_yukon ;
+
+SubInclude ANTARES_TOP src add-ons kernel drivers network marvell_yukon dev ;

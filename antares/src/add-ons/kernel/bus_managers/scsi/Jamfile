@@ -1,0 +1,27 @@
+SubDir ANTARES_TOP src add-ons kernel bus_managers scsi ;
+
+UsePrivateHeaders drivers ;
+UsePrivateKernelHeaders ;
+
+# disable debug output, if debugging is disabled
+if $(DEBUG) = 0 {
+	SubDirCcFlags [ FDefines DEBUG_MAX_LEVEL_FLOW=0 DEBUG_MAX_LEVEL_INFO=0  ] ;
+}
+
+KernelAddon scsi :
+	bus_raw.c
+	busses.c
+	ccb.c
+	device_scan.c
+	devices.c
+	dma_buffer.c
+	dpc.c
+	emulation.c
+	queuing.c
+	scsi.c
+	scsi_io.c
+	scatter_gather.c
+	sim_interface.c
+	virtual_memory.c
+	;
+

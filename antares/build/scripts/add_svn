@@ -1,0 +1,2 @@
+#!/bin/sh
+svn st | grep "?" | sed 's|\?       \(.*\)|svn add "\1"|g' | sh

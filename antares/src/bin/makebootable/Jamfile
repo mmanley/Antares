@@ -1,0 +1,5 @@
+SubDir ANTARES_TOP src bin makebootable ;
+
+if $(TARGET_BOOT_PLATFORM) {
+	SubInclude ANTARES_TOP src bin makebootable platform $(TARGET_BOOT_PLATFORM) ;
+}

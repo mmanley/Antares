@@ -1,0 +1,43 @@
+SubDir ANTARES_TOP src tests kits interface layout widget_layout_test ;
+
+SetSubDirSupportedPlatforms antares libbe_test ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) tests ] ;
+
+SimpleTest WidgetLayoutTest :
+	WidgetLayoutTest.cpp
+
+	AbstractButton.cpp
+	CheckBox.cpp
+	GroupView.cpp
+	RadioButton.cpp
+	StringView.cpp
+	Test.cpp
+	TestView.cpp
+	TwoDimensionalSliderView.cpp
+	View.cpp
+	ViewContainer.cpp
+	WrapperView.cpp
+
+	BoxTest.cpp
+	ButtonTest.cpp
+	CheckBoxTest.cpp
+	ControlTest.cpp
+	ListViewTest.cpp
+	MenuBarTest.cpp
+	MenuFieldTest.cpp
+	MenuTest.cpp
+	RadioButtonTest.cpp
+	ScrollBarTest.cpp
+	SliderTest.cpp
+	TextControlTest.cpp
+	TextViewTest.cpp
+	:
+	be $(TARGET_LIBSUPC++)
+;
+
+if $(TARGET_PLATFORM) = libbe_test {
+	AntaresInstall install-test-apps : $(ANTARES_APP_TEST_DIR)
+		: WidgetLayoutTest
+		: tests!apps ;
+}

@@ -1,0 +1,9 @@
+SubDir ANTARES_TOP src add-ons input_server devices ;
+
+SubInclude ANTARES_TOP src add-ons input_server devices easypen ;
+SubInclude ANTARES_TOP src add-ons input_server devices keyboard ;
+SubInclude ANTARES_TOP src add-ons input_server devices mouse ;
+#SubInclude ANTARES_TOP src add-ons input_server devices serial_mouse ;
+#SubInclude ANTARES_TOP src add-ons input_server devices tablet ;
+SubInclude ANTARES_TOP src add-ons input_server devices wacom ;
+

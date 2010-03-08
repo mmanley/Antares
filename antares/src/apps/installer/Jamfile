@@ -1,0 +1,31 @@
+SubDir ANTARES_TOP src apps installer ;
+
+UsePrivateHeaders shared storage tracker ;
+SubDirHdrs [ FDirName $(ANTARES_TOP) src kits tracker ] ;
+
+Application Installer :
+	CopyEngine.cpp
+	InstallerApp.cpp
+	InstallerWindow.cpp
+	PackageViews.cpp
+	PartitionMenuItem.cpp
+	ProgressReporter.cpp
+	UnzipEngine.cpp
+	WorkerThread.cpp
+	: be tracker translation libshared.a $(TARGET_LIBSTDC++) liblocale.so
+	: Installer.rdef
+;
+
+DoCatalogs Installer :
+	x-vnd.Antares-Installer
+	:
+	InstallerApp.cpp
+	InstallerWindow.cpp
+	PackageViews.cpp
+	ProgressReporter.cpp
+	WorkerThread.cpp
+	: en.catalog
+	: pt_br.catkeys de.catkeys hu.catkeys it.catkeys pl.catkeys ru.catkeys
+	  uk.catkeys
+	;
+
